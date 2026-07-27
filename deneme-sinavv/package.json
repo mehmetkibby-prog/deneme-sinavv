@@ -1,0 +1,18 @@
+{
+  "name": "muzik-sinavi-v23-6",
+  "version": "23.6.0",
+  "private": true,
+  "scripts": {
+    "android:add": "npx cap add android",
+    "android:sync": "npx cap sync android",
+    "android:open": "npx cap open android",
+    "build:apk": "cd android && ./gradlew assembleDebug"
+  },
+  "dependencies": {
+    "@capacitor/android": "^8.0.0",
+    "@capacitor/core": "^8.0.0"
+  },
+  "devDependencies": {
+    "@capacitor/cli": "^8.0.0"
+  }
+}
