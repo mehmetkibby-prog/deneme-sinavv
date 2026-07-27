@@ -1,0 +1,50 @@
+name: Android APK Oluştur
+
+on:
+  workflow_dispatch:
+  push:
+    branches:
+      - main
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Projeyi indir
+        uses: actions/checkout@v4
+
+      - name: Node.js kur
+        uses: actions/setup-node@v4
+        with:
+          node-version: "20"
+
+      - name: Java kur
+        uses: actions/setup-java@v4
+        with:
+          distribution: temurin
+          java-version: "17"
+
+      - name: Bağımlılıkları kur
+        working-directory: deneme-sinavv
+        run: npm install
+
+      - name: Web uygulamasını oluştur
+        working-directory: deneme-sinavv
+        run: npm run build
+
+      - name: Android projesini güncelle
+        working-directory: deneme-sinavv
+        run: npx cap sync android
+
+      - name: APK oluştur
+        working-directory: deneme-sinavv/android
+        run: |
+          chmod +x gradlew
+          ./gradlew assembleDebug
+
+      - name: APK dosyasını yükle
+        uses: actions/upload-artifact@v4
+        with:
+          name: Muzik-Sinavi-APK
+          path: deneme-sinavv/android/app/build/outputs/apk/debug/app-debug.apk
