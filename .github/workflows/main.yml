@@ -29,9 +29,7 @@ jobs:
         working-directory: deneme-sinavv
         run: npm install
 
-      - name: Web uygulamasını oluştur
-        working-directory: deneme-sinavv
-        run: npm run build
+    
 
       - name: Android projesini güncelle
         working-directory: deneme-sinavv
