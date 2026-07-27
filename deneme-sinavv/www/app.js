@@ -1,6 +1,6 @@
 const $ = s => document.querySelector(s);
 const app = $("#app");
-const state = { data:null, route:"home", section:null, exam:[], index:0, correct:0, wrong:0, answered:false, examTitle:"", rtc:null, voiceStream:null, voiceAudio:null, voiceChannel:null, chat:[], studyChat:[] };
+const state = { data:null, route:"home", section:null, exam:[], index:0, correct:0, wrong:0, answered:false, examTitle:"", customExam:null, simulation:null, simulationTimer:null, rtc:null, voiceStream:null, voiceAudio:null, voiceChannel:null, chat:[], studyChat:[] };
 const store = {
   get(k,f){ try { return JSON.parse(localStorage.getItem(k)) ?? f; } catch { return f; } },
   set(k,v){ localStorage.setItem(k,JSON.stringify(v)); }
@@ -10,26 +10,32 @@ const shuffle = xs => { const a=[...xs]; for(let i=a.length-1;i;i--){const j=Mat
 function toast(t){const e=$("#toast");e.textContent=t;e.classList.add("show");setTimeout(()=>e.classList.remove("show"),1900)}
 function allQuestions(){return state.data.sections.flatMap(s=>s.questions)}
 function ids(key){return new Set(store.get(key,[]))}
-function setTitle(t,s="V24 Android",back=false){$("#page-title").textContent=t;$("#subtitle").textContent=s;$("#back").classList.toggle("hidden",!back)}
+function setTitle(t,s="V24.4e Android",back=false){$("#page-title").textContent=t;$("#subtitle").textContent=s;$("#back").classList.toggle("hidden",!back)}
 function nav(r){state.route=r;document.querySelectorAll("#bottom-nav button").forEach(b=>b.classList.toggle("active",b.dataset.route===r));({home:renderHome,wrong:renderWrong,stats:renderStats,voice:renderVoice,more:renderMore,settings:renderSettings}[r]||renderHome)()}
 
 function renderHome(){
   const p=store.get("profile",{name:"Çağlar",examDate:""});
   setTitle("Müzik Sınavı",p.name?`Hoş geldin, ${p.name}`:"V24 Android");
   app.innerHTML=`<section class="hero"><h2>Sınava hazırlan</h2><p>${allQuestions().length} soruluk bankadan çalış, yanlışlarını tekrar çöz ve gelişimini izle.</p>
-  <div class="actions"><button class="primary" id="mixed">Karışık Deneme</button><button class="secondary" id="ai-exam">AI Eğitim Bilimleri</button><button class="secondary ai-center-button" id="ai-center">AI Destekli Çalışma Merkezi</button></div></section>
+  <div class="actions"><button class="primary" id="mixed">Karışık Deneme</button><button class="secondary custom-exam-button" id="custom-exam">Özel Deneme Oluştur</button><button class="secondary" id="real-exam">Gerçek Sınav Simülasyonu</button><button class="secondary education-button" id="education-center">Eğitim Bilimleri Merkezi</button><button class="secondary" id="ai-exam">AI Eğitim Bilimleri</button><button class="secondary opera-ballet-button" id="opera-ballet">AI Opera ve Bale</button><button class="secondary ai-center-button" id="ai-center">AI Destekli Çalışma Merkezi</button></div></section>
   <div class="feature-grid">
     <button class="card feature" data-go="teacher"><b>🤖 AI Öğretmen</b><span>Sor, öğren, mini sınav yap</span></button>
     <button class="card feature" data-go="cards"><b>🗂 Ezber Kartları</b><span>Kart çevirerek tekrar et</span></button>
     <button class="card feature memory-feature" data-go="memory"><b>🧠 Yoğun Ezber Soruları</b><span>Eser–besteci, dönem ve ağır bilgi soruları</span></button>
+    <button class="card feature education-feature" data-go="education"><b>🎓 Eğitim Bilimleri</b><span>7 alan, vaka, kuramcı ve zayıflık analizi</span></button>
+    <button class="card feature custom-exam-feature" data-go="custom-exam"><b>🧩 Deneme Oluşturucu</b><span>Bölümleri ve soru sayılarını kendin birleştir</span></button>
     <button class="card feature" data-go="study"><b>📚 Konu Çalışma Köşesi</b><span>Plan ve notlarını tut</span></button>
     <button class="card feature" data-go="profile"><b>👤 Kişisel Bilgi Köşesi</b><span>Hedeflerini düzenle</span></button>
   </div>
   <h3 class="section-title">Soru Bankası</h3><div class="grid">${state.data.sections.map(s=>`<button class="card section" data-id="${s.id}"><b>${esc(s.title)}</b><span class="pill">${s.questions.length} soru</span></button>`).join("")}</div>`;
-  $(".feature-grid").onclick=e=>{const b=e.target.closest("[data-go]");if(b)({teacher:renderTeacher,cards:renderFlashcards,memory:renderMemoryCenter,study:renderStudy,profile:renderProfile}[b.dataset.go])()};
+  $(".feature-grid").onclick=e=>{const b=e.target.closest("[data-go]");if(b)({teacher:renderTeacher,cards:renderFlashcards,memory:renderMemoryCenter,education:renderEducationCenter,"custom-exam":renderCustomExamBuilder,study:renderStudy,profile:renderProfile}[b.dataset.go])()};
   document.querySelectorAll(".section").forEach(b=>b.onclick=()=>renderSection(b.dataset.id));
   $("#mixed").onclick=()=>startExam(shuffle(allQuestions()).slice(0,Math.min(50,allQuestions().length)),"Karışık Deneme");
+  $("#custom-exam").onclick=renderCustomExamBuilder;
+  $("#real-exam").onclick=renderSimulationSetup;
+  $("#education-center").onclick=renderEducationCenter;
   $("#ai-exam").onclick=renderAiExam;
+  $("#opera-ballet").onclick=renderOperaBallet;
   $("#ai-center").onclick=renderAiStudyCenter;
 }
 function renderSection(id){
@@ -60,17 +66,107 @@ function renderQuestion(){
 function toggleId(key,id,on,label){const s=ids(key);on?s.add(id):s.delete(id);store.set(key,[...s]);toast(on?`${label} bölümüne eklendi`:`${label} bölümünden çıkarıldı`)}
 function answer(key){
   if(state.answered)return;state.answered=true;const q=state.exam[state.index],ok=key===q.answer;
+  recordEducationAnswer(q,ok);
   if(ok){state.correct++;const w=ids("wrongQuestions");w.delete(q.id);store.set("wrongQuestions",[...w])}
   else{state.wrong++;const w=ids("wrongQuestions");w.add(q.id);store.set("wrongQuestions",[...w])}
   document.querySelectorAll(".choice").forEach(b=>{b.disabled=true;if(b.dataset.key===q.answer)b.classList.add("correct");else if(b.dataset.key===key)b.classList.add("wrong")});
   $("#feedback").innerHTML=`<div class="result"><b>${ok?"Doğru!":"Yanlış."}</b><br>${!ok?`Doğru cevap: ${q.answer}) ${esc(q.choices[q.answer])}<br>`:""}${esc(q.explanation||"")}</div>`;
   $("#next").classList.remove("hidden");
 }
+const EDUCATION_AREAS=[
+  "Gelişim Psikolojisi","Öğrenme Psikolojisi","Program Geliştirme",
+  "Öğretim İlke ve Yöntemleri","Ölçme ve Değerlendirme","Rehberlik","Sınıf Yönetimi"
+];
+const EDUCATION_THEORISTS=[
+  ["Piaget","Bilişsel gelişim","Şema, özümseme, uyumsama, dengeleme ve gelişim dönemleri."],
+  ["Vygotsky","Sosyokültürel kuram","Yakınsal gelişim alanı, dil ve yetişkin/akran desteği."],
+  ["Erikson","Psikososyal gelişim","Yaşam boyu sekiz dönem ve her döneme özgü çatışma."],
+  ["Kohlberg","Ahlak gelişimi","Gelenek öncesi, geleneksel ve gelenek sonrası düzeyler."],
+  ["Skinner","Edimsel koşullanma","Pekiştirme, ceza, sönme ve pekiştirme tarifeleri."],
+  ["Pavlov","Klasik koşullanma","Koşulsuz ve koşullu uyarıcı/tepki bağları."],
+  ["Bandura","Sosyal öğrenme","Model alma, gözlem, dolaylı pekiştirme ve öz yeterlik."],
+  ["Bruner","Buluş yoluyla öğrenme","Eylemsel, imgesel, sembolik temsil ve sarmal program."],
+  ["Ausubel","Anlamlı öğrenme","Ön organize ediciler ve yeni bilginin mevcut yapıyla bağlanması."],
+  ["Bloom","Tam öğrenme ve taksonomi","Bilişsel hedef basamakları, dönüt-düzeltme ve öğrenme ürünleri."],
+  ["Gagné","Öğrenme koşulları","Öğrenme ürünleri ve dokuz aşamalı öğretim etkinlikleri."],
+  ["Maslow","İhtiyaçlar hiyerarşisi","Fizyolojik ihtiyaçlardan kendini gerçekleştirmeye uzanan yapı."]
+];
+const EDUCATION_COMPARISONS=[
+  ["Olumsuz pekiştirme","Ceza","Olumsuz pekiştirme davranışı artırır; ceza davranışı azaltmayı amaçlar."],
+  ["Geçerlik","Güvenirlik","Geçerlik amaca uygun ölçme; güvenirlik sonuçların tutarlılığıdır."],
+  ["Özümseme","Uyumsama","Özümsemede bilgi mevcut şemaya alınır; uyumsamada şema değiştirilir."],
+  ["Rehberlik","Psikolojik danışma","Rehberlik kapsamlı hizmetler bütünü; danışma uzmanla yürütülen profesyonel ilişkidir."],
+  ["Dönüt","Düzeltme","Dönüt öğrenme durumu bilgisidir; düzeltme eksikliği giderecek işlemdir."],
+  ["Klasik koşullanma","Edimsel koşullanma","Klasikte uyarıcılar; edimselde davranışın sonuçları temel alınır."],
+  ["Biçimlendirici değerlendirme","Düzey belirleyici değerlendirme","İlki süreçte geliştirme, ikincisi süreç sonunda karar verme amaçlıdır."],
+  ["Buluş yoluyla öğretim","Sunuş yoluyla öğretim","Buluşta örnekten ilkeye; sunuşta genelden özele ilerlenir."],
+  ["İçsel güdülenme","Dışsal güdülenme","İçsel güdü etkinliğin kendisinden; dışsal güdü ödül veya sonuçtan doğar."],
+  ["Ölçüt bağımlı değerlendirme","Norm bağımlı değerlendirme","İlki önceden belirlenen ölçüte; ikincisi grubun başarısına göre karar verir."]
+];
+function recordEducationAnswer(q,ok){
+  if(!q?.educationArea)return;
+  const stats=store.get("educationStats",{}),x=stats[q.educationArea]||{correct:0,wrong:0,total:0};
+  x.total++;ok?x.correct++:x.wrong++;stats[q.educationArea]=x;store.set("educationStats",stats);
+}
+function educationAreaStats(area){
+  const x=store.get("educationStats",{})[area]||{correct:0,wrong:0,total:0};
+  return {...x,score:x.total?Math.round(x.correct/x.total*100):null};
+}
 function finishExam(){
   const score=Math.round(state.correct/state.exam.length*100),h=store.get("history",[]);
   h.unshift({date:new Date().toISOString(),title:state.examTitle,total:state.exam.length,correct:state.correct,wrong:state.wrong,score});store.set("history",h.slice(0,100));
   setTitle("Sınav Sonucu",state.examTitle,true);app.innerHTML=`<section class="hero center"><h2>%${score}</h2><p>${state.correct} doğru · ${state.wrong} yanlış</p><div class="actions center"><button class="primary" id="again">Tekrar Çöz</button><button class="secondary" id="home">Ana Sayfa</button></div></section>`;
   $("#again").onclick=()=>startExam(shuffle(state.exam),state.examTitle);$("#home").onclick=()=>nav("home");
+}
+function renderSimulationSetup(){
+  setTitle("Gerçek Sınav Simülasyonu","Süreli ve geri bildirimsiz",true);
+  const max=allQuestions().length;
+  app.innerHTML=`<section class="hero simulation-hero"><h2>Gerçek sınav düzeni</h2><p>Sınav sırasında doğru cevap gösterilmez. Soruları boş bırakabilir, işaretleyebilir ve daha sonra geri dönebilirsin.</p></section>
+  <div class="ai-control-grid"><div><label>Soru sayısı</label><select id="sim-count">${[50,70,100].filter(x=>x<=max).map(x=>`<option ${x===70?"selected":""}>${x}</option>`).join("")}</select></div><div><label>Süre</label><select id="sim-minutes"><option>60</option><option selected>90</option><option>120</option></select></div></div>
+  <label class="check-row"><input id="sim-confirm" type="checkbox"><span>Sınavı başlattığımda sürenin hemen başlayacağını biliyorum.</span></label>
+  <div class="actions"><button class="primary" id="start-simulation">Sınavı Başlat</button></div>`;
+  $("#start-simulation").onclick=()=>{if(!$("#sim-confirm").checked)return toast("Başlamadan önce onay kutusunu işaretle.");startSimulation(+$("#sim-count").value,+$("#sim-minutes").value)};
+}
+function startSimulation(count,minutes){
+  startSimulationWithQuestions(shuffle(allQuestions()).slice(0,count),minutes,"Gerçek Sınav");
+}
+function simulationTime(){
+  const left=Math.max(0,Math.ceil((state.simulation.endsAt-Date.now())/1000));
+  return `${String(Math.floor(left/60)).padStart(2,"0")}:${String(left%60).padStart(2,"0")}`;
+}
+function updateSimulationClock(){const el=$("#sim-clock");if(el)el.textContent=simulationTime()}
+function renderSimulationQuestion(){
+  const s=state.simulation,q=s.questions[s.index],selected=s.answers[q.id],marked=s.marked.includes(q.id);
+  setTitle(s.title||"Gerçek Sınav",`Soru ${s.index+1} / ${s.questions.length}`,true);
+  app.innerHTML=`<div class="simulation-bar"><b id="sim-clock">${simulationTime()}</b><span>${Object.keys(s.answers).length} cevaplandı · ${s.questions.length-Object.keys(s.answers).length} boş</span></div>
+  <div class="progress"><i style="width:${Math.round((s.index+1)/s.questions.length*100)}%"></i></div><div class="question">${esc(q.question)}</div>
+  <div>${Object.entries(q.choices).map(([k,v])=>`<button class="choice ${selected===k?"selected":""}" data-key="${k}"><strong>${k}</strong><span>${esc(v)}</span></button>`).join("")}</div>
+  <label class="hard-toggle simulation-mark"><input id="sim-mark" type="checkbox" ${marked?"checked":""}> ★ Bu soruya dön</label>
+  <div class="question-map">${s.questions.map((x,i)=>`<button data-index="${i}" class="${i===s.index?"current":""} ${s.answers[x.id]?"answered":""} ${s.marked.includes(x.id)?"marked":""}">${i+1}</button>`).join("")}</div>
+  <div class="actions simulation-actions"><button class="secondary" id="sim-prev" ${s.index===0?"disabled":""}>Önceki</button><button class="secondary" id="sim-clear">Cevabı Sil</button><button class="primary" id="sim-next">${s.index===s.questions.length-1?"Sınavı Bitir":"Sonraki"}</button></div>`;
+  document.querySelectorAll(".choice").forEach(b=>b.onclick=()=>{s.answers[q.id]=b.dataset.key;renderSimulationQuestion()});
+  $("#sim-mark").onchange=e=>{s.marked=e.target.checked?[...new Set([...s.marked,q.id])]:s.marked.filter(x=>x!==q.id);renderSimulationQuestion()};
+  document.querySelectorAll(".question-map button").forEach(b=>b.onclick=()=>{s.index=+b.dataset.index;renderSimulationQuestion()});
+  $("#sim-prev").onclick=()=>{s.index--;renderSimulationQuestion()};
+  $("#sim-clear").onclick=()=>{delete s.answers[q.id];renderSimulationQuestion()};
+  $("#sim-next").onclick=()=>{if(s.index<s.questions.length-1){s.index++;renderSimulationQuestion()}else confirmFinishSimulation()};
+}
+function confirmFinishSimulation(){
+  const s=state.simulation,blank=s.questions.length-Object.keys(s.answers).length;
+  if(confirm(`${blank} boş soru var. Sınavı bitirmek istiyor musun?`))finishSimulation(false);
+}
+function finishSimulation(auto){
+  const s=state.simulation;if(!s)return;clearInterval(state.simulationTimer);state.simulationTimer=null;
+  const results=s.questions.map(q=>({q,selected:s.answers[q.id]||null,ok:s.answers[q.id]===q.answer}));
+  results.filter(x=>x.selected).forEach(x=>recordEducationAnswer(x.q,x.ok));
+  const correct=results.filter(x=>x.ok).length,blank=results.filter(x=>!x.selected).length,wrong=results.length-correct-blank,score=Math.round(correct/results.length*100);
+  const history=store.get("history",[]);history.unshift({date:new Date().toISOString(),title:s.title==="Özel Deneme"?"Özel Deneme · Sınav Modu":"Gerçek Sınav Simülasyonu",total:results.length,correct,wrong,blank,score});store.set("history",history.slice(0,100));
+  results.filter(x=>x.selected&&!x.ok).forEach(x=>{const w=ids("wrongQuestions");w.add(x.q.id);store.set("wrongQuestions",[...w])});
+  state.simulation=null;setTitle("Simülasyon Sonucu",auto?"Süre doldu":"Sınav tamamlandı",true);
+  app.innerHTML=`<section class="hero center simulation-hero"><h2>%${score}</h2><p>${correct} doğru · ${wrong} yanlış · ${blank} boş</p></section>
+  <div class="list">${results.filter(x=>!x.ok).map((x,i)=>`<article class="list-item"><h3>${i+1}. ${esc(x.q.question)}</h3><p class="muted">Senin cevabın: ${x.selected?`${x.selected}) ${esc(x.q.choices[x.selected])}`:"Boş"}<br>Doğru cevap: <b>${x.q.answer}) ${esc(x.q.choices[x.q.answer])}</b></p>${x.q.explanation?`<p>${esc(x.q.explanation)}</p>`:""}</article>`).join("")||'<div class="result">Tüm sorular doğru!</div>'}</div>
+  <div class="actions center"><button class="primary" id="sim-again">Yeni Simülasyon</button><button class="secondary" id="sim-home">Ana Sayfa</button></div>`;
+  $("#sim-again").onclick=renderSimulationSetup;$("#sim-home").onclick=()=>nav("home");
 }
 function renderWrong(){renderSavedQuestions("Yanlış Sorular","wrongQuestions","Yanlış Soruları Çöz","Yanlış cevapladığın sorular otomatik olarak burada birikir. Doğru çözdüğünde listeden çıkar.")}
 function renderHard(){renderSavedQuestions("Zor Sorular","hardQuestions","Zor Soruları Çöz","Yıldızla işaretlediğin sorular burada birikir.")}
@@ -87,9 +183,13 @@ function renderMore(){
   setTitle("Çalışma Alanları","Tüm araçlar");app.innerHTML=`<div class="grid">
   <button class="card" data-go="hard"><b>★ Zor Sorular</b></button><button class="card" data-go="cards"><b>🗂 Ezber Kartları</b></button>
   <button class="card memory-feature" data-go="memory"><b>🧠 Yoğun Ezber Soruları</b></button>
+  <button class="card simulation-feature" data-go="simulation"><b>⏱ Gerçek Sınav Simülasyonu</b></button>
+  <button class="card opera-ballet-feature" data-go="opera-ballet"><b>🎭 AI Opera ve Bale</b></button>
+  <button class="card education-feature" data-go="education"><b>🎓 Eğitim Bilimleri Merkezi</b></button>
+  <button class="card custom-exam-feature" data-go="custom-exam"><b>🧩 Özel Deneme Oluştur</b></button>
   <button class="card" data-go="ai-center"><b>✨ AI Çalışma Merkezi</b></button><button class="card" data-go="study"><b>📚 Konu Çalışma</b></button>
   <button class="card" data-go="profile"><b>👤 Kişisel Bilgiler</b></button><button class="card" data-go="settings"><b>⚙ Ayarlar</b></button></div>`;
-  app.onclick=e=>{const b=e.target.closest("[data-go]");if(b)({hard:renderHard,cards:renderFlashcards,memory:renderMemoryCenter,"ai-center":renderAiStudyCenter,study:renderStudy,profile:renderProfile,settings:renderSettings}[b.dataset.go])()};
+  app.onclick=e=>{const b=e.target.closest("[data-go]");if(b)({hard:renderHard,cards:renderFlashcards,memory:renderMemoryCenter,simulation:renderSimulationSetup,"opera-ballet":renderOperaBallet,education:renderEducationCenter,"custom-exam":renderCustomExamBuilder,"ai-center":renderAiStudyCenter,study:renderStudy,profile:renderProfile,settings:renderSettings}[b.dataset.go])()};
 }
 function renderFlashcards(){
   setTitle("Ezber Kartları","Dokun ve cevabı gör",true);const sections=state.data.sections;
@@ -178,6 +278,135 @@ function renderStudy(){
   document.querySelectorAll("[data-check]").forEach(x=>x.onchange=()=>{notes[+x.dataset.check].done=x.checked;store.set("studyNotes",notes)});
   document.querySelectorAll("[data-del]").forEach(x=>x.onclick=()=>{notes.splice(+x.dataset.del,1);store.set("studyNotes",notes);renderStudy()});
 }
+function renderEducationCenter(){
+  const stats=EDUCATION_AREAS.map(area=>({area,...educationAreaStats(area)}));
+  setTitle("Eğitim Bilimleri Merkezi","7 alanlık kişisel çalışma merkezi",true);
+  app.innerHTML=`<section class="hero education-hero"><h2>Eğitim Bilimleri</h2><p>Felsefe ve sosyoloji hariç yedi ana alanda konu öğren, vaka sorusu çöz, kuramcıları ezberle ve zayıf alanlarını izle.</p></section>
+  <div class="education-dashboard">${stats.map(x=>`<button class="education-stat" data-area="${esc(x.area)}"><span>${esc(x.area)}</span><b>${x.score===null?"Yeni":`%${x.score}`}</b><small>${x.total?`${x.total} soru`:"Henüz çözülmedi"}</small><i><em style="width:${x.score||0}%"></em></i></button>`).join("")}</div>
+  <div class="feature-grid education-tools">
+    <button class="card feature" data-tool="lesson"><b>📖 AI Konu Anlatımı</b><span>Özet, sınavlık veya ayrıntılı anlatım</span></button>
+    <button class="card feature" data-tool="case"><b>🧩 AI Vaka Soruları</b><span>Öğretmen–öğrenci senaryoları</span></button>
+    <button class="card feature" data-tool="theorists"><b>🧠 Kuramcılar ve Kuramlar</b><span>12 temel kuramcı için kart ve test</span></button>
+    <button class="card feature" data-tool="compare"><b>⚖ Kavram Karşılaştırma</b><span>En çok karıştırılan kavram çiftleri</span></button>
+    <button class="card feature" data-tool="exam"><b>📝 7 Alanlık Deneme</b><span>Alanlardan eşit dağılımlı AI sınavı</span></button>
+    <button class="card feature" data-tool="weak"><b>🎯 Zayıf Alan Çalışması</b><span>En düşük başarı alanından özel test</span></button>
+  </div>`;
+  document.querySelectorAll("[data-area]").forEach(b=>b.onclick=()=>renderEducationLesson(b.dataset.area));
+  document.querySelectorAll("[data-tool]").forEach(b=>b.onclick=()=>({
+    lesson:renderEducationLesson,case:renderEducationCases,theorists:renderEducationTheorists,
+    compare:renderEducationComparisons,exam:renderBalancedEducationExam,weak:startWeakEducationStudy
+  }[b.dataset.tool])());
+}
+function educationAreaSelect(id,selected="Gelişim Psikolojisi"){
+  return `<select id="${id}">${EDUCATION_AREAS.map(x=>`<option ${x===selected?"selected":""}>${x}</option>`).join("")}</select>`;
+}
+function renderEducationLesson(selected="Gelişim Psikolojisi"){
+  setTitle("AI Konu Anlatımı","Eğitim Bilimleri",true);
+  app.innerHTML=`<section class="hero education-hero"><h2>Konu anlatımı</h2><p>Konuyu sınav mantığıyla öğren; kritik ayrımları ve soru tuzaklarını gör.</p></section>
+  <label>Alan</label>${educationAreaSelect("edu-lesson-area",selected)}
+  <label>Konu veya kavram</label><input id="edu-lesson-topic" type="text" placeholder="Örn. Piaget bilişsel gelişim dönemleri">
+  <label>Anlatım düzeyi</label><select id="edu-lesson-level"><option>1 dakikalık özet</option><option selected>Sınavlık anlatım</option><option>Ayrıntılı ders</option></select>
+  <div class="actions"><button class="primary" id="edu-teach">Konuyu Anlat</button></div><div id="edu-output"></div>`;
+  $("#edu-teach").onclick=async()=>{
+    const area=$("#edu-lesson-area").value,topic=$("#edu-lesson-topic").value.trim()||area,level=$("#edu-lesson-level").value,out=$("#edu-output");
+    out.innerHTML='<div class="result">Ders hazırlanıyor…</div>';$("#edu-teach").disabled=true;
+    try{const text=await openAIText(`${area} alanında "${topic}" konusunu ${level} düzeyinde anlat. Şu sırayı kullan: temel açıklama, sınavda bilinmesi gerekenler, karıştırılan noktalar, hafıza tekniği, 3 kısa kontrol sorusu.`,"Sen yalnızca Eğitim Bilimleri alanında çalışan, kavramları doğru kullanan uzman bir sınav öğretmenisin. Eğitim Felsefesi ve Sosyolojisine girme. Türkçe ve sınav odaklı anlat.");out.innerHTML=`<div class="lesson-output">${esc(text)}</div>`}
+    catch(e){out.innerHTML=`<div class="result">Hata: ${esc(e.message)}</div>`}finally{$("#edu-teach").disabled=false}
+  };
+}
+function renderEducationCases(){
+  setTitle("AI Vaka Soruları","Senaryo tabanlı çalışma",true);
+  app.innerHTML=`<section class="hero education-hero"><h2>Vaka soruları</h2><p>Tanım ezberinden farklı olarak öğretmen ve öğrenci senaryoları üzerinden kavramı bul.</p></section>
+  <div class="ai-control-grid"><div><label>Alan</label>${educationAreaSelect("edu-case-area")}</div><div><label>Soru sayısı</label><select id="edu-case-count"><option>5</option><option selected>10</option><option>15</option><option>20</option></select></div></div>
+  <label>Zorluk</label><select id="edu-case-level"><option>Orta</option><option selected>Zor</option><option>Çok Zor</option></select>
+  <div class="actions"><button class="primary" id="edu-case-generate">Vaka Testini Oluştur</button></div><div id="edu-case-status"></div>`;
+  $("#edu-case-generate").onclick=()=>generateEducationQuestions([{area:$("#edu-case-area").value,count:+$("#edu-case-count").value}],`Vaka · ${$("#edu-case-level").value}`,"AI Vaka Soruları","#edu-case-status","#edu-case-generate");
+}
+function renderEducationTheorists(){
+  setTitle("Kuramcılar ve Kuramlar","Kartlar ve hızlı test",true);
+  app.innerHTML=`<section class="hero education-hero"><h2>12 temel kuramcı</h2><p>Kuramcı–kuram–kavram bağını hızlı kartlarla çalış.</p><div class="actions"><button class="primary" id="theorist-cards">Kartları Başlat</button><button class="secondary" id="theorist-test">AI Test Oluştur</button></div></section>
+  <div class="theorist-grid">${EDUCATION_THEORISTS.map(x=>`<article class="list-item"><h3>${esc(x[0])} · ${esc(x[1])}</h3><p>${esc(x[2])}</p></article>`).join("")}</div><div id="theorist-status"></div>`;
+  $("#theorist-cards").onclick=()=>showTheoristCard(0,false);
+  $("#theorist-test").onclick=()=>generateEducationQuestions([{area:"Gelişim ve Öğrenme Kuramcıları",count:15}],"Kuramcı-kavram eşleştirme","Kuramcılar Testi","#theorist-status","#theorist-test");
+}
+function showTheoristCard(i,reveal){
+  const x=EDUCATION_THEORISTS[i];setTitle("Kuramcı Kartları",`${i+1} / ${EDUCATION_THEORISTS.length}`,true);
+  app.innerHTML=`<div class="flashcard ${reveal?"flipped":""}" id="flash"><div><small>${reveal?"KURAM VE KAVRAMLAR":"KURAMCI"}</small><h2>${reveal?esc(x[1]):esc(x[0])}</h2>${reveal?`<p>${esc(x[2])}</p>`:""}<span>Çevirmek için dokun</span></div></div>
+  <div class="actions center"><button class="secondary" id="prev" ${i===0?"disabled":""}>Önceki</button><button class="primary" id="next-card">${i===EDUCATION_THEORISTS.length-1?"Başa Dön":"Sonraki"}</button></div>`;
+  $("#flash").onclick=()=>showTheoristCard(i,!reveal);$("#prev").onclick=()=>showTheoristCard(i-1,false);$("#next-card").onclick=()=>showTheoristCard(i===EDUCATION_THEORISTS.length-1?0:i+1,false);
+}
+function renderEducationComparisons(){
+  setTitle("Kavram Karşılaştırma","Karıştırılan kritik ayrımlar",true);
+  app.innerHTML=`<section class="hero education-hero"><h2>Kavram çiftleri</h2><p>Sınavlarda çeldirici olarak kullanılan temel farkları karşılaştır.</p><div class="actions"><button class="primary" id="comparison-test">Bu Farklardan Test Oluştur</button></div></section>
+  <div class="comparison-list">${EDUCATION_COMPARISONS.map(x=>`<article class="comparison-card"><div><b>${esc(x[0])}</b><span>↔</span><b>${esc(x[1])}</b></div><p>${esc(x[2])}</p></article>`).join("")}</div><div id="comparison-status"></div>`;
+  $("#comparison-test").onclick=()=>generateEducationQuestions([{area:"Karıştırılan Eğitim Bilimleri kavramları",count:15}],"Kavram ayrımı ve kısa vaka","Kavram Karşılaştırma Testi","#comparison-status","#comparison-test");
+}
+function renderBalancedEducationExam(){
+  setTitle("7 Alanlık Deneme","Dengeli Eğitim Bilimleri sınavı",true);
+  app.innerHTML=`<section class="hero education-hero"><h2>Dengeli alan dağılımı</h2><p>Yedi ana alanın her birinden eşit sayıda soru üretilir.</p></section>
+  <label>Her alandan</label><select id="balanced-count"><option value="1">1 soru · Toplam 7</option><option value="2">2 soru · Toplam 14</option><option value="3" selected>3 soru · Toplam 21</option><option value="5">5 soru · Toplam 35</option></select>
+  <div class="actions"><button class="primary" id="balanced-generate">Denemeyi Oluştur</button></div><div id="balanced-status"></div>`;
+  $("#balanced-generate").onclick=()=>{const n=+$("#balanced-count").value;generateEducationQuestions(EDUCATION_AREAS.map(area=>({area,count:n})),"Sınav odaklı, dengeli zorluk","7 Alanlık Eğitim Bilimleri Denemesi","#balanced-status","#balanced-generate")};
+}
+function startWeakEducationStudy(){
+  const ranked=EDUCATION_AREAS.map(area=>({area,...educationAreaStats(area)})).filter(x=>x.total).sort((a,b)=>a.score-b.score);
+  const area=ranked[0]?.area||"Gelişim Psikolojisi";
+  setTitle("Zayıf Alan Çalışması",area,true);
+  app.innerHTML=`<section class="hero education-hero"><h2>${esc(area)}</h2><p>${ranked.length?`Başarı oranı %${ranked[0].score}. Bu alan için hedefli test hazırlanacak.`:"Henüz yeterli veri yok. Başlangıç alanı olarak Gelişim Psikolojisi seçildi."}</p><div class="actions"><button class="primary" id="weak-generate">10 Soruluk Test Oluştur</button></div></section><div id="weak-status"></div>`;
+  $("#weak-generate").onclick=()=>generateEducationQuestions([{area,count:10}],"Zayıf noktaları ölçen, açıklamalı ve orta-zor","Zayıf Alan · "+area,"#weak-status","#weak-generate");
+}
+function educationPrompt(groups,focus){
+  const distribution=groups.map(x=>`${x.area}: ${x.count} soru`).join(", ");
+  return `Eğitim Bilimleri alanında toplam ${groups.reduce((n,x)=>n+x.count,0)} özgün, dört seçenekli soru üret. Dağılım: ${distribution}. Eğitim Felsefesi ve Eğitim Sosyolojisi kesinlikle dahil olmasın. Odak: ${focus}. Bilgi, kavram ve öğretmen-öğrenci vaka sorularını dengeli kullan. Her soruya doğru alan adını ekle. Yalnızca şu JSON yapısını döndür: {"questions":[{"area":"Gelişim Psikolojisi","question":"...","choices":{"A":"...","B":"...","C":"...","D":"..."},"answer":"A","explanation":"Doğru cevabın nedeni ve kritik ayrım"}]}`;
+}
+async function createEducationQuestionSet(groups,focus){
+  const raw=await openAIText(educationPrompt(groups,focus),"Sen uzman bir Eğitim Bilimleri soru yazarı ve denetleyicisisin. Yedi alan dışında soru üretme. Tek doğru cevap, güçlü çeldiriciler ve hatasız Türkçe kullan. Yalnızca geçerli JSON döndür.");
+  const parsed=parseJsonResponse(raw);
+  if(!Array.isArray(parsed.questions)||!parsed.questions.length)throw new Error("Eğitim Bilimleri soruları oluşturulamadı.");
+  const expected=groups.reduce((n,x)=>n+x.count,0);
+  const valid=parsed.questions.filter(q=>q?.question&&q?.choices&&["A","B","C","D"].includes(q.answer)&&q.choices[q.answer]).slice(0,expected);
+  if(valid.length!==expected)throw new Error(`AI ${expected} yerine ${valid.length} geçerli soru üretti. Lütfen yeniden dene.`);
+  return valid.map((q,i)=>({id:`edu_${Date.now()}_${i}`,question:q.question,choices:q.choices,answer:q.answer,explanation:q.explanation,educationArea:q.area||groups[0].area}));
+}
+async function generateEducationQuestions(groups,focus,title,statusSelector,buttonSelector){
+  const status=$(statusSelector),button=$(buttonSelector);status.innerHTML='<div class="result">Sorular hazırlanıyor ve denetleniyor…</div>';button.disabled=true;
+  try{const qs=await createEducationQuestionSet(groups,focus);startExam(shuffle(qs),title)}
+  catch(e){status.innerHTML=`<div class="result">Hata: ${esc(e.message)}</div>`;button.disabled=false}
+}
+function renderCustomExamBuilder(){
+  setTitle("Özel Deneme Oluştur","Bölümleri tek sınavda birleştir",true);
+  const saved=store.get("customExamPreset",{});
+  app.innerHTML=`<section class="hero custom-exam-hero"><h2>Kendi denemeni tasarla</h2><p>İstediğin müzik bölümlerinden ve Eğitim Bilimleri alanlarından istediğin kadar soru ekle. Seçimlerin tek sınavda karışık olarak birleşir.</p></section>
+  <h3 class="section-title">Soru Bankası Bölümleri</h3><div class="builder-list">${state.data.sections.map(s=>`<label class="builder-row"><span><b>${esc(s.title)}</b><small>Bankada ${s.questions.length} soru</small></span><input class="builder-count" data-kind="local" data-id="${s.id}" type="number" min="0" max="${s.questions.length}" value="${Math.min(saved[`local:${s.id}`]||0,s.questions.length)}"></label>`).join("")}</div>
+  <h3 class="section-title">AI Eğitim Bilimleri</h3><p class="muted">Seçilen sorular sınav başlamadan önce AI tarafından hazırlanır.</p><div class="builder-list">${EDUCATION_AREAS.map(area=>`<label class="builder-row"><span><b>${esc(area)}</b><small>AI üretimi · Felsefe ve Sosyoloji hariç</small></span><input class="builder-count" data-kind="education" data-id="${esc(area)}" type="number" min="0" max="30" value="${saved[`education:${area}`]||0}"></label>`).join("")}</div>
+  <div class="builder-summary"><span>Toplam soru</span><b id="builder-total">0</b></div>
+  <div class="ai-control-grid"><div><label>Çözüm biçimi</label><select id="builder-mode"><option value="normal">Anında açıklamalı</option><option value="simulation">Sınav modu · geri bildirimsiz</option></select></div><div><label>Sınav süresi</label><select id="builder-minutes"><option>30</option><option selected>60</option><option>90</option><option>120</option></select></div></div>
+  <div class="actions"><button class="secondary" id="builder-clear">Seçimleri Temizle</button><button class="primary" id="builder-start">Denemeyi Hazırla</button></div><div id="builder-status"></div>`;
+  const update=()=>{$("#builder-total").textContent=[...document.querySelectorAll(".builder-count")].reduce((n,x)=>n+(+x.value||0),0);$("#builder-minutes").disabled=$("#builder-mode").value!=="simulation"};
+  document.querySelectorAll(".builder-count").forEach(x=>x.oninput=update);$("#builder-mode").onchange=update;
+  $("#builder-clear").onclick=()=>{document.querySelectorAll(".builder-count").forEach(x=>x.value=0);update()};
+  $("#builder-start").onclick=startCustomExam;update();
+}
+async function startCustomExam(){
+  const inputs=[...document.querySelectorAll(".builder-count")],preset={},local=[],education=[];
+  inputs.forEach(x=>{const count=Math.max(0,+x.value||0);preset[`${x.dataset.kind}:${x.dataset.id}`]=count;if(!count)return;if(x.dataset.kind==="local")local.push({id:x.dataset.id,count});else education.push({area:x.dataset.id,count})});
+  const total=[...local,...education].reduce((n,x)=>n+x.count,0),status=$("#builder-status");
+  if(!total)return toast("En az bir bölümden soru ekle.");
+  store.set("customExamPreset",preset);$("#builder-start").disabled=true;status.innerHTML='<div class="result">Bölümler birleştiriliyor…</div>';
+  try{
+    let qs=local.flatMap(x=>{const s=state.data.sections.find(y=>y.id===x.id);return shuffle(s.questions).slice(0,Math.min(x.count,s.questions.length))});
+    if(education.length){status.innerHTML='<div class="result">Eğitim Bilimleri soruları AI tarafından hazırlanıyor…</div>';qs=qs.concat(await createEducationQuestionSet(education,"Özel deneme için bilgi, kavram ve vaka soruları"))}
+    qs=shuffle(qs);const mode=$("#builder-mode").value;
+    if(mode==="simulation")startSimulationWithQuestions(qs,+$("#builder-minutes").value,"Özel Deneme");
+    else startExam(qs,"Özel Deneme");
+  }catch(e){status.innerHTML=`<div class="result">Hata: ${esc(e.message)}</div>`;$("#builder-start").disabled=false}
+}
+function startSimulationWithQuestions(questions,minutes,title="Gerçek Sınav"){
+  clearInterval(state.simulationTimer);
+  state.simulation={questions,answers:{},marked:[],index:0,startedAt:Date.now(),endsAt:Date.now()+minutes*60000,minutes,title};
+  renderSimulationQuestion();
+  state.simulationTimer=setInterval(()=>{const s=state.simulation;if(!s)return clearInterval(state.simulationTimer);if(Date.now()>=s.endsAt)finishSimulation(true);else updateSimulationClock()},1000);
+}
 const AI_MODELS=["gpt-5-mini","gpt-5","gpt-4.1-mini","gpt-4.1"];
 const AI_MODES={
   "AI Öğretmen":"Konuyu öğret: önce anlaşılır biçimde anlat, ardından ezberlenecek maddeleri, karıştırılan kavramları, bir hafıza tekniğini ve kısa kontrol sorularını ver.",
@@ -196,6 +425,37 @@ async function openAIText(input,instructions=""){
   const key=store.get("apiKey","");if(!key)throw new Error("Önce Ayarlar bölümüne API anahtarını gir.");
   const r=await fetch("https://api.openai.com/v1/responses",{method:"POST",headers:{Authorization:`Bearer ${key}`,"Content-Type":"application/json"},body:JSON.stringify({model:store.get("aiModel","gpt-5-mini"),instructions:instructions||store.get("instructions","Türkçe konuş ve öğretici ol."),input})});
   if(!r.ok)throw new Error((await r.json()).error?.message||`HTTP ${r.status}`);const d=await r.json();return d.output_text||d.output?.flatMap(o=>o.content||[]).find(c=>c.type==="output_text")?.text||"Yanıt alınamadı.";
+}
+async function openAIWebText(input,instructions=""){
+  const key=store.get("apiKey","");if(!key)throw new Error("Önce Ayarlar bölümüne API anahtarını gir.");
+  const r=await fetch("https://api.openai.com/v1/responses",{method:"POST",headers:{Authorization:`Bearer ${key}`,"Content-Type":"application/json"},body:JSON.stringify({model:store.get("aiModel","gpt-5-mini"),instructions,input,tools:[{type:"web_search"}]})});
+  if(!r.ok)throw new Error((await r.json()).error?.message||`HTTP ${r.status}`);const d=await r.json();return d.output_text||d.output?.flatMap(o=>o.content||[]).find(c=>c.type==="output_text")?.text||"Yanıt alınamadı.";
+}
+function parseJsonResponse(text){
+  const clean=String(text).replace(/```json|```/gi,"").trim(),start=clean.indexOf("{"),end=clean.lastIndexOf("}");
+  if(start<0||end<start)throw new Error("AI geçerli soru verisi döndürmedi.");
+  return JSON.parse(clean.slice(start,end+1));
+}
+function renderOperaBallet(){
+  setTitle("AI Opera ve Bale","İnternet destekli soru çözümü",true);
+  app.innerHTML=`<section class="hero opera-ballet-hero"><h2>Yalnızca Opera ve Bale</h2><p>AI, internetten güvenilir müzik kaynaklarını araştırır; eser, besteci, librettist, prömiyer, dönem, karakter ve bale koreografisi konularında soru üretir.</p></section>
+  <div class="ai-control-grid"><div><label>Alan</label><select id="ob-area"><option>Opera ve Bale Karışık</option><option>Yalnızca Opera</option><option>Yalnızca Bale</option></select></div><div><label>Zorluk</label><select id="ob-level"><option>Orta</option><option selected>Zor</option><option>Çok Zor</option></select></div></div>
+  <label>Soru sayısı</label><select id="ob-count"><option>5</option><option selected>10</option><option>15</option><option>20</option></select>
+  <label class="check-row web-confirm"><input id="ob-web" type="checkbox" checked><span>İnternetten araştırarak doğrulanmış sorular oluştur.</span></label>
+  <div class="actions"><button class="primary" id="ob-generate">Soruları Hazırla</button></div><div id="ob-status"></div>`;
+  $("#ob-generate").onclick=generateOperaBalletExam;
+}
+async function generateOperaBalletExam(){
+  const area=$("#ob-area").value,level=$("#ob-level").value,count=+$("#ob-count").value,useWeb=$("#ob-web").checked,status=$("#ob-status");
+  status.innerHTML=`<div class="result">${useWeb?"İnternet kaynakları araştırılıyor ve sorular doğrulanıyor…":"Sorular hazırlanıyor…"}</div>`;$("#ob-generate").disabled=true;
+  const prompt=`${area} alanında ${level} düzeyde ${count} özgün, dört seçenekli sınav sorusu üret. Sorular yalnızca opera ve/veya bale hakkında olsun. Eser-besteci, librettist, prömiyer, dönem, karakter, konu, koreograf ve önemli tarih bilgilerini dengeli kullan. Tartışmalı bilgileri sorma; her cevabı güvenilir kaynaklarla doğrula. Yalnızca şu JSON yapısını döndür: {"questions":[{"question":"...","choices":{"A":"...","B":"...","C":"...","D":"..."},"answer":"A","explanation":"Kısa açıklama"}]}`;
+  const instructions="Sen titiz bir müzik tarihi sınav uzmanısın. Web araştırmasında ansiklopedi, opera/bale kurumları, müze ve güvenilir müzik kuruluşlarını tercih et. Bilgiyi uydurma. Yalnızca geçerli JSON döndür.";
+  try{
+    const text=useWeb?await openAIWebText(prompt,instructions):await openAIText(prompt,instructions),parsed=parseJsonResponse(text);
+    if(!Array.isArray(parsed.questions)||!parsed.questions.length)throw new Error("Soru listesi boş geldi.");
+    const qs=parsed.questions.map((q,i)=>({id:`ob_${Date.now()}_${i}`,...q}));
+    startExam(qs,area);
+  }catch(e){status.innerHTML=`<div class="result">Hata: ${esc(e.message)}</div>`;$("#ob-generate").disabled=false}
 }
 function wrongContext(){
   const wrong=ids("wrongQuestions"),qs=allQuestions().filter(q=>wrong.has(q.id)).slice(0,15);
@@ -235,13 +495,14 @@ function renderTeacher(){
   $("#send-teacher").onclick=async()=>{const t=$("#teacher-input").value.trim();if(!t)return;state.chat.push({role:"me",text:t});renderTeacher();const box=$("#chat");box.insertAdjacentHTML("beforeend",'<div class="message ai">Yanıt hazırlanıyor…</div>');try{const answer=await openAIText(t);state.chat.push({role:"ai",text:answer});renderTeacher()}catch(e){toast(e.message)}};
 }
 async function renderAiExam(){
-  setTitle("AI Eğitim Bilimleri","AI denemesi oluştur",true);app.innerHTML=`<section class="hero"><h2>Eğitim Bilimleri Denemesi</h2><p>Felsefe ve sosyoloji hariç, dört seçenekli ve açıklamalı sorular oluşturur.</p></section><label>Alan</label><select id="ai-area"><option>Tüm alanlar</option><option>Gelişim Psikolojisi</option><option>Öğrenme Psikolojisi</option><option>Program Geliştirme</option><option>Öğretim İlke ve Yöntemleri</option><option>Ölçme ve Değerlendirme</option><option>Rehberlik</option><option>Sınıf Yönetimi</option></select><label>Soru sayısı</label><select id="ai-count"><option>5</option><option>10</option><option>15</option><option>21</option></select><div class="actions"><button class="primary" id="generate">Deneme Oluştur</button></div><div id="ai-status"></div>`;
+  setTitle("AI Eğitim Bilimleri","AI denemesi oluştur",true);app.innerHTML=`<section class="hero education-hero"><h2>Eğitim Bilimleri Denemesi</h2><p>Felsefe ve sosyoloji hariç; bilgi, kavram ve vaka sorularından açıklamalı deneme oluşturur.</p></section><label>Alan</label><select id="ai-area"><option>Tüm alanlar</option>${EDUCATION_AREAS.map(x=>`<option>${x}</option>`).join("")}</select><div class="ai-control-grid"><div><label>Soru sayısı</label><select id="ai-count"><option>5</option><option>10</option><option>15</option><option selected>21</option><option>35</option></select></div><div><label>Zorluk</label><select id="ai-level"><option>Orta</option><option selected>Zor</option><option>Çok Zor</option></select></div></div><div class="actions"><button class="primary" id="generate">Deneme Oluştur</button><button class="secondary" id="education-home">Eğitim Bilimleri Merkezi</button></div><div id="ai-status"></div>`;
   $("#generate").onclick=generateAiExam;
+  $("#education-home").onclick=renderEducationCenter;
 }
 async function generateAiExam(){
-  const area=$("#ai-area").value,count=+$("#ai-count").value,status=$("#ai-status");status.innerHTML='<div class="result">Sorular hazırlanıyor…</div>';$("#generate").disabled=true;
-  const prompt=`${area} alanında ${count} Eğitim Bilimleri çoktan seçmeli soru üret. Eğitim Felsefesi ve Sosyolojisi olmasın. Yalnızca geçerli JSON döndür: {"questions":[{"question":"...","choices":{"A":"...","B":"...","C":"...","D":"..."},"answer":"A","explanation":"..."}]}`;
-  try{const text=await openAIText(prompt),parsed=JSON.parse(text.replace(/^```json\s*|```$/g,"").trim()),qs=parsed.questions.map((q,i)=>({id:`ai_${Date.now()}_${i}`,...q}));startExam(qs,"AI Eğitim Bilimleri")}catch(e){status.innerHTML=`<div class="result">Hata: ${esc(e.message)}</div>`;$("#generate").disabled=false}
+  const area=$("#ai-area").value,count=+$("#ai-count").value,level=$("#ai-level").value;
+  const groups=area==="Tüm alanlar"?EDUCATION_AREAS.map((x,i)=>({area:x,count:Math.floor(count/7)+(i<count%7?1:0)})).filter(x=>x.count):[{area,count}];
+  await generateEducationQuestions(groups,`${level} düzey; bilgi, kavram ve vaka dengesi`,"AI Eğitim Bilimleri","#ai-status","#generate");
 }
 function renderVoice(){
   const live=!!state.rtc;setTitle("Realtime AI Voice","Canlı konuşma",false);
