@@ -1,6 +1,6 @@
 const $ = s => document.querySelector(s);
 const app = $("#app");
-const state = { data:null, route:"home", section:null, exam:[], index:0, correct:0, wrong:0, answered:false, examTitle:"", customExam:null, simulation:null, simulationTimer:null, rtc:null, voiceStream:null, voiceAudio:null, voiceChannel:null, chat:[], studyChat:[] };
+const state = { data:null, educationData:null, route:"home", section:null, exam:[], index:0, correct:0, wrong:0, answered:false, examTitle:"", customExam:null, simulation:null, simulationTimer:null, rtc:null, voiceStream:null, voiceAudio:null, voiceChannel:null, chat:[], studyChat:[] };
 const store = {
   get(k,f){ try { return JSON.parse(localStorage.getItem(k)) ?? f; } catch { return f; } },
   set(k,v){ localStorage.setItem(k,JSON.stringify(v)); }
@@ -8,31 +8,35 @@ const store = {
 const esc = (t="") => String(t).replace(/[&<>"']/g,c=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;"}[c]));
 const shuffle = xs => { const a=[...xs]; for(let i=a.length-1;i;i--){const j=Math.floor(Math.random()*(i+1));[a[i],a[j]]=[a[j],a[i]]} return a; };
 function toast(t){const e=$("#toast");e.textContent=t;e.classList.add("show");setTimeout(()=>e.classList.remove("show"),1900)}
-function allQuestions(){return state.data.sections.flatMap(s=>s.questions)}
+function offlineEducationSections(){return state.educationData?.sections||[]}
+function offlineEducationQuestions(){return offlineEducationSections().flatMap(s=>s.questions)}
+function allQuestions(){return [...state.data.sections.flatMap(s=>s.questions),...offlineEducationQuestions()]}
 function ids(key){return new Set(store.get(key,[]))}
-function setTitle(t,s="V24.4e Android",back=false){$("#page-title").textContent=t;$("#subtitle").textContent=s;$("#back").classList.toggle("hidden",!back)}
+function setTitle(t,s="V24.4f Android",back=false){$("#page-title").textContent=t;$("#subtitle").textContent=s;$("#back").classList.toggle("hidden",!back)}
 function nav(r){state.route=r;document.querySelectorAll("#bottom-nav button").forEach(b=>b.classList.toggle("active",b.dataset.route===r));({home:renderHome,wrong:renderWrong,stats:renderStats,voice:renderVoice,more:renderMore,settings:renderSettings}[r]||renderHome)()}
 
 function renderHome(){
   const p=store.get("profile",{name:"Çağlar",examDate:""});
   setTitle("Müzik Sınavı",p.name?`Hoş geldin, ${p.name}`:"V24 Android");
   app.innerHTML=`<section class="hero"><h2>Sınava hazırlan</h2><p>${allQuestions().length} soruluk bankadan çalış, yanlışlarını tekrar çöz ve gelişimini izle.</p>
-  <div class="actions"><button class="primary" id="mixed">Karışık Deneme</button><button class="secondary custom-exam-button" id="custom-exam">Özel Deneme Oluştur</button><button class="secondary" id="real-exam">Gerçek Sınav Simülasyonu</button><button class="secondary education-button" id="education-center">Eğitim Bilimleri Merkezi</button><button class="secondary" id="ai-exam">AI Eğitim Bilimleri</button><button class="secondary opera-ballet-button" id="opera-ballet">AI Opera ve Bale</button><button class="secondary ai-center-button" id="ai-center">AI Destekli Çalışma Merkezi</button></div></section>
+  <div class="actions"><button class="primary" id="mixed">Karışık Deneme</button><button class="secondary custom-exam-button" id="custom-exam">Özel Deneme Oluştur</button><button class="secondary" id="real-exam">Gerçek Sınav Simülasyonu</button><button class="secondary offline-education-button" id="offline-education">Eğitim Bilimleri</button><button class="secondary education-button" id="education-center">AI Eğitim Bilimleri Merkezi</button><button class="secondary" id="ai-exam">AI Eğitim Bilimleri</button><button class="secondary opera-ballet-button" id="opera-ballet">AI Opera ve Bale</button><button class="secondary ai-center-button" id="ai-center">AI Destekli Çalışma Merkezi</button></div></section>
   <div class="feature-grid">
     <button class="card feature" data-go="teacher"><b>🤖 AI Öğretmen</b><span>Sor, öğren, mini sınav yap</span></button>
     <button class="card feature" data-go="cards"><b>🗂 Ezber Kartları</b><span>Kart çevirerek tekrar et</span></button>
     <button class="card feature memory-feature" data-go="memory"><b>🧠 Yoğun Ezber Soruları</b><span>Eser–besteci, dönem ve ağır bilgi soruları</span></button>
-    <button class="card feature education-feature" data-go="education"><b>🎓 Eğitim Bilimleri</b><span>7 alan, vaka, kuramcı ve zayıflık analizi</span></button>
+    <button class="card feature offline-education-feature" data-go="offline-education"><b>📘 Eğitim Bilimleri</b><span>PDF’den aktarılan 115 soru · AI gerektirmez</span></button>
+    <button class="card feature education-feature" data-go="education"><b>🎓 AI Eğitim Bilimleri</b><span>7 alan, vaka, kuramcı ve zayıflık analizi</span></button>
     <button class="card feature custom-exam-feature" data-go="custom-exam"><b>🧩 Deneme Oluşturucu</b><span>Bölümleri ve soru sayılarını kendin birleştir</span></button>
     <button class="card feature" data-go="study"><b>📚 Konu Çalışma Köşesi</b><span>Plan ve notlarını tut</span></button>
     <button class="card feature" data-go="profile"><b>👤 Kişisel Bilgi Köşesi</b><span>Hedeflerini düzenle</span></button>
   </div>
   <h3 class="section-title">Soru Bankası</h3><div class="grid">${state.data.sections.map(s=>`<button class="card section" data-id="${s.id}"><b>${esc(s.title)}</b><span class="pill">${s.questions.length} soru</span></button>`).join("")}</div>`;
-  $(".feature-grid").onclick=e=>{const b=e.target.closest("[data-go]");if(b)({teacher:renderTeacher,cards:renderFlashcards,memory:renderMemoryCenter,education:renderEducationCenter,"custom-exam":renderCustomExamBuilder,study:renderStudy,profile:renderProfile}[b.dataset.go])()};
+  $(".feature-grid").onclick=e=>{const b=e.target.closest("[data-go]");if(b)({teacher:renderTeacher,cards:renderFlashcards,memory:renderMemoryCenter,"offline-education":renderOfflineEducation,education:renderEducationCenter,"custom-exam":renderCustomExamBuilder,study:renderStudy,profile:renderProfile}[b.dataset.go])()};
   document.querySelectorAll(".section").forEach(b=>b.onclick=()=>renderSection(b.dataset.id));
   $("#mixed").onclick=()=>startExam(shuffle(allQuestions()).slice(0,Math.min(50,allQuestions().length)),"Karışık Deneme");
   $("#custom-exam").onclick=renderCustomExamBuilder;
   $("#real-exam").onclick=renderSimulationSetup;
+  $("#offline-education").onclick=renderOfflineEducation;
   $("#education-center").onclick=renderEducationCenter;
   $("#ai-exam").onclick=renderAiExam;
   $("#opera-ballet").onclick=renderOperaBallet;
@@ -46,6 +50,24 @@ function renderSection(id){
   <div class="actions"><button class="primary" id="begin">Sınavı Başlat</button><button class="secondary" id="inspect">Soruları İncele</button></div></section>`;
   $("#begin").onclick=()=>startExam(shuffle(s.questions).slice(0,+$("#count").value),s.title);
   $("#inspect").onclick=()=>renderQuestionList(s.questions,s.title);
+}
+function renderOfflineEducation(){
+  const sections=offlineEducationSections(),total=offlineEducationQuestions().length,source=state.educationData?.source||{};
+  setTitle("Eğitim Bilimleri",`${total} çevrimdışı soru`,true);
+  app.innerHTML=`<section class="hero offline-education-hero"><h2>PDF Deneme Bankası</h2><p>Gönderdiğin PDF’deki soru ve seçenekler bölümlere ayrılarak aktarıldı. Bu alan internetsiz ve API anahtarı olmadan çalışır.</p><div class="actions"><button class="primary" id="offline-all">Tüm Sorulardan Deneme</button><button class="secondary" id="offline-inspect">Tüm Soruları İncele</button></div><small>${esc(source.publisher||"Pegem Akademi")} · ${esc(source.edition||"2021")} · ${total} soru</small></section>
+  <div class="offline-education-grid">${sections.map(s=>`<button class="card offline-education-section" data-id="${s.id}"><b>${esc(s.title)}</b><span class="pill">${s.questions.length} soru</span></button>`).join("")}</div>`;
+  $("#offline-all").onclick=()=>startExam(shuffle(offlineEducationQuestions()),"Eğitim Bilimleri PDF Denemesi");
+  $("#offline-inspect").onclick=()=>renderQuestionList(offlineEducationQuestions(),"Eğitim Bilimleri PDF Soruları");
+  document.querySelectorAll(".offline-education-section").forEach(b=>b.onclick=()=>renderOfflineEducationSection(b.dataset.id));
+}
+function renderOfflineEducationSection(id){
+  const section=offlineEducationSections().find(x=>x.id===id);
+  if(!section)return renderOfflineEducation();
+  setTitle(section.title,`${section.questions.length} çevrimdışı soru`,true);
+  const counts=[5,10,15,20,section.questions.length].filter((v,i,a)=>v<=section.questions.length&&a.indexOf(v)===i);
+  app.innerHTML=`<section class="hero offline-education-hero"><h2>${esc(section.title)}</h2><p>PDF’den aktarılan sorular. Çözüm için internet veya AI gerekmez.</p><label>Soru sayısı</label><select id="offline-count">${counts.map(v=>`<option value="${v}">${v===section.questions.length?"Tümü":v}</option>`).join("")}</select><div class="actions"><button class="primary" id="offline-start">Sınavı Başlat</button><button class="secondary" id="offline-list">Soruları İncele</button></div></section>`;
+  $("#offline-start").onclick=()=>startExam(shuffle(section.questions).slice(0,+$("#offline-count").value),section.title);
+  $("#offline-list").onclick=()=>renderQuestionList(section.questions,section.title);
 }
 function renderQuestionList(qs,title){setTitle(title,"Cevaplı çalışma listesi",true);app.innerHTML=`<div class="list">${qs.map((q,i)=>`<article class="list-item"><h3>${i+1}. ${esc(q.question)}</h3><div class="muted">Doğru cevap: <b>${q.answer}) ${esc(q.choices[q.answer])}</b></div>${q.explanation?`<p>${esc(q.explanation)}</p>`:""}</article>`).join("")}</div>`}
 function startExam(qs,title){
@@ -185,11 +207,12 @@ function renderMore(){
   <button class="card memory-feature" data-go="memory"><b>🧠 Yoğun Ezber Soruları</b></button>
   <button class="card simulation-feature" data-go="simulation"><b>⏱ Gerçek Sınav Simülasyonu</b></button>
   <button class="card opera-ballet-feature" data-go="opera-ballet"><b>🎭 AI Opera ve Bale</b></button>
-  <button class="card education-feature" data-go="education"><b>🎓 Eğitim Bilimleri Merkezi</b></button>
+  <button class="card offline-education-feature" data-go="offline-education"><b>📘 Eğitim Bilimleri</b></button>
+  <button class="card education-feature" data-go="education"><b>🎓 AI Eğitim Bilimleri Merkezi</b></button>
   <button class="card custom-exam-feature" data-go="custom-exam"><b>🧩 Özel Deneme Oluştur</b></button>
   <button class="card" data-go="ai-center"><b>✨ AI Çalışma Merkezi</b></button><button class="card" data-go="study"><b>📚 Konu Çalışma</b></button>
   <button class="card" data-go="profile"><b>👤 Kişisel Bilgiler</b></button><button class="card" data-go="settings"><b>⚙ Ayarlar</b></button></div>`;
-  app.onclick=e=>{const b=e.target.closest("[data-go]");if(b)({hard:renderHard,cards:renderFlashcards,memory:renderMemoryCenter,simulation:renderSimulationSetup,"opera-ballet":renderOperaBallet,education:renderEducationCenter,"custom-exam":renderCustomExamBuilder,"ai-center":renderAiStudyCenter,study:renderStudy,profile:renderProfile,settings:renderSettings}[b.dataset.go])()};
+  app.onclick=e=>{const b=e.target.closest("[data-go]");if(b)({hard:renderHard,cards:renderFlashcards,memory:renderMemoryCenter,simulation:renderSimulationSetup,"opera-ballet":renderOperaBallet,"offline-education":renderOfflineEducation,education:renderEducationCenter,"custom-exam":renderCustomExamBuilder,"ai-center":renderAiStudyCenter,study:renderStudy,profile:renderProfile,settings:renderSettings}[b.dataset.go])()};
 }
 function renderFlashcards(){
   setTitle("Ezber Kartları","Dokun ve cevabı gör",true);const sections=state.data.sections;
@@ -280,8 +303,8 @@ function renderStudy(){
 }
 function renderEducationCenter(){
   const stats=EDUCATION_AREAS.map(area=>({area,...educationAreaStats(area)}));
-  setTitle("Eğitim Bilimleri Merkezi","7 alanlık kişisel çalışma merkezi",true);
-  app.innerHTML=`<section class="hero education-hero"><h2>Eğitim Bilimleri</h2><p>Felsefe ve sosyoloji hariç yedi ana alanda konu öğren, vaka sorusu çöz, kuramcıları ezberle ve zayıf alanlarını izle.</p></section>
+  setTitle("AI Eğitim Bilimleri Merkezi","7 alanlık kişisel çalışma merkezi",true);
+  app.innerHTML=`<section class="hero education-hero"><h2>AI Eğitim Bilimleri</h2><p>Felsefe ve sosyoloji hariç yedi ana alanda konu öğren, vaka sorusu çöz, kuramcıları ezberle ve zayıf alanlarını izle.</p></section>
   <div class="education-dashboard">${stats.map(x=>`<button class="education-stat" data-area="${esc(x.area)}"><span>${esc(x.area)}</span><b>${x.score===null?"Yeni":`%${x.score}`}</b><small>${x.total?`${x.total} soru`:"Henüz çözülmedi"}</small><i><em style="width:${x.score||0}%"></em></i></button>`).join("")}</div>
   <div class="feature-grid education-tools">
     <button class="card feature" data-tool="lesson"><b>📖 AI Konu Anlatımı</b><span>Özet, sınavlık veya ayrıntılı anlatım</span></button>
@@ -377,7 +400,8 @@ function renderCustomExamBuilder(){
   setTitle("Özel Deneme Oluştur","Bölümleri tek sınavda birleştir",true);
   const saved=store.get("customExamPreset",{});
   app.innerHTML=`<section class="hero custom-exam-hero"><h2>Kendi denemeni tasarla</h2><p>İstediğin müzik bölümlerinden ve Eğitim Bilimleri alanlarından istediğin kadar soru ekle. Seçimlerin tek sınavda karışık olarak birleşir.</p></section>
-  <h3 class="section-title">Soru Bankası Bölümleri</h3><div class="builder-list">${state.data.sections.map(s=>`<label class="builder-row"><span><b>${esc(s.title)}</b><small>Bankada ${s.questions.length} soru</small></span><input class="builder-count" data-kind="local" data-id="${s.id}" type="number" min="0" max="${s.questions.length}" value="${Math.min(saved[`local:${s.id}`]||0,s.questions.length)}"></label>`).join("")}</div>
+  <h3 class="section-title">Müzik Soru Bankası</h3><div class="builder-list">${state.data.sections.map(s=>`<label class="builder-row"><span><b>${esc(s.title)}</b><small>Bankada ${s.questions.length} soru</small></span><input class="builder-count" data-kind="local" data-id="${s.id}" type="number" min="0" max="${s.questions.length}" value="${Math.min(saved[`local:${s.id}`]||0,s.questions.length)}"></label>`).join("")}</div>
+  <h3 class="section-title">Çevrimdışı Eğitim Bilimleri</h3><p class="muted">PDF’den aktarılan hazır sorular; AI veya internet gerekmez.</p><div class="builder-list">${offlineEducationSections().map(s=>`<label class="builder-row"><span><b>${esc(s.title)}</b><small>Bankada ${s.questions.length} soru</small></span><input class="builder-count" data-kind="offline-education" data-id="${s.id}" type="number" min="0" max="${s.questions.length}" value="${Math.min(saved[`offline-education:${s.id}`]||0,s.questions.length)}"></label>`).join("")}</div>
   <h3 class="section-title">AI Eğitim Bilimleri</h3><p class="muted">Seçilen sorular sınav başlamadan önce AI tarafından hazırlanır.</p><div class="builder-list">${EDUCATION_AREAS.map(area=>`<label class="builder-row"><span><b>${esc(area)}</b><small>AI üretimi · Felsefe ve Sosyoloji hariç</small></span><input class="builder-count" data-kind="education" data-id="${esc(area)}" type="number" min="0" max="30" value="${saved[`education:${area}`]||0}"></label>`).join("")}</div>
   <div class="builder-summary"><span>Toplam soru</span><b id="builder-total">0</b></div>
   <div class="ai-control-grid"><div><label>Çözüm biçimi</label><select id="builder-mode"><option value="normal">Anında açıklamalı</option><option value="simulation">Sınav modu · geri bildirimsiz</option></select></div><div><label>Sınav süresi</label><select id="builder-minutes"><option>30</option><option selected>60</option><option>90</option><option>120</option></select></div></div>
@@ -388,13 +412,14 @@ function renderCustomExamBuilder(){
   $("#builder-start").onclick=startCustomExam;update();
 }
 async function startCustomExam(){
-  const inputs=[...document.querySelectorAll(".builder-count")],preset={},local=[],education=[];
-  inputs.forEach(x=>{const count=Math.max(0,+x.value||0);preset[`${x.dataset.kind}:${x.dataset.id}`]=count;if(!count)return;if(x.dataset.kind==="local")local.push({id:x.dataset.id,count});else education.push({area:x.dataset.id,count})});
-  const total=[...local,...education].reduce((n,x)=>n+x.count,0),status=$("#builder-status");
+  const inputs=[...document.querySelectorAll(".builder-count")],preset={},local=[],offlineEducation=[],education=[];
+  inputs.forEach(x=>{const count=Math.max(0,+x.value||0);preset[`${x.dataset.kind}:${x.dataset.id}`]=count;if(!count)return;if(x.dataset.kind==="local")local.push({id:x.dataset.id,count});else if(x.dataset.kind==="offline-education")offlineEducation.push({id:x.dataset.id,count});else education.push({area:x.dataset.id,count})});
+  const total=[...local,...offlineEducation,...education].reduce((n,x)=>n+x.count,0),status=$("#builder-status");
   if(!total)return toast("En az bir bölümden soru ekle.");
   store.set("customExamPreset",preset);$("#builder-start").disabled=true;status.innerHTML='<div class="result">Bölümler birleştiriliyor…</div>';
   try{
     let qs=local.flatMap(x=>{const s=state.data.sections.find(y=>y.id===x.id);return shuffle(s.questions).slice(0,Math.min(x.count,s.questions.length))});
+    qs=qs.concat(offlineEducation.flatMap(x=>{const s=offlineEducationSections().find(y=>y.id===x.id);return shuffle(s.questions).slice(0,Math.min(x.count,s.questions.length))}));
     if(education.length){status.innerHTML='<div class="result">Eğitim Bilimleri soruları AI tarafından hazırlanıyor…</div>';qs=qs.concat(await createEducationQuestionSet(education,"Özel deneme için bilgi, kavram ve vaka soruları"))}
     qs=shuffle(qs);const mode=$("#builder-mode").value;
     if(mode==="simulation")startSimulationWithQuestions(qs,+$("#builder-minutes").value,"Özel Deneme");
@@ -564,4 +589,8 @@ function stopRealtimeVoice(redraw=true){
 
 $("#back").onclick=()=>nav("home");$("#settings").onclick=()=>renderSettings();
 document.querySelectorAll("#bottom-nav button").forEach(b=>b.onclick=()=>nav(b.dataset.route));
-fetch("questions.json").then(r=>r.json()).then(d=>{state.data=d;nav("home")}).catch(e=>app.innerHTML=`<div class="result">Soru bankası yüklenemedi: ${esc(e.message)}</div>`);
+Promise.all([
+  fetch("questions.json").then(r=>{if(!r.ok)throw new Error("Müzik soru bankası bulunamadı.");return r.json()}),
+  fetch("education-questions.json").then(r=>{if(!r.ok)throw new Error("Eğitim Bilimleri soru bankası bulunamadı.");return r.json()})
+]).then(([music,education])=>{state.data=music;state.educationData=education;nav("home")})
+  .catch(e=>app.innerHTML=`<div class="result">Soru bankası yüklenemedi: ${esc(e.message)}</div>`);

@@ -1,0 +1,1771 @@
+{
+  "source": {
+    "file": "01-9780202100067.pdf",
+    "publisher": "Pegem Akademi",
+    "edition": "41. Baskı, Ağustos 2021",
+    "isbn": "978-0-2021-0006-7"
+  },
+  "sections": [
+    {
+      "id": "edu_pdf_gelisim",
+      "title": "Gelişim Psikolojisi",
+      "questions": [
+        {
+          "sourceNumber": 1,
+          "question": "I. Ufuk’un 6 yaşın sonuna geldiğinde kurallı cümleler kurması II. Sınavı kazanamayan Melis’in eskisi kadar neşeli olmaması III. Duru’nun ceketinin düğmelerini ilikleyebilmesi IV. Mehmet’in kas yapmak için spor yapması Yukarıdaki ifadelerden hangisi “gelişme” kavramına örnek değildir?",
+          "choices": {
+            "A": "I ve II",
+            "B": "II ve III",
+            "C": "I ve IV",
+            "D": "II, III ve IV",
+            "E": "II ve IV"
+          },
+          "answer": "E",
+          "explanation": "",
+          "id": "pdf_gelisim_01",
+          "educationArea": "Gelişim Psikolojisi"
+        },
+        {
+          "sourceNumber": 2,
+          "question": "Bir araştırmada, ikiz erkek kardeşlerin ilgi alanları arasındaki korelasyon, kardeşler 6 yaşındayken 85; 20 yaşına geldiklerinde ise 58 bulunmuştur. Kardeşlerin ilgi puanları arasındaki korelasyonun zaman içinde farklılaşması hangi gelişim kavramıyla açıklanabilir?",
+          "choices": {
+            "A": "Büyüme",
+            "B": "Kritik dönem",
+            "C": "Yaşantı",
+            "D": "Olgunlaşma",
+            "E": "Cinsiyet"
+          },
+          "answer": "C",
+          "explanation": "",
+          "id": "pdf_gelisim_02",
+          "educationArea": "Gelişim Psikolojisi"
+        },
+        {
+          "sourceNumber": 3,
+          "question": "Genç yetişkinlik ve yetişkinlik yıllarında bireylerin ilgi puanlarındaki kararlılığın, çocukluk ve ergenlik yıllarına göre daha fazla olduğu gözlenmektedir. Bu durumun nedeni aşağıdakilerden hangisiyle açıklanabilir?",
+          "choices": {
+            "A": "Yaş",
+            "B": "Öğrenme",
+            "C": "Büyüme",
+            "D": "Kritik dönem",
+            "E": "Hazırbulunuşluk"
+          },
+          "answer": "A",
+          "explanation": "",
+          "id": "pdf_gelisim_03",
+          "educationArea": "Gelişim Psikolojisi"
+        },
+        {
+          "sourceNumber": 4,
+          "question": "Yapılan bir korelasyonel araştırmada 3-8 yaş arası ayrı ve birlikte büyütülmüş tek yumurta ikizlerininin zekâ puanları arasındaki korelasyon 87 olarak hesaplanmıştır. Bu durum en iyi aşağıdakilerden hangisiyle açıklanabilir?",
+          "choices": {
+            "A": "Kritik dönem",
+            "B": "Kalıtım",
+            "C": "Yaş",
+            "D": "Çevre",
+            "E": "Olgunlaşma"
+          },
+          "answer": "B",
+          "explanation": "",
+          "id": "pdf_gelisim_04",
+          "educationArea": "Gelişim Psikolojisi"
+        },
+        {
+          "sourceNumber": 5,
+          "question": "Sevda Hanım çevresinde titizliği ve mükemmeliyetçi yapısıyla tanınan bir kişidir. Sevda Hanım, üç yaşındaki oğlu Serhat’ın birçok şeyi tek başına yapmasına izin vermemektedir. Serhat’ın kişilik gelişimi için önemli olan özerkleşme çabalarına engel olan Sevda Hanım’ın gelişim psikolojisinin hangi kavramını göz ardı ettiği söylenebilir?",
+          "choices": {
+            "A": "Kritik dönem",
+            "B": "Olgunlaşma",
+            "C": "Öğrenme",
+            "D": "Hazırbulunuşluk",
+            "E": "Büyüme"
+          },
+          "answer": "A",
+          "explanation": "",
+          "id": "pdf_gelisim_05",
+          "educationArea": "Gelişim Psikolojisi"
+        },
+        {
+          "sourceNumber": 6,
+          "question": "Altı aylık hamile olan Deniz annesiyle doğacak bebeği için alışverişe gitmiş ve bebeğinin doğumundan iki yaşına kadar giyebileceği boy boy kıyafetler almıştır. Annesi Deniz’in bir sürü kıyafet aldığını görünce “Kızım bu kadar çok kıyafet alma, bugün aldığını yarın giydiremezsin sonra.” demiştir. Annesinin Deniz’e söyledikleri değerlendirildiğinde bu durumu hangi gelişim kavramı en iyi açıklar?",
+          "choices": {
+            "A": "Olgunlaşma",
+            "B": "Hazırbulunuşluk",
+            "C": "Kritik dönem",
+            "D": "Büyüme",
+            "E": "Yaşantı"
+          },
+          "answer": "D",
+          "explanation": "",
+          "id": "pdf_gelisim_06",
+          "educationArea": "Gelişim Psikolojisi"
+        },
+        {
+          "sourceNumber": 7,
+          "question": "“İlkokul birinci sınıf öğrencisine olasılık hesaplamalarını ya da atasözlerinin ne anlama geldiğini anlatamazsınız.” diyen bir uzmanın gelişim psikolojisi temel kavramlarından hangisini işaret ettiği söylenebilir?",
+          "choices": {
+            "A": "Kritik dönem",
+            "B": "Olgunlaşma",
+            "C": "Büyüme",
+            "D": "Öğrenme",
+            "E": "Yaşantı"
+          },
+          "answer": "B",
+          "explanation": "",
+          "id": "pdf_gelisim_07",
+          "educationArea": "Gelişim Psikolojisi"
+        },
+        {
+          "sourceNumber": 8,
+          "question": "I. 65 yaşındaki Belgin Hanım’da kemik erimesi rahatsızlığının başlaması II. Gebeliğinin ilk aylarında antibiyotik kullanan Nesrin Hanım’ın bebeğinin tek kollu doğması III. Ailesinde şeker hastalığı olan Berkay’ın ilerleyen yaşlarda şeker hastası olması IV. Doğuştan işitme engelli Ali’nin, ilerleyen yaşlarda işitme engeli düzelse de arkadaşları kadar iyi konuşamaması V. Küçükken havale geçiren Yunus’ta hafif düzeyde zihinsel yetersizliğin ortaya çıkması Yukarıda verilen ifadelerden hangisi ya da hangileri kritik dönem kavramına örnek oluşturur?",
+          "choices": {
+            "A": "Yalnız IV",
+            "B": "II ve IV",
+            "C": "I, III ve V",
+            "D": "II, III ve IV",
+            "E": "I ve V"
+          },
+          "answer": "B",
+          "explanation": "",
+          "id": "pdf_gelisim_08",
+          "educationArea": "Gelişim Psikolojisi"
+        },
+        {
+          "sourceNumber": 9,
+          "question": "I. Bir çocuğun yürüyebilecek yaşa gelmesi II. Bir gencin olasılıklı düşünce yapısına sahip olabilecek zihinsel kapasiteye ulaşması III. Hamilelikte stres yaşayan bir annenin bebeğinin düşük kiloda doğması IV. Altı yaşındaki bir çocuğun okuma yazma öğrenebilecek düzeye gelmesi V. Ergenlik dönemindeki bir gencin yüzünde sivilce çıkması Olgunlaşma genetik yapı tarafından önceden belirlenmiş bir plana göre ortaya çıkar. Bazı davranışlar da sadece olgunlaşma ile ortaya çıkabilmektedir. Yukarıdaki ifadelerden hangisi olgunlaşma kavramıyla açıklanabilir?",
+          "choices": {
+            "A": "II ve III",
+            "B": "I ve IV",
+            "C": "I, II ve IV",
+            "D": "III ve V",
+            "E": "I, III ve V"
+          },
+          "answer": "C",
+          "explanation": "",
+          "id": "pdf_gelisim_09",
+          "educationArea": "Gelişim Psikolojisi"
+        },
+        {
+          "sourceNumber": 10,
+          "question": "Anaokulu öğretmeni Hale Öğretmen üç yaş grubundaki öğrencilerine 100’e kadar ikişer ikişer saymayı öğretmeye çalışmış ancak öğrencileri saymayı öğrenemedikleri gibi, öğrencilerinden birçoğu ertesi gün okula gelmek istememiştir. Bu durumu en iyi açıklayan gelişim kavramı aşağıdakilerden hangisidir?",
+          "choices": {
+            "A": "Öğrenme",
+            "B": "Yaş",
+            "C": "Büyüme",
+            "D": "Hazırbulunuşluk",
+            "E": "Kritik dönem"
+          },
+          "answer": "D",
+          "explanation": "",
+          "id": "pdf_gelisim_10",
+          "educationArea": "Gelişim Psikolojisi"
+        },
+        {
+          "sourceNumber": 11,
+          "question": "Ümit Bey, üç yaşındaki oğlu Caner’in kendisi gibi düzgün cümleler kurmasını ve kelimeleri doğru söylemesini istemektedir. Ancak Caner, babası gibi kelimeleri doğru söyleyememekte ve kurallı cümleler kuramamaktadır. Bu durum, Caner’in dil gelişimiyle ilgili olarak aşağıdakilerden hangisinin önemini göstermektedir?",
+          "choices": {
+            "A": "Reflekslerden amaçlı davranışlara tamamen geçmiş olmanın",
+            "B": "Öğrenme sürecinde yaşantının etkisinin",
+            "C": "Öğrenmenin olgunlaşma üzerindeki etkisinin",
+            "D": "Türe özgü hazır oluşun",
+            "E": "Olgunlaşmada biyolojik/genetik programın"
+          },
+          "answer": "E",
+          "explanation": "",
+          "id": "pdf_gelisim_11",
+          "educationArea": "Gelişim Psikolojisi"
+        },
+        {
+          "sourceNumber": 12,
+          "question": "Güzel sanatlar lisesinde resim bölümünde görev yapan Yücel Bey, yetenek sınavı komisyonuna katıldığında sınavı kazanan öğrencilerin çoğunun ailesinde resim yeteneği olan insanların var olduğunu gözlemlemiştir. Bu durum öncelikli olarak aşağıdakilerden hangisiyle açıklanabilir?",
+          "choices": {
+            "A": "Tarihsel zaman etkisi",
+            "B": "Büyüme",
+            "C": "Çevre",
+            "D": "Kritik dönem",
+            "E": "Kalıtım"
+          },
+          "answer": "E",
+          "explanation": "",
+          "id": "pdf_gelisim_12",
+          "educationArea": "Gelişim Psikolojisi"
+        },
+        {
+          "sourceNumber": 13,
+          "question": "Bir gencin askerden geldiğinde işe girmesi, evlenip çoluk çocuğa karışması beklenir. Genç evlenir, çocuğu olur; daha sonra çocuğun yürümesi, konuşması, okuma yazmayı öğrenmesi beklenir. Daha sonra çocuğun babası olarak bu kişiden çocuğunu iyi bir şekilde yetiştirmesi, onu evlendirmesi beklenir. Yukarıdaki paragrafta vurgulanan gelişim kavramı aşağıdakilerden hangisidir?",
+          "choices": {
+            "A": "Gelişim dönemi",
+            "B": "Gelişim görevi",
+            "C": "Kritik dönem",
+            "D": "Olgunlaşma",
+            "E": "Hazırbulunuşluk"
+          },
+          "answer": "B",
+          "explanation": "",
+          "id": "pdf_gelisim_13",
+          "educationArea": "Gelişim Psikolojisi"
+        },
+        {
+          "sourceNumber": 14,
+          "question": "Osman Bey’in Pelin ve Selin olmak üzere iki kızı vardır. 17 yaşındaki Pelin, babasıyla konuşurken onun söylediği birçok soyut kavramı anlarken 7 yaşındaki Selin babasının söylediği birçok şeyi anlayamamaktadır. Pelin ve Selin’in bilişsel düzeylerindeki bu farklılık aşağıdaki kavramlardan hangisiyle açıklanabilir?",
+          "choices": {
+            "A": "Kritik dönem",
+            "B": "Olgunlaşma",
+            "C": "Bireysel farklılık",
+            "D": "Türe özgü hazır oluş",
+            "E": "Büyüme"
+          },
+          "answer": "B",
+          "explanation": "",
+          "id": "pdf_gelisim_14",
+          "educationArea": "Gelişim Psikolojisi"
+        },
+        {
+          "sourceNumber": 15,
+          "question": "Son yıllarda yapılan araştırmalar, günümüzde teknolojinin ilerlemesiyle beraber yoğun radyasyona maruz kalma nedeniyle kanser hastalığına yakalanma oranında artış olduğunu göstermiştir. Bu durum gelişim psikolojisi kavramlarından hangisiyle açıklanabilir?",
+          "choices": {
+            "A": "Kalıtım",
+            "B": "Hazırbulunuşluk",
+            "C": "Tarihsel zaman",
+            "D": "Büyüme",
+            "E": "Dönem"
+          },
+          "answer": "C",
+          "explanation": "",
+          "id": "pdf_gelisim_15",
+          "educationArea": "Gelişim Psikolojisi"
+        },
+        {
+          "sourceNumber": 16,
+          "question": "Aşağıda verilen eşleştirmelerden hangisi gelişim psikolojisi açısından doğru kabul edilemez?",
+          "choices": {
+            "A": "Ersin’in geçen yıl giydiği ayakkabılarının dar gelmesi-Büyüme",
+            "B": "Derya’nın yaş problemlerini çözebilmek için dört işlem bilgisine sahip olması-Olgunlaşma",
+            "C": "Mustafa’nın arabasındaki arızayı tespit edebilmesi-Öğrenme",
+            "D": "14 yaşındaki Serdar’ın soyut fikirleri öğrenebilmesi-Hazırbulunuşluk",
+            "E": "Lise öğrencisi Buket’in edebiyat öğretmeni olmaya karar vermesi-Gelişim görevi"
+          },
+          "answer": "B",
+          "explanation": "",
+          "id": "pdf_gelisim_16",
+          "educationArea": "Gelişim Psikolojisi"
+        },
+        {
+          "sourceNumber": 17,
+          "question": "Kalıtımla ilgili aşağıda verilen ifadelerden hangisi yanlıştır?",
+          "choices": {
+            "A": "Çevre faktörlerinin canlının kromozomlarının ve genlerinin (kimyasal) yapısında meydana getirdiği değişikliklere modifikasyon denir.",
+            "B": "Bir özellik için anne ve babadan aynı genleri alan birey, o özellik yönünden homozigottur.",
+            "C": "Çekinik (resesif) gen; yalnız homozigot durumda kendini gösteren gendir.",
+            "D": "Genotip olarak aktarılan bir özellik organizmada ortaya çıkmasa bile sonraki kuşaklarda açığa çıkabilir.",
+            "E": "Doğacak canlının taşıyacağı kalıtımsal özellikler döllenme anında belirlenir."
+          },
+          "answer": "A",
+          "explanation": "",
+          "id": "pdf_gelisim_17",
+          "educationArea": "Gelişim Psikolojisi"
+        },
+        {
+          "sourceNumber": 18,
+          "question": "Cezmi Bey oğlu Ercan’ı bağlama kursuna yazdırmak istemiş ancak kurs yetkilisi, Cezmi Bey’e Ercan’ın henüz bağlama çalmayı öğrenebilecek düzeye gelmediğini ayrıca Ercan’ın bağlama çalmayı öğrenme konusunda babası kadar istekli olmadığını ifade etmiştir. Bu duruma göre kurs yetkilisinin vurguladığı gelişim kavramı aşağıdakilerden hangisidir?",
+          "choices": {
+            "A": "Gelişim dönemi",
+            "B": "Kritik dönem",
+            "C": "Hazırbulunuşluk",
+            "D": "Öğrenme",
+            "E": "Büyüme"
+          },
+          "answer": "C",
+          "explanation": "",
+          "id": "pdf_gelisim_18",
+          "educationArea": "Gelişim Psikolojisi"
+        },
+        {
+          "sourceNumber": 19,
+          "question": "Olgunlaşma, vücudun doğuştan genetik olarak sahip olduğu fonksiyonları zamanla yerine getirebilme yetkinliğine sahip olmasıdır. Örneğin bebeklerin yürüyebilmeleri için yaklaşık bir yaşında olmaları beklenir çünkü bacak kaslarının vücut ağırlığını taşıması ve vücut dengesinin sağlanması dolayısıyla bebeklerin yürüme fonksiyonunu yerine getirebilecekleri biyolojik olgunluğa erişmeleri için ilk bir yıldaki bu zaman değişimine ihtiyaç vardır. Olgunlaşma, zaman içinde kendiliğinden meydana gelen bir süreçtir. Gelişim olgunlaşmayı da içine alan kapsamlı ve doğumdan ölüme kadar bütün olumlu ilerlemeleri kapsayan bir süreçtir. Yukarıdaki açıklamalardan varılabilecek en uygun sonuç aşağıdakilerden hangisidir?",
+          "choices": {
+            "A": "Olgunlaşma büyümenin ön koşuludur.",
+            "B": "Olgunlaşma, öğrenmeyi de içine alan bir kavramdır.",
+            "C": "Olgunlaşma seyri kişiye özgüdür, önceden öngörülemez.",
+            "D": "Olgunlaşma her gelişim döneminde aynı hızda gerçekleşir.",
+            "E": "Gelişimle ilgili değişiklikler sadece olgunlaşma kavramıyla açıklanamaz."
+          },
+          "answer": "E",
+          "explanation": "",
+          "id": "pdf_gelisim_19",
+          "educationArea": "Gelişim Psikolojisi"
+        },
+        {
+          "sourceNumber": 20,
+          "question": "Feride Hanım, oğlu Serkan’ın ileriki yıllarda güzel sanatlarla ilgili bir bölüm okumasını istediği için, onu sürekli resim kurslarına göndermiş, ona resimle ilgili her türlü araç gereci almıştır. Feride Hanım’ın sergilediği davranışların altında yatan temel neden aşağıdakilerden hangisiyle açıklanabilir?",
+          "choices": {
+            "A": "Gelişim",
+            "B": "Olgunlaşma",
+            "C": "Yaşantı",
+            "D": "Kritik dönem",
+            "E": "Yaş"
+          },
+          "answer": "C",
+          "explanation": "",
+          "id": "pdf_gelisim_20",
+          "educationArea": "Gelişim Psikolojisi"
+        }
+      ]
+    },
+    {
+      "id": "edu_pdf_ogrenme",
+      "title": "Öğrenme Psikolojisi",
+      "questions": [
+        {
+          "sourceNumber": 1,
+          "question": "Aşağıdaki ifadelerden hangisi öğrenilmiş bir davranış olarak tanımlanamaz?",
+          "choices": {
+            "A": "Gençlerin birbirlerinden etkilenerek benzer giyim tarzını benimsemeleri",
+            "B": "Matematik dersini sevmeyen öğrencinin bu dersin öğretmenini de sevmemesi",
+            "C": "Havasız bir ortamda ders çalışan öğrencinin öğrenme veriminin düşmesi",
+            "D": "Trafik kazası geçiren öğrencinin aklına o kötü anın gelmesi ve huzursuz olması",
+            "E": "Babasından korkan öğrencinin yalan söylemesi"
+          },
+          "answer": "C",
+          "explanation": "",
+          "id": "pdf_ogrenme_01",
+          "educationArea": "Öğrenme Psikolojisi"
+        },
+        {
+          "sourceNumber": 2,
+          "question": "İnsanoğlunda bulunan reflekslerle ilgili; I. İstemdışı otomatik bir yapıya sahip olma II. doğumdan ölüme kadar süreklilik gösterme, III. farklı hayvan türlerinde gözlenebilme, IV. karmaşık davranış örüntülerinden oluşma ifadelerinden hangisi veya hangileri tüm reflekslerde bulunan ortak özelliklerdendir?",
+          "choices": {
+            "A": "I ve III",
+            "B": "I ve IV",
+            "C": "II ve III",
+            "D": "II, III ve IV",
+            "E": "I, II ve III"
+          },
+          "answer": "A",
+          "explanation": "",
+          "id": "pdf_ogrenme_02",
+          "educationArea": "Öğrenme Psikolojisi"
+        },
+        {
+          "sourceNumber": 3,
+          "question": "Aşağıdaki örneklerden hangisi öğrenme ile ilişkilendirilemez?",
+          "choices": {
+            "A": "Her gün aynı saatte öğle uykusu uyumaya alıştırılmış çocuğun öğlene doğru esnemeye başlaması",
+            "B": "Futbol ve hentbol gibi oyunlarda kalecilerin diğer insanlara göre daha hızlı istemli kas hareketleri geliştirebilmeleri",
+            "C": "Uzun yol şoförünün yorulunca konsantrasyonunun ve hamle hızının düşmesi",
+            "D": "Daha önce yediği yemekten midesi bulanan kişinin yemek yediği lokantayı görmek istememesi",
+            "E": "Antrenmandan sonra terleyen sporcunun hastalanmamak için hemen üstünü değiştirmesi"
+          },
+          "answer": "C",
+          "explanation": "",
+          "id": "pdf_ogrenme_03",
+          "educationArea": "Öğrenme Psikolojisi"
+        },
+        {
+          "sourceNumber": 4,
+          "question": "Bazı davranışlar doğuştan getirdiğimiz koşulsuz tepki örüntülerinin öğrenmelerle desteklenmesi ve şekillenmesi ile oluşur. Aşağıdaki örneklerde yer alan davranışlardan hangisi koşulsuz bir uyarıcı karşısında sergilenmektedir?",
+          "choices": {
+            "A": "Yağmur bulutlarını gören kişinin yanına şemsiye alması",
+            "B": "Başarısız olunca annesinin kızacağını düşünen öğrencinin dersine çok çalışması",
+            "C": "Ders zili çalınca öğrencilerin sınıfa girmesi",
+            "D": "Kötü kokular karşısında burnumuzu elimizle kapatmamız",
+            "E": "Biberonu gören bebeğin heyecan belirtileri göstermesi"
+          },
+          "answer": "D",
+          "explanation": "",
+          "id": "pdf_ogrenme_04",
+          "educationArea": "Öğrenme Psikolojisi"
+        },
+        {
+          "sourceNumber": 5,
+          "question": "Aynı uyaran farklı bağlamlarda tezat tepkiler oluşturabilir. Örneğin soğuk bir denize giren kişi yavaş yavaş suya girerse soğuğa karşı (I) ………..….. oluşabilir. Oysa deniz kenarında güneş altında bekleyen kişiye bir başkası su atarsa (II) ……………… oluşarak birey denize girmekten vazgeçebilir. Yukarıdaki paragrafta I ve II numaralı boşluklara sırasıyla hangi kavramlar gelmelidir?",
+          "choices": {
+            "A": "duyusal adaptasyon / duyarlılaşma",
+            "B": "alışkanlık / sönme",
+            "C": "sönme / karşıt tepki geliştirme",
+            "D": "kademeli yaklaştırma / zıt tepkiler yöntemi",
+            "E": "duyarlılaşma / alışkanlık"
+          },
+          "answer": "A",
+          "explanation": "",
+          "id": "pdf_ogrenme_05",
+          "educationArea": "Öğrenme Psikolojisi"
+        },
+        {
+          "sourceNumber": 6,
+          "question": "“İlköğretim ikinci kademede oluşması gereken matematik ön bilgilerinin öğrencilerde yetersiz olduğunu gören öğretmen, hazırbulunuşluk düzeyini ölçmek için öğrencilere bazı sorular sormuştur. Sorulardan biri “0,7; 0,70; 0,700 sayılarının büyüklük ve küçüklüğü” ile ilgilidir. Sınıftaki öğrencilerin çok azı bu sayıların eşdeğer olduğunu söylerken sınıfın çoğu “0,700” sayısının en büyük değer olduğunu savunmuştur. Bu yanlış öğrenmenin nedenini arayan öğretmen daha önceki yıllarda 7, 70, 700 gibi ifadelerde sıfırın sayıyı büyütme gücünün yanlış bir aktarım ile 0,7; 0,70; 0,700 gibi ondalıklı sayılarla ilişkilendirildiğini görmüştür.” Yukarıda bahsedilen yanlış öğrenmelerin temelinde öğrenme verimini düşüren hangi kavramın etkisini görebiliriz?",
+          "choices": {
+            "A": "Seri pozisyon etkisi",
+            "B": "Toplu çalışma stratejisi",
+            "C": "Önceki öğrenmelerin etkisi",
+            "D": "Klasik koşullanma",
+            "E": "Davranışta kontrast"
+          },
+          "answer": "C",
+          "explanation": "",
+          "id": "pdf_ogrenme_06",
+          "educationArea": "Öğrenme Psikolojisi"
+        },
+        {
+          "sourceNumber": 7,
+          "question": "Yapılan bir deneyde ellişer öğrenci A ve B grubu olarak ayrılmıştır. A ve B grubundaki öğrencilerin tümünün aynı yaşta, benzer zekâ düzeyinde olmasına dikkat edilmiştir. 100 öğrencinin tümünün ana dili Türkçedir. A grubu öğrencilere 20 mısralık Cumhuriyet Döneminde yazılmış Orhan Veli’ye ait bir şiir, B grubuna ise Osmanlı Klasik Döneminde yazılmış Fuzuli’ye ait 20 mısralık bir şiir verilmiştir. Fuzuli’nin şiirinde öğrencilerin bilmedikleri çokça kelime bulunmaktadır. Bir saatlik ezber süresi verilen şiirlerin hatırlanma oranları ölçülmüştür. A grubunun doğru ezber oranının %70 düzeyinde olduğu hâlde, B grubunun doğru ezber oranının %20 düzeyinde kaldığı görülmüştür. Grupların öğrenme verimlerindeki farklılık öğrenme malzemesinin: I. algısal ayırt edilebilirlik, II. anlamsal çağrışım, III. kavramsal gruplandırma, IV. telaffuz edilebilirlik özelliklerinden hangisi veya hangileri ile ilgilidir?",
+          "choices": {
+            "A": "Yalnız I",
+            "B": "Yalnız II",
+            "C": "II ve IV",
+            "D": "I, II ve III",
+            "E": "I, II, III ve IV"
+          },
+          "answer": "C",
+          "explanation": "",
+          "id": "pdf_ogrenme_07",
+          "educationArea": "Öğrenme Psikolojisi"
+        },
+        {
+          "sourceNumber": 8,
+          "question": "Voleybol antrenörü Cemil Bey yeni çalıştırmaya başladığı takımdaki oyuncuların devamlı maç yapmak istediklerini, temel hareketleri kazandıracak antrenmanlardan hoşlanmadıklarını fark etmiştir. Cemil Bey sporculara yeni bir program uygulayarak ilk gün sadece güç arttırıcı zıplama hareketleri, ikinci gün sadece dayanıklılığa yönelik hareketler, üçüncü gün hıza yönelik istasyon çalışması, dördüncü gün topa sert vurma çalışması yaptırmıştır. Antrenör dört günlük programı beş kez arka arkaya 20 gün boyunca uygulamış, daha sonra taktiksel çalışmalara geçmiştir. Çalışma programını yadırgayan sporculara antrenör şöyle cevap vermiştir. “Sizi maçta yapacağınız temel hareketlere ayrı ayrı çalıştırıyorum. Temel hareketlerin kalitesi arttıkça maçtaki koordineli hareketlerde de başarı kendiliğinden gelecektir.” Voleybol antrenörü Cemil Bey’in psikomotor davranışların öğrenilmesini kolaylaştıran hangi yöntemi kullandığını düşünebiliriz?",
+          "choices": {
+            "A": "Güdülenme",
+            "B": "Algısal ayırt edilebilirlik",
+            "C": "Toplu çalışma",
+            "D": "Parçalara bölerek çalışma",
+            "E": "Geribildirim"
+          },
+          "answer": "D",
+          "explanation": "",
+          "id": "pdf_ogrenme_08",
+          "educationArea": "Öğrenme Psikolojisi"
+        },
+        {
+          "sourceNumber": 9,
+          "question": "Babası ilkokula giden ablasına bisiklet alırken 4 yaşındaki Nazlı’ya da iki tekerlekli bisiklet almıştır. Ablası bisiklet sürmeyi bir-iki günde öğrenmiş ancak Nazlı ne kadar uğraşırsa uğraşsın iki tekerlekli bisiklet sürmeyi öğrenememiştir. Bu durum öğrenmeyi etkileyen faktörlerden hangisiyle açıklanabilir?",
+          "choices": {
+            "A": "Güdülenme düzeyi",
+            "B": "Genel uyarılmışlık hâli",
+            "C": "Olgunlaşma düzeyi",
+            "D": "Olumsuz aktarım",
+            "E": "İleriye ket vurma"
+          },
+          "answer": "C",
+          "explanation": "",
+          "id": "pdf_ogrenme_09",
+          "educationArea": "Öğrenme Psikolojisi"
+        },
+        {
+          "sourceNumber": 10,
+          "question": "I. Osmanlı tarihini öğrenmek II. Bir atasözünün anlamını kavramak III. Bir fizik formülünün açılımını söyleyebilmek IV. Futbol oynamayı öğrenmek Yukarıdaki öğrenme konularından hangisi veya hangilerinde yöntem olarak parçalara bölerek çalışmaya ihtiyaç vardır?",
+          "choices": {
+            "A": "Yalnız I",
+            "B": "Yalnız III",
+            "C": "II ve III",
+            "D": "I ve IV",
+            "E": "I ve II"
+          },
+          "answer": "D",
+          "explanation": "",
+          "id": "pdf_ogrenme_10",
+          "educationArea": "Öğrenme Psikolojisi"
+        },
+        {
+          "sourceNumber": 11,
+          "question": "Anaokulunda 3-4 yaş grubu çocuklara renkleri öğreten Cavidan Hanım yıllar boyu deneyimlerine dayanarak yeni öğretme yöntemleri geliştirmiştir. İlk öğretmenlik yıllarında renkli kartonlarla renkleri öğretmeye çalışan Cavidan Hanım, ilerleyen yıllarda bazı nesnelerle bazı renklerin ilişkilendirilmesinin örneğin çocukların daha önceden bildiği muz, itfaiye arabası, deniz gibi kavramları kendi renkleriyle ifade etmenin daha kalıcı öğrenme oluşturduğunu görmüştür. “Muz sarıdır.”, “İtfaiye arabası kırmızıdır.”, “Deniz mavidir.” şeklindeki yönergeyle renk öğrenmenin daha verimli olması öğrenmeyi etkileyen faktörlerden hangisiyle ilgilidir?",
+          "choices": {
+            "A": "Aralıklı çalışma",
+            "B": "Toplu çalışma",
+            "C": "Algısal ayırt edilebilirlik",
+            "D": "Anlamsal çağrışım",
+            "E": "Kavramsal gruplandırma"
+          },
+          "answer": "D",
+          "explanation": "",
+          "id": "pdf_ogrenme_11",
+          "educationArea": "Öğrenme Psikolojisi"
+        },
+        {
+          "sourceNumber": 12,
+          "question": "Biyoloji dersinde Kreps döngüsünün basamaklarını ezberleyen Olcay’a deneme sınavında Kreps döngüsünün hangi organ ve organellerde oluştuğu sorulmuştur. Konuyla ilgili tüm ezbere sahip olan Olcay bu temel soruya hiçbir cevap üretememiştir. Bilişsel öğrenme kuramları dikkate alındığında Olcay’ın çalışma yönetimindeki eksiklik aşağıdakilerden hangisi ile doğrudan ilgilidir?",
+          "choices": {
+            "A": "Parça-bütün ilişkilerini kuramama",
+            "B": "Geribildirim alamama",
+            "C": "Aralıklı çalışmanın önemini kavrayamama",
+            "D": "Yeterli güdülenmeye sahip olmama",
+            "E": "İçgörü geliştirememe"
+          },
+          "answer": "A",
+          "explanation": "",
+          "id": "pdf_ogrenme_12",
+          "educationArea": "Öğrenme Psikolojisi"
+        },
+        {
+          "sourceNumber": 13,
+          "question": "Selda Hanım gece uyumak için yatağına yatmış ama 15-20 saniyede bir damlayan musluk sesinden dolayı uyuyamamıştır. Yatağında uyumaya çalışan Selda Hanım ilerleyen dakikalarda damlayan su sesinden aşırı rahatsız olmaya başlayarak kalkmış ve ana vanadan evin su şebekesini kapatmıştır. Selda Hanım’ı uykusuz bırakan etken aşağıdaki kavramlardan hangisiyle açıklanabilir?",
+          "choices": {
+            "A": "Alışkanlık",
+            "B": "Duyarlılaşma",
+            "C": "Alışma",
+            "D": "Sönme",
+            "E": "Kaygı düzeyi"
+          },
+          "answer": "B",
+          "explanation": "",
+          "id": "pdf_ogrenme_13",
+          "educationArea": "Öğrenme Psikolojisi"
+        },
+        {
+          "sourceNumber": 14,
+          "question": "Alfabeyi A, B, C, Ç, D, E, ……. Z sırası ile öğrenen öğrenciden tersine saymasını istediğimizde (Z, Y, V….) bunu hemen başaramadığını gözlemleyebiliriz. Alfabeyi öğrendiğimiz yönde saymak ile tersten saymak arasındaki performans farkı aşağıdaki kavramlardan hangisi ile doğrudan ilgilidir?",
+          "choices": {
+            "A": "Algısal ayırt edilebilirlik",
+            "B": "Kavramsal gruplandırma",
+            "C": "Çağrışımsal dizin etkisi",
+            "D": "Geribildirim",
+            "E": "Toplu çalışma"
+          },
+          "answer": "C",
+          "explanation": "",
+          "id": "pdf_ogrenme_14",
+          "educationArea": "Öğrenme Psikolojisi"
+        },
+        {
+          "sourceNumber": 15,
+          "question": "Tarih öğretmeni Yasin Bey kırk dakikalık dersinde sadece kendisi konuşmakta, esprili bir anlatımla tek kişilik şov yapmaktadır. Dersten çok memnun olan ve tiyatro seyredermiş gibi zevkle dersi dinleyen öğrenciler, üniversite sınavında tarih sorularında başarılı olamadıklarını şaşkınlıkla görmüşlerdir. Daha az beğendikleri, kendilerini derslerde sorduğu sorularla zorlayan öğretmenlerin branşlarında ise daha iyi başarı gösterdiklerini görmüşlerdir. Yasin Bey’in derslerindeki öğrenme verimsizliği aşağıdakilerden hangisi ile doğrudan ilişkilidir?",
+          "choices": {
+            "A": "Öğrencilerin hazırbulunuşluğunun yetersizliği",
+            "B": "Öğrencilerin güdülenme problemi",
+            "C": "Sınıfta yaşanan dikkat ve konsantrasyon dağınıklığı",
+            "D": "Öğrencinin aktif katılımının sağlanamaması",
+            "E": "Algısal ayırt edilebilirliğin oluşturulamaması"
+          },
+          "answer": "D",
+          "explanation": "",
+          "id": "pdf_ogrenme_15",
+          "educationArea": "Öğrenme Psikolojisi"
+        },
+        {
+          "sourceNumber": 16,
+          "question": "“Öğrenme, yaşantılara dayalı olarak kazanılan nispeten kalıcı izli davranış değişikliklerinin nesnel olarak gözlenebilmesi ile açığa çıkar.” Yukarıda davranışçı psikolojinin öğrenme tanımı verilmiştir. Bu tanıma sadık kalan bir psikoloğun aşağıdakilerden hangisini öğrenme olarak tanımlaması gerekir?",
+          "choices": {
+            "A": "Duyumlama",
+            "B": "Algılama",
+            "C": "Yorumlama",
+            "D": "Unutma",
+            "E": "Performans"
+          },
+          "answer": "E",
+          "explanation": "",
+          "id": "pdf_ogrenme_16",
+          "educationArea": "Öğrenme Psikolojisi"
+        }
+      ]
+    },
+    {
+      "id": "edu_pdf_ogretim",
+      "title": "Öğretim İlke ve Yöntemleri",
+      "questions": [
+        {
+          "sourceNumber": 1,
+          "question": "Öğrencinin öğretim sürecinde, gelişiminin her boyutuyla ele alınması önemli görülür. Bilişsel, duyuşsal, devinişsel, ruhsal, sosyal vb. alanlarda öğrenci gelişimi sağlanmalıdır. Buna göre, bireyin dengeli ve uyumlu olarak yetişmesinde tüm yönlerinin geliştirilmesi gerektiğini savunan öğretim ilkesi aşağıdakilerden hangisidir?",
+          "choices": {
+            "A": "Sosyallik",
+            "B": "Bütünlük",
+            "C": "Aktüalite",
+            "D": "Aktivite",
+            "E": "Açıklık"
+          },
+          "answer": "B",
+          "explanation": "Öğrencinin tüm yönleriyle gelişmesini eğitimde temel alan hatta öğrenciyi yönlendirirken tüm bu özelliklerine dikkat edilmesi gerektiğini de savunan öğretim ilkesi bütünlüktür. Sosyallik: Toplumsal değerlerin aktarımı ve sosyalleşme sürecinin gerçekleştiği aşamadır. Aktüalite: Konuların güncel olaylar ve sorunlarla ilişkilendirilerek aktarılmasıdır. Aktivite: Yaparak yaşayarak öğrenciyi sürece katarak öğrenmedir. Açıklık: Süreçte açık net anlaşılır bir dil kullanmadır.",
+          "id": "pdf_ogretim_01",
+          "educationArea": "Öğretim İlke ve Yöntemleri"
+        },
+        {
+          "sourceNumber": 2,
+          "question": "Ali, beden eğitimi dersinde öğrendiği hareketlerle sağlıklı yaşama önem vermeye başlamıştır. Düzenli olarak günlük yaşamında bu hareketlerle aktif ve sağlıklı yaşam alışkanlığı geliştirmiştir. Bu durum aşağıdaki öğretim ilkelerinin hangisinin sonucudur?",
+          "choices": {
+            "A": "Hayatilik",
+            "B": "Hedefe uygunluk",
+            "C": "Somuttan soyuta",
+            "D": "Etkin katılım",
+            "E": "Güncellik"
+          },
+          "answer": "A",
+          "explanation": "Öğretim sürecinde elde edilen bilgilerin gerçek yaşamda kullanılması, yaşama uyarlanması hayatilik - işlevsellik, yaşama yakınlıktır. Öğrenci beden eğitimi dersinde öğrendikleriyle sağlıklı yaşamaya başlamıştır. Çağdaş eğitim anlayışında okul yaşamın kendisidir. Bu nedenle de öğrencinin ihtiyaç duyacağı, kullanılabilir bilgiler verilmelidir.",
+          "id": "pdf_ogretim_02",
+          "educationArea": "Öğretim İlke ve Yöntemleri"
+        },
+        {
+          "sourceNumber": 3,
+          "question": "Sosyal bilgiler dersinde “Birey ve Toplum” öğrenme alanı ile ilgili etkinlikler sırasında “Vatandaşlık görevlerimizi ne kadar etkili yerine getirebiliyoruz?” sorusu ekseninde yapılan bir tartışmada bir yandan öğrencileri özgün görüşlerini söylemeye teşvik ederken diğer yandan söz alma, söz kesmeme, konu dışına çıkmama, görüşlere saygı gibi kuralların uygulanmasına da gayret gösteren bir öğretmenin aşağıdaki öğretim ilkelerinden hangisinin gereklerini yerine getirdiği söylenebilir?",
+          "choices": {
+            "A": "Sosyallik",
+            "B": "Bütünlük",
+            "C": "Etkin katılım",
+            "D": "Güncellik",
+            "E": "Ekonomiklik"
+          },
+          "answer": "A",
+          "explanation": "Bireyin kurallara uyarken kendi kararlarını alabilme, kendi kendini yönetme, hür karar verme mutluluğu ve sorumluluğu da okulun görevleri arasındadır. Bu da otoriteye itaat ederken özgür olmadır. Yani sosyalliktir. Sosyalleşme sürecinde kurallara uymanın önemi otoriteye itaattir. Bireyin kurallara uyarken kendi kararlarını alabilmesi ve bunun sorumluluğunu taşıması özgürlüktür.",
+          "id": "pdf_ogretim_03",
+          "educationArea": "Öğretim İlke ve Yöntemleri"
+        },
+        {
+          "sourceNumber": 4,
+          "question": "Canan Öğretmen, aktif katılım ilkesine uygun davranarak kalıcı öğrenmeler sağlamak istemektedir. Buna göre Canan Öğretmen, aşağıdakilerden hangisini yaparsa bu amacına uygun davranmış olur?",
+          "choices": {
+            "A": "Yaptığı gösteri deneyini öğrencilerin dikkatlice izlemelerini sağlamak",
+            "B": "Konuları bireysel ya da grup hâlindeki öğrencilere dönemin başında dağıtıp belirli bir sürede anlatmalarını istemek",
+            "C": "Konuyu sunarken CD, video vb. görsel materyallerden yararlanmak",
+            "D": "Tepegözle şekil ve şemaları yansıtıp konuyu ayrıntılı anlatmak",
+            "E": "Öğrencilerin bireysel ya da grupça çalışmalarını sağlamak"
+          },
+          "answer": "E",
+          "explanation": "Öğrencilerin bireysel ya da grupça çalışmalarını sağlamak onların aktif katılımını yaparak yaşayarak öğrenmelerini desteklemektedir. Oysa diğer seçeneklerde ya öğretmen aktif ya da öğretmenin etkinliğinde ezber yapılmaktadır.",
+          "id": "pdf_ogretim_04",
+          "educationArea": "Öğretim İlke ve Yöntemleri"
+        },
+        {
+          "sourceNumber": 5,
+          "question": "Edebiyat öğretmeni Merve, dersi anlatırken yanlış anlaşılacak, farklı anlamlara gelecek cümleler kullanmaktan kaçınmakta ve Türkçeyi çok iyi kullanmaya dikkat etmektedir. Buna göre, Merve Öğretmen, edebiyat dersinde hangi öğretim ilkesini temel almaktadır?",
+          "choices": {
+            "A": "Açıklık",
+            "B": "Bütünlük",
+            "C": "Aktüalite",
+            "D": "Bilinenden bilinmeyene",
+            "E": "Sosyallik"
+          },
+          "answer": "A",
+          "explanation": "Öğretmenin dersini anlatırken açık, net, anlaşılır bir dil kullanması açıklık ilkesini temel alması gerekmektedir. (Ayrıca açıklık ilkesi öğretmenin dersini işlerken materyalaraç gereç kullanması olarak da tanımlanır.)",
+          "id": "pdf_ogretim_05",
+          "educationArea": "Öğretim İlke ve Yöntemleri"
+        },
+        {
+          "sourceNumber": 6,
+          "question": "“Evrensel ahlak yasası yoktur.” görüşüyle ilgili olarak felsefe öğretmeni Görkem, öğrencilerini bir panele götürür. Bu panelin sonunda öğrenciler hem felsefi bir görüşü, hem panel ortamını hem de bu tür etkinliklerde nasıl davranmaları gerektiğini öğrenirler. Buna göre Görkem Öğretmen, bu etkinlikte hangi öğretim ilkesini kullanmıştır?",
+          "choices": {
+            "A": "Ekonomiklik",
+            "B": "Güncellik",
+            "C": "Etkin katılım",
+            "D": "Somuttan soyuta",
+            "E": "Açıklık"
+          },
+          "answer": "A",
+          "explanation": "Görkem Öğretmen, aynı anda birçok kazanımın gerçekleşmesini sağladığından dolayı ekonomiklik ilkesini kullanmıştır. En az maliyetle en kısa sürede en fazla davranış değişikliğine ulaşmak ekonomiklik ilkesidir.",
+          "id": "pdf_ogretim_06",
+          "educationArea": "Öğretim İlke ve Yöntemleri"
+        },
+        {
+          "sourceNumber": 7,
+          "question": "Okul öncesinde Işık Öğretmen, öğrenmeyi ilgi çekici, zevkli ve kalıcı kılmak için öğrencilerine oyun, drama gibi etkinlikler yaptırarak, “Yaptıklarımızı öğreniriz, oysa işittiklerimizi unutabilir, gördüklerimizi de hatırlamayabiliriz.” görüşünü uygulamaya geçirmiştir. Buna göre okul öncesi öğretmenin kullandığı öğretim ilkesi aşağıdakilerden hangisidir?",
+          "choices": {
+            "A": "Bilinenden bilinmeyene",
+            "B": "Somuttan soyuta",
+            "C": "Aktüalite",
+            "D": "Bütünlük",
+            "E": "İş - aktivite - etkin katılım"
+          },
+          "answer": "E",
+          "explanation": "Oyun - drama gibi etkinlikler öğrencinin aktif katılımıyla, yaparak yaşayarak öğrenmesidir. Dolayısıyla öğrenci öğrenme ortamında aktif rol alır, öğrenme sorumluluğunu üstlenir. Bu da etkin katılım ilkesidir. Kişi ne kadar çok duyu organını kullanarak öğrenmeye katılırsa öğrenmeler de o kadar kalıcı olur.",
+          "id": "pdf_ogretim_07",
+          "educationArea": "Öğretim İlke ve Yöntemleri"
+        },
+        {
+          "sourceNumber": 8,
+          "question": "Sınıf öğretmeninin “demokrasi” kavramını anlatmak için önce sınıfta sınıf başkanlığı seçimini yaptırması, bunu yaparken de demokrasinin tüm özelliklerini uygulamaya koyması ve bu etkinliğin sonunda öğrencilerin demokrasi kavramını anlamalarını sağlaması hangi öğretim ilkesini kullandığını gösterir?",
+          "choices": {
+            "A": "Somuttan soyuta",
+            "B": "Bilinenden bilinmeyene",
+            "C": "Açıklık",
+            "D": "Ekonomiklik",
+            "E": "Aktüalite"
+          },
+          "answer": "A",
+          "explanation": "İlkokuldaki öğrenci, somut işlem dönemindedir. Demokrasi kavramını gelişim özelliği gereği somutlaştırmalıdır. Bu amaçla öğretmen, demokrasiyi önce uygulamalı olarak sınıf başkanı seçiminde gösterir, sonra da demokrasi kavramını bu yaşanmışlık üzerinden anlatır.",
+          "id": "pdf_ogretim_08",
+          "educationArea": "Öğretim İlke ve Yöntemleri"
+        },
+        {
+          "sourceNumber": 9,
+          "question": "Öğrenme öğretme sürecinde öğrenme sorumluluğunun öğrencide olmasına, öğrencinin tüm ilgi ve yeteneklerini sergilemesine, potansiyelini açığa çıkarmasına imkân verilerek üst düzey zihinsel becerilerin gelişimi, sorumluluk alma, bağımsız düşünme, kararlılık, öz güven, öz denetim gibi kazanımlara ulaşılması sağlanabilir. Yukarıda verilen amaçlara ulaşılması hangi öğretim ilkesinin kullanılmasına bağlıdır?",
+          "choices": {
+            "A": "Aktivite",
+            "B": "Aktüalite",
+            "C": "Bütünlük",
+            "D": "Öğrenciye görelilik",
+            "E": "Sosyallik"
+          },
+          "answer": "A",
+          "explanation": "Öğrencinin etkin katılımda bulunarak hem bilişsel hem devinişsel bilgi ve becerilerinin öğrenilmesinde, öğrenilenlerin nitelik ve kalıcılığının arttırılmasında, yaparak yaşayarak öğrenme çok önemlidir.",
+          "id": "pdf_ogretim_09",
+          "educationArea": "Öğretim İlke ve Yöntemleri"
+        },
+        {
+          "sourceNumber": 10,
+          "question": "Yeni öğrenmelerin kolaylaştırılmasıyla birlikte bilginin transferine de imkân sunan, öğretim etkinliklerine öğrencinin ne bilmediğinden çok ne bildiğini dikkate alarak başlayan bir öğretmen, aşağıdaki öğretim ilkelerinden hangisini kullanır?",
+          "choices": {
+            "A": "Basitten karmaşığa",
+            "B": "Bilinenden bilinmeyene",
+            "C": "Aktivite",
+            "D": "Aktüalite",
+            "E": "Somuttan soyuta"
+          },
+          "answer": "B",
+          "explanation": "Yeni öğrenmelerle, ön öğrenmeler arasında ilişki kurarak etkili ve kalıcı öğrenmelerin gerçekleşmesini amaçlayan öğretmen, bilinenden bilinmeyene ilkesini kullanır. Ayrıca bilginin transferi yeni öğrenmeleri kolaylaştırmaktadır. Bu da bilinenden bilinmeyene ilkesinin özelliğidir.",
+          "id": "pdf_ogretim_10",
+          "educationArea": "Öğretim İlke ve Yöntemleri"
+        },
+        {
+          "sourceNumber": 11,
+          "question": "- Ders kitaplarının başında “kavram haritaları”nın kullanılması - İlköğretimde, fizik, kimya, biyoloji, teknoloji derslerinin bir araya getirilerek fen ve teknoloji dersi adı altında okutulması - Engelliler haftasında, müzik öğretmeninin konuyla ilgili şarkı öğretmesi, Türkçe öğretmeninin tartışma yaptırması, resim öğretmeninin, konuyla ilgili resim yaptırması Tüm bu özellikleri kapsayan öğretim ilkesi aşağıdakilerden hangisidir?",
+          "choices": {
+            "A": "Açıklık",
+            "B": "Basitten karmaşığa",
+            "C": "Bilinenden bilinmeyene",
+            "D": "Yakından uzağa",
+            "E": "Bütünlük"
+          },
+          "answer": "E",
+          "explanation": "",
+          "id": "pdf_ogretim_11",
+          "educationArea": "Öğretim İlke ve Yöntemleri"
+        },
+        {
+          "sourceNumber": 12,
+          "question": "“Yeni gelişmeler ışığında problemlerin çözümünde etkili olan bilgiler çözüm noktasında ihtiyacı karşılayacak nitelikte değilse o bilgi artık doğruluk değerini yitirir. Bu açıdan mutlak, evrensel, değişmeyen bilgiden çok bilginin değişebileceği esastır.”, görüşünü benimseyen çağdaş öğretim kuramlarına göre hangi öğretim ilkesi eleştirilmektedir?",
+          "choices": {
+            "A": "Bilgi ve becerileri güvence altına alma",
+            "B": "Bütünlük",
+            "C": "Otoriteye itaat ve özgürlük",
+            "D": "Yaşama yakınlık",
+            "E": "Ekonomiklik"
+          },
+          "answer": "A",
+          "explanation": "",
+          "id": "pdf_ogretim_12",
+          "educationArea": "Öğretim İlke ve Yöntemleri"
+        },
+        {
+          "sourceNumber": 13,
+          "question": "“Öğrencilerin gerçek yaşamla yüzleşmeleri, içinde bulundukları durum ve olayların, zamana uygun olması amaçlanmaktadır. Böylelikle öğretim sürecinde bireylerin gerçek yaşamdan kopmalarının önüne geçilmesi amaçlanır.” Buna göre, yaşam boyu öğrenmede de temel alınan öğretim ilkeleri aşağıdakilerden hangisidir?",
+          "choices": {
+            "A": "İşlevsellik - aktüalite",
+            "B": "Sosyallik - güncellik",
+            "C": "Ekonomiklik - ayanilik",
+            "D": "İşlevsellik - bütünlük",
+            "E": "Güvence altına alma-aktüalite"
+          },
+          "answer": "A",
+          "explanation": "",
+          "id": "pdf_ogretim_13",
+          "educationArea": "Öğretim İlke ve Yöntemleri"
+        },
+        {
+          "sourceNumber": 14,
+          "question": "Sosyal bilgiler dersinde “İnsanlar-Yerler-Çevreler” öğrenme alanı üniteleri 4. sınıftan 7. sınıfa doğru “Yaşadığımız Yer-Bölgemizi Tanıyalım-Ülkemizde Nüfus-Yeryüzünde Yaşam” şeklinde düzenlenmiştir. Sosyal bilgiler dersinde ünitelerin bu şekilde sıralanması aşağıdaki öğretim ilkelerinden hangisi ile ilgilidir?",
+          "choices": {
+            "A": "Bilinenden bilinmeyene",
+            "B": "Basitten karmaşığa",
+            "C": "Yakından uzağa",
+            "D": "Kolaydan zora",
+            "E": "Somuttan soyuta"
+          },
+          "answer": "C",
+          "explanation": "",
+          "id": "pdf_ogretim_14",
+          "educationArea": "Öğretim İlke ve Yöntemleri"
+        },
+        {
+          "sourceNumber": 15,
+          "question": "Türkiye’nin bölgelere göre fiziki yapısıyla ilgili verilecek bilgilerde, harita ve görsel araç gereçleri kullanarak dersini anlatan Gönül Öğretmen, hangi öğretim ilkesini temel almıştır?",
+          "choices": {
+            "A": "Ekonomiklik",
+            "B": "Açıklık",
+            "C": "Somuttan soyuta",
+            "D": "Bütünlük",
+            "E": "Bilinenden bilinmeyene"
+          },
+          "answer": "B",
+          "explanation": "",
+          "id": "pdf_ogretim_15",
+          "educationArea": "Öğretim İlke ve Yöntemleri"
+        },
+        {
+          "sourceNumber": 16,
+          "question": "Öğrenme-Öğretme sürecinde; - Belli bir etkinlikte birçok kazanımın amaçlanması - Zamanın etkin kullanımı - Uygun yöntem ve tekniğin seçilerek az emekle hedefe ulaşılması - Eldeki imkânların ihtiyaca göre düzenlenip organize edilmesi - Araç - gereç kullanımıyla kısa sürede birden çok kazanıma ulaşılmaya çalışılması, aşağıdaki öğretim ilkelerinden hangisinin uygulanmasına dönüktür?",
+          "choices": {
+            "A": "Ekonomiklik",
+            "B": "Bütünlük",
+            "C": "Açıklık",
+            "D": "Somuttan soyuta",
+            "E": "Bilgi ve becerileri güvence altına alma"
+          },
+          "answer": "A",
+          "explanation": "",
+          "id": "pdf_ogretim_16",
+          "educationArea": "Öğretim İlke ve Yöntemleri"
+        },
+        {
+          "sourceNumber": 17,
+          "question": "Öğrenen merkezli program tasarımını temel alan çocuk merkezli, yaşantı merkezli, hümanist tasarımlarda her öğrencinin ilgi, yetenek, zekâ seviyesi, fizyolojik ve ruhsal özellikleri bakımından birbirinden farklı olduğunu kabul ederek programlar düzenlenir. Buna göre, bu program tasarımlarında temel alınan öğretim ilkesi aşağıdakilerden hangisidir?",
+          "choices": {
+            "A": "Aktüalite",
+            "B": "Öğrenciye görelik",
+            "C": "Sosyallik",
+            "D": "Açıklık",
+            "E": "Bütünlük"
+          },
+          "answer": "B",
+          "explanation": "",
+          "id": "pdf_ogretim_17",
+          "educationArea": "Öğretim İlke ve Yöntemleri"
+        },
+        {
+          "sourceNumber": 18,
+          "question": "Bir sınıf öğretmeni ders başında “Birazdan gruplar hâlinde farklı çalışmalar yapabileceğimiz çalışma köşeleri oluşturacağız, herkes hangi çalışma köşesinde çalışmak istediğini seçebilecek. Seçtiği köşede konu ile ilgili düşüncelerini yazılı, görsel çeşitli şekillerde nasıl yansıtabileceğine grupça sizler karar vereceksiniz. Ancak bu süreçte sizden istediğim grupla çalışma kurallarına uymanız ve verdiğim sürede çalışmanızı tamamlamanızdır.” açıklamasını yapmıştır. Bu açıklama aşağıdaki öğretim ilkelerinden hangisi ile daha fazla ilişkilidir?",
+          "choices": {
+            "A": "Bütünlük",
+            "B": "Yaşama yakınlık",
+            "C": "Açıklık (ayanilik)",
+            "D": "Güncellik",
+            "E": "Sosyallik"
+          },
+          "answer": "E",
+          "explanation": "",
+          "id": "pdf_ogretim_18",
+          "educationArea": "Öğretim İlke ve Yöntemleri"
+        },
+        {
+          "sourceNumber": 19,
+          "question": "Bir sınıf öğretmeninin matematik dersinde çıkarma işlemi öğretiminde önce tek sonra iki basamaklı sayılarla işlemler yaptırması sonra “onluk” bozarak yapılan çıkarma işlemlerine geçmesi aşağıdaki öğretim ilkelerinden hangisinin gereğidir?",
+          "choices": {
+            "A": "Bilinenden bilinmeyene",
+            "B": "Basitten karmaşığa",
+            "C": "Güncellik",
+            "D": "Bütünlük",
+            "E": "Sosyallik"
+          },
+          "answer": "B",
+          "explanation": "",
+          "id": "pdf_ogretim_19",
+          "educationArea": "Öğretim İlke ve Yöntemleri"
+        },
+        {
+          "sourceNumber": 20,
+          "question": "Dersini belirlenen sürede bitiremeyen öğretmenin derslerinde konunun dışına çıktığı, gereksiz örnekler verip sohbetler yaptığı tespit edilmiştir. Bu durum öğretmenin hangi öğretim ilkesi ile çeliştiğini gösterir?",
+          "choices": {
+            "A": "Hedefe görelilik",
+            "B": "Sosyallik",
+            "C": "Yaşama yakınlık",
+            "D": "Aktüalite",
+            "E": "Somuttan soyuta"
+          },
+          "answer": "A",
+          "explanation": "",
+          "id": "pdf_ogretim_20",
+          "educationArea": "Öğretim İlke ve Yöntemleri"
+        }
+      ]
+    },
+    {
+      "id": "edu_pdf_program",
+      "title": "Program Geliştirme, Sınıf Yönetimi ve Öğretim Teknolojileri",
+      "questions": [
+        {
+          "sourceNumber": 1,
+          "question": "Arapça, Farsça ve Türkçenin bir araya gelerek Osmanlıcayı, Arap müziği ve Türk müziğinin bir araya gelerek arabesk müziği ortaya çıkarması hangi kültürel süreçle ifade edilir?",
+          "choices": {
+            "A": "Kültürleşme",
+            "B": "Kültürlenme",
+            "C": "Kültür şoku",
+            "D": "Zoraki kültürleme",
+            "E": "Gelişigüzel kültürleme"
+          },
+          "answer": "B",
+          "explanation": "Bir toplumun, alt kültürlerinden ya da farklı toplumlarından kopup gelen birey ve grupların buluşması, etkileşim sonunda da asıl kültür ve alt kültürde bulunmayan yeni bir senteze varılması \"kültürlenme\"dir.",
+          "id": "pdf_program_01",
+          "educationArea": "Program Geliştirme"
+        },
+        {
+          "sourceNumber": 2,
+          "question": "Kültürleme; ailede, sokakta ve hemen her yerde bilinçli ya da bilinç dışı öğrenmeleri kapsar. Buna göre kültürlemenin bilinçli bir şekilde yapılma süreci aşağıdakilerden hangisidir?",
+          "choices": {
+            "A": "İnformal eğitim",
+            "B": "Formal eğitim",
+            "C": "Öğrenme",
+            "D": "Kültürleşme",
+            "E": "Kültürel yayılma"
+          },
+          "answer": "B",
+          "explanation": "Belli bir plana dayalı olan, temelini bilimsellikten alan, sistemli olarak gerçekleştirilen eğitsel etkinlik \"formal eğitim\"dir. Yani kültürleme sürecinin planlı yapılmasıdır. Formal eğitim; planlı, programlı, amaçlı, kurumlu, uzmanlı olduğu gibi strateji, yöntem ve teknikler kullanılarak belli bir zaman diliminde gerçekleşir.",
+          "id": "pdf_program_02",
+          "educationArea": "Program Geliştirme"
+        },
+        {
+          "sourceNumber": 3,
+          "question": "- Bireyin ve toplumun istek ve ihtiyaçları doğrultusunda düzenlenmiştir. - Yaşam boyu öğrenme anlayışına katkı sağlar. - Bireyler ilgi duydukları herhangi bir konuda eğitimini tamamlayıp sertifika almaya hak kazanır. - Daha çok bireysel tercihlere ve gönüllülük esasına dayalı olarak verilir. Özellikleri verilen eğitim türü aşağıdakilerden hangisidir?",
+          "choices": {
+            "A": "Yaygın eğitim",
+            "B": "Örgün eğitim",
+            "C": "Formal eğitim",
+            "D": "İnformal eğitim",
+            "E": "Hizmet içi eğitim"
+          },
+          "answer": "A",
+          "explanation": "Yaygın eğitim planlı eğitim anlamına gelen formal eğitimin bir alt türüdür. Yaygın eğitimde bireysel ve toplumsal ihtiyaçlar dikkate alınır. Bireyler kendi tercihlerine dayalı olarak bu eğitimden faydalanabilir. yaygın eğitimi başarıyla tamamlayan bireyler sertifika almaya hak kazanır.",
+          "id": "pdf_program_03",
+          "educationArea": "Program Geliştirme"
+        },
+        {
+          "sourceNumber": 4,
+          "question": "Eğitim sadece okullarda yapılan çalışmalarla ilgili değildir. Birey örgün eğitim kurumlarına başlamadan, örgün eğitim kurumlarına devam ederken veya örgün eğitim kademelerini bitirdikten sonra da sosyal amaçlarla kişisel gelişimine yönelik olarak çeşitli kurslarda eğitim alabilir. Sözü edilen bu eğitim türü aşağıdakilerden hangisine uygundur?",
+          "choices": {
+            "A": "İş başında eğitim",
+            "B": "Halk eğitimi",
+            "C": "Hizmet-içi eğitim",
+            "D": "İnformal eğitim",
+            "E": "Hizmet öncesi eğitim"
+          },
+          "answer": "B",
+          "explanation": "Halk eğitimi kurslarda verilen sosyal amaçlı ve kişisel gelişim odaklı eğitim türüdür. Herkese açıktır. Dileyen herkes hayatının her anında halk eğitimi alma şansını kullanabilir.",
+          "id": "pdf_program_04",
+          "educationArea": "Program Geliştirme"
+        },
+        {
+          "sourceNumber": 5,
+          "question": "2023 Eğitim Vizyonu’nda ilkokuldan başlanarak tüm öğretim kademelerinde, “Tasarım-Beceri Atölyeleri” kurulması ön görülmüştür. Öğretmenlere bu atölyelerin amaç, içerik ve süreçleri ile ilgili eğitimler planlanmıştır. Yukarıda verilen eğitimler, aşağıdaki kavramlardan hangisiyle ifade edilir?",
+          "choices": {
+            "A": "İş başında eğitim",
+            "B": "Bilişsel çıraklık",
+            "C": "Hizmet içi eğitim",
+            "D": "Hizmet öncesi eğitim",
+            "E": "Mikro öğretim"
+          },
+          "answer": "C",
+          "explanation": "Görevde olan personele kariyerini devam ettirmek, mesleki anlamda daha üst düzeyde nitelik kazandırmak için verilen eğitim \"ileri mesleki eğitim\"dir. Amaç, mesleki yeterlilikleri yükseltmek ve mesleki eksiği gidermektir. Bu da hizmet içi eğitim kapsamında yer almaktadır.",
+          "id": "pdf_program_05",
+          "educationArea": "Program Geliştirme"
+        },
+        {
+          "sourceNumber": 6,
+          "question": "Eğitim kurumlarında belli bir zaman diliminde gerçekleşen planlı, örgütlü faaliyetlerin tümü aşağıdaki kavramlardan hangisi ile ifade edilir?",
+          "choices": {
+            "A": "Öğrenme",
+            "B": "Eğitim",
+            "C": "Öğretme",
+            "D": "Öğretim",
+            "E": "Hizmet içi eğitim"
+          },
+          "answer": "D",
+          "explanation": "Eğitimin planlı ve örgütlenmiş boyutuna \"öğretim\" denir. Öğretim formal eğitim sürecinde yer alır. Eğitim kurumlarında planlı, denetimli, sistemli, örgütlenmiş olarak gerçekleşir.",
+          "id": "pdf_program_06",
+          "educationArea": "Program Geliştirme"
+        },
+        {
+          "sourceNumber": 7,
+          "question": "- Bir annenin kızına sufle yapmayı öğrenmede yardımcı olması - Matematikte başarılı olan Cem'in arkadaşına ortak sınavlar için ders çalıştırması Yukarıda verilen durumlar, hangi kavram ile ifade edilir?",
+          "choices": {
+            "A": "Öğretme",
+            "B": "Öğrenme",
+            "C": "Eğitim",
+            "D": "Öğretim",
+            "E": "Halk eğitim"
+          },
+          "answer": "A",
+          "explanation": "Öğrenmeyi sağlama etkinliğine \"öğretme\" denir. İstendik davranışlar kazanılacağı gibi istenmedik davranışlar da kazanılabilir. Öğretme aynı zamanda öğrenmeyi kılavuzlama işidir.",
+          "id": "pdf_program_07",
+          "educationArea": "Program Geliştirme"
+        },
+        {
+          "sourceNumber": 8,
+          "question": "Olumlu benlik algısını geliştirme, güçlü ve zayıf yönlerini fark etme, empati yeteneğini geliştirme, insanlarla kolay anlaşabilme gibi özellikleri öğrencilere kazandırmaya çalışan çağdaş eğitim, öğrenci kişilik hizmetleriyle bu amaçları gerçekleştirmeye çalışır. Bu durum, eğitimin hangi işlevi ile ele alınır?",
+          "choices": {
+            "A": "Bireysel",
+            "B": "Sosyal",
+            "C": "Ekonomik",
+            "D": "Siyasal",
+            "E": "Gizil"
+          },
+          "answer": "A",
+          "explanation": "Bireyin kendini gerçekleştirmesine yardım etmek, bireyin kendi potansiyelinin farkına varmasını sağlamak eğitimin bireysel işlevidir. Aynı zamanda bireyin bilişsel, devinişsel, duyuşsal yönlerini geliştiren işlevdir. Böylelikle, eğitim faaliyetlerini bireyin ilgi ve gereksinimlerine göre düzenleyerek ileride yapacağı bir mesleğin gerekli nitelikleri kazandırılır.",
+          "id": "pdf_program_08",
+          "educationArea": "Program Geliştirme"
+        },
+        {
+          "sourceNumber": 9,
+          "question": "''Eğitimde çoklu zekâ uygulamaları, insanların tüm yönleriyle geliştirilmesi dikkate alınarak düzenlenir. Hatta okullarda verilen sosyal beceri eğitimi, eğitsel kulüp çalışmaları, spor aktiviteleri de bu amaç içindir.'' diyen öğretmen, eğitim sürecinin hangi özelliği ile ilgilidir?",
+          "choices": {
+            "A": "Süreklilik",
+            "B": "Kapsamlılık",
+            "C": "Çok boyutluluk",
+            "D": "Bilimsellik",
+            "E": "Sosyalleşmeyi sağlama"
+          },
+          "answer": "C",
+          "explanation": "İnsan sadece zihinsel yönü olan bir varlık değildir; insan aynı zamanda duyuşsal, fiziksel yönü de olan bir varlıktır. Dolayısıyla tüm bu yönlerini geliştirmeyi amaç edinme, eğitimin çok boyutluluk özelliğidir.",
+          "id": "pdf_program_09",
+          "educationArea": "Program Geliştirme"
+        },
+        {
+          "sourceNumber": 10,
+          "question": "Girdilerin, işlemler bölümünün hedefler doğrultusunda biçimlendirilip oluşturulmasının sonunda ortaya çıkan ürünlerin tümüne sistemde \"çıktı\" denir. Buna göre aşağıdakilerden hangisi çıktıya örnektir?",
+          "choices": {
+            "A": "Nitelikli insan gücü / eğitimin hatalı yan ürünleri / elde edilen gelir / öğrencinin sayısı",
+            "B": "Pekiştireç / ipucu / dönüt / düzeltme",
+            "C": "Öğrenci katılganlığı / öğrenci sayısı",
+            "D": "Öğrenci / para / personel",
+            "E": "Eğitim teknolojisi / öğretim materyalleri / araç gereç"
+          },
+          "answer": "A",
+          "explanation": "Nitelikli insan gücü, eğitim sırasında kazanılan istenmedik davranışlar, mezun ya da sistemden çıkan öğrenci sayısı işlemin sonucunda kazanılanlardır. Dolayısıyla eğitime sistem olarak bakıldığında çıktıya karşılık gelir.",
+          "id": "pdf_program_10",
+          "educationArea": "Program Geliştirme"
+        },
+        {
+          "sourceNumber": 11,
+          "question": "Eğitim bireyin davranışlarında kendi yaşantısı yoluyla, kasıtlı olarak istendik değişmeler meydana getirme sürecidir. Planlı, kasıtlı ve istendik sonuçlara dönük bir eğitimin gerçekleşebilmesi için ilk akla gelen soru “öğrencilerin neleri yapabilir duruma gelmeleri gerektiğidir.” Bu sorunun cevabı aşağıdakilerin hangisinde tanımlanmıştır?",
+          "choices": {
+            "A": "Eğitim hedefleri",
+            "B": "Sosyal kültür",
+            "C": "Öğrenme yaşantıları",
+            "D": "Eğitim sistemi girdileri",
+            "E": "Ön öğrenmeler"
+          },
+          "answer": "A",
+          "explanation": "Eğitimin tanımında yer alan istendik kavramı eğitimin bireyin, toplumun ve konu alanının ve hatta doğanın beklenti, ihtiyaç ve özelliklerine uygun hedeflere yönelik olmasına işaret eder. Eğitim hedefleri öğrencilerin hangi becerileri kazanacağı, neleri yapabilir duruma gelmeleri gerektiğinin açıklayıcısıdır. Çözüme götüren anahtar kavramlar: İstendik, eğitim hedefleri, öğrencilerin neleri yapabilir duruma geleceği.",
+          "id": "pdf_program_11",
+          "educationArea": "Program Geliştirme"
+        },
+        {
+          "sourceNumber": 12,
+          "question": "MEB'in eğitim programında değişikliğe gitmesi ve çağdaş eğitim anlayışını benimsemesi, Türk millî eğitiminin yapısıyla ilgili aşağıdakilerden hangisini doğrular?",
+          "choices": {
+            "A": "Eğitim sistemi üzerinde gelişigüzel uygulamalar hâkimdir.",
+            "B": "Sistem amaca hizmet edemediği için çöküp dağılmaması amacıyla değişim yapılmıştır.",
+            "C": "Yeterli girdi işlem ve çıktıya sahip olduğunu gösterir.",
+            "D": "Sistemin ögeleri, toplumun gereksinimleri temel alınarak düzenlenir.",
+            "E": "Sistemin açık sistem özelliği taşıması eğitim uygulamalarındaki verimi, yenileşmeyi ve amaca ulaşabilirliği kolaylaştırır."
+          },
+          "answer": "E",
+          "explanation": "MEB'in eğitim programında değişikliğe gidip çağdaş eğitim anlayışını benimsemesinin en önemli nedeni açık sistem özelliği taşımasıdır. Açık sistemde de dönüt vardır. Dolayısıyla eğitim uygulamalarındaki verimi, yenileşmeyi ve amaca ulaşılabilirliği kolaylaştırır.",
+          "id": "pdf_program_12",
+          "educationArea": "Program Geliştirme"
+        },
+        {
+          "sourceNumber": 13,
+          "question": "Karadeniz'de yaşayan çocuğun ailesinden Lazca öğrenmesi ancak okula başladığında planlı ve sistemli olarak eğitsel çabayla Türkçe okuma yazmayı öğrenmesi aşağıdaki kültürel süreçlerden hangisine örnektir?",
+          "choices": {
+            "A": "Gelişigüzel kültürleme / Kasıtlı kültürleme",
+            "B": "Kültürleşme / Kültürlenme",
+            "C": "Zoraki kültürleme / Kültürlenme",
+            "D": "Kültürel özümseme / Kültür şoku",
+            "E": "Kasıtlı kültürleme / Kültürel özümseme"
+          },
+          "answer": "A",
+          "explanation": "Kültürel değerlerin bireylere sistemsiz, plansız, gelişigüzel yöntemlerle benimsetilmesi gelişigüzel kültürleme; okullarda gerçekleşen formal eğitimle aktarılanlar ise kasıtlı kültürlemedir.",
+          "id": "pdf_program_13",
+          "educationArea": "Program Geliştirme"
+        },
+        {
+          "sourceNumber": 14,
+          "question": "- Bizim toplumumuzda öğretmenlerin ve doktorların toplum içindeki saygınlığı önemlidir. - Üniversitede tanışıp sonradan evliliğe adım atan bireyler vardır. Bu örnekler, eğitimin işlevlerinden hangisiyle ifade edilir?",
+          "choices": {
+            "A": "Siyasal",
+            "B": "Ekonomik",
+            "C": "Gizil",
+            "D": "Bireysel",
+            "E": "Sosyal"
+          },
+          "answer": "C",
+          "explanation": "Eğitimin resmî programlarında yer almayan farkındalık düzeyinin dışında örtük bir şekilde yerine getirdiği işlev gizildir. Bu işlev, diğer işlevler yerine getirilirken kendiliğinden ortaya çıkar.",
+          "id": "pdf_program_14",
+          "educationArea": "Program Geliştirme"
+        },
+        {
+          "sourceNumber": 15,
+          "question": "Türkiye'de bazı bölgelerde göç nedeniyle okullarda öğrenci yoktur. Yine bazı yerlerde de okul vardır ama öğretmen istihdamı yoktur. Bu durumlar eğitimde hangi sistemle ifade edilir?",
+          "choices": {
+            "A": "Yarı açık",
+            "B": "Açık",
+            "C": "Kapalı",
+            "D": "Çağdaş",
+            "E": "İlerlemeci"
+          },
+          "answer": "C",
+          "explanation": "Paragrafta dönütün yanı sıra yeterli girdisi ve çıktısı bulunmayan bir sistem anlatılmaktadır. Bu da kapalı sistemdir. Sistemde hiçbir şekilde dönüt olmadığı için gelişim ve değişimden de söz edilmez. Dolayısıyla bir süre sonra sistem çöker (entropik).",
+          "id": "pdf_program_15",
+          "educationArea": "Program Geliştirme"
+        },
+        {
+          "sourceNumber": 16,
+          "question": "Aşağıdakilerden hangisi informal eğitimin özelliklerinden değildir?",
+          "choices": {
+            "A": "Zaman yönünden geniş kapsamlıdır. Doğumdan ölüme kadar devam eder.",
+            "B": "Doğal ortamda kendiliğinden meydana gelir; yer, mekân ve eğitimin gerçekleştiği ortam belli değildir.",
+            "C": "Eğitimi planlayabilmek için materyal, araç-gereç kullanılır.",
+            "D": "Davranış olumlu ve olumsuz yönde gerçekleşebilir.",
+            "E": "Öğreticiler profesyonel değildir."
+          },
+          "answer": "C",
+          "explanation": "İnformal eğitimde ders araç gereci kullanma, eğitim planlama yapma zorunlu bir koşul değildir. Planlamaya dayalı eğitim formaldir. Oysa diğer seçenekler belirli amaca yönelik olmadan yaşam içinde kendiliğinden gerçekleşen istendik ya da istenmedik davranışların kazanıldığı informal eğitimin özelliğidir.",
+          "id": "pdf_program_16",
+          "educationArea": "Program Geliştirme"
+        },
+        {
+          "sourceNumber": 17,
+          "question": "Örgün ve yaygın eğitimle ilgili olarak aşağıdakilerden hangisi yanlıştır?",
+          "choices": {
+            "A": "Örgün eğitim okula dayalı ve hiyerarjik bir yapıya bağlıdır.",
+            "B": "Tüm bireylerin yaygın eğitim alma hakkı vardır.",
+            "C": "Örgün eğitim uzun sürelidir, diploma alınır.",
+            "D": "Örgün eğitim ön koşulla öğrenme alanlarına göre verilir.",
+            "E": "Yaygın eğitim, okulun çatısı altında, millî eğitimin temel amaçları doğrultusunda verilir."
+          },
+          "answer": "E",
+          "explanation": "Okul çatısı altında (bir mekânda) millî eğitimin temel amaçları doğrultusunda eğitim verme, örgün eğitimin özelliğidir; yaygın eğitimin özelliği değildir. Belirli yaş grubundaki bireylere eğitim öğretim programları kapsamında, yasalara bağlı, aşamalı-kademeli olarak verilen eğitim örgün; kişisel yetenek ve ilgilerin geliştirilmesinde, toplumun ilgi, ihtiyaç ve isteklerine göre düzenlenen, gönüllülük esasına dayanan eğitim ise yaygındır.",
+          "id": "pdf_program_17",
+          "educationArea": "Program Geliştirme"
+        },
+        {
+          "sourceNumber": 18,
+          "question": "Matematik öğretmeni Ceren, sınıfta yaptığı sınav sonucunda öğrencilerinin istediği düzeye ulaşamadığını görünce yöntem tekniğini değiştirmiştir. Ceren Öğretmen'in bu davranışı eğitim sisteminin hangi ögesiyle ilgilidir?",
+          "choices": {
+            "A": "Girdi",
+            "B": "İşlem",
+            "C": "Çıktı",
+            "D": "Dönüt",
+            "E": "Ürün"
+          },
+          "answer": "D",
+          "explanation": "Öğretmen, çıktıdaki değişimi değerlendirip sürece geri dönmüştür. Bu da eğitim sisteminin dönüt basamağıdır. Dönüt: Sistemin çıktılarına göre girdi veya işlem boyutunda iyileştirme amacıyla yapılan çalışmalardır. Böylelikle sistemin devamlılığı sağlanır.",
+          "id": "pdf_program_18",
+          "educationArea": "Program Geliştirme"
+        },
+        {
+          "sourceNumber": 19,
+          "question": "Öğrenme faaliyetlerini kılavuzlayarak öğrenmeyi öğreten yapılandırmacı bir öğretmen aşağıdaki kavramlardan hangisini gerçekleştirir?",
+          "choices": {
+            "A": "Öğrenme",
+            "B": "Öğretme",
+            "C": "Öğretim",
+            "D": "Eğitim",
+            "E": "Öğretim programı"
+          },
+          "answer": "B",
+          "explanation": "Öğrenme faaliyetlerini yönlendirip çevrenin düzenlenmesinde kılavuzluk eden öğretmen, öğretme işini yapar. Öğretme ile öğrenme sağlandığı gibi bilinçli ve amaçlı bir etkinlik gerçekleştirilir.",
+          "id": "pdf_program_19",
+          "educationArea": "Program Geliştirme"
+        }
+      ]
+    },
+    {
+      "id": "edu_pdf_olcme",
+      "title": "Ölçme ve Değerlendirme",
+      "questions": [
+        {
+          "sourceNumber": 1,
+          "question": "Ölçme ve değerlendirme birbiri ile bağlantılı ancak önemli bazı özellikler yönünden de birbirinden net olarak ayrılan iki süreçtir. Aşağıdakilerden hangisi ölçme ve değerlendirme süreçleri ile ilgili yanlış bir ifadedir?",
+          "choices": {
+            "A": "Ölçme; tanılama ve tespit etme, değerlendirme ise bu tespitlerin karara ulaşma aşamasıdır.",
+            "B": "Ölçme işlemi doğrudan, dolaylı ve türetilmiş olmak üzere üç farklı şekilde yapılabilir.",
+            "C": "Mutlak ölçme düzenekleri sadece mutlak ölçütle değerlendirilirken bağıl ölçme düzenekleri sadece bağıl ölçüt ile değerlendirilebilir.",
+            "D": "Değerlendirmenin sağlıklı ve doğru sonuçlar verebilmesi için ölçme sürecinden gelen verilerin güvenilir ve geçerli olması gerekir.",
+            "E": "Ölçme süreci, değerlendirme sürecinden önce yapılarak bu sürece dayanak sağlar."
+          },
+          "answer": "C",
+          "explanation": "A) Ölçme bir tanılama, değerlendirme ise bir karar verme sürecidir. B) Ölçme doğrudan, dolaylı ve türetilmiş olabilir, değerlendirmeler ise mutlak ve bağıl olarak ayrılabilir. C) Ölçmenin mutlak ve bağıl olmasıyla değerlendirmenin mutlak veya bağıl olması arasında hiçbir bağlantı yoktur. Bir ölçme mutlak olduğu hâlde bağıl ölçütle değerlendirilebilir. Örnek = Öğrencilerin boyları 1.80 cm, 1.82 cm gibi değerler alarak mutlak ölçme oluşturur. Sınıftaki öğrencilerin bu boy verileri üzerinden “En uzun boylu üç öğrenci basketbol takımına seçildi.” diyerek bağıl değerlendirme yapılabilir. D) Ölçmenin geçerli ve güvenilir olması değerlendirmeyi olumlu etkiler. E) Ölçme, değerlendirme için dayanak sağlar.",
+          "id": "pdf_olcme_01",
+          "educationArea": "Ölçme ve Değerlendirme"
+        },
+        {
+          "sourceNumber": 2,
+          "question": "İlköğretim 4. sınıf öğretmeni Nazan Hanım, öğrencilerinin puanlarını birbiri ile karşılaştırarak öğrencilerin beceri düzeylerini kıyaslamıştır. Kıyaslama sonucunda Can’ın en yüksek puanı elde ettiğini görmüştür. Nazan Öğretmen’in incelemesini aşağıdaki kavramlardan hangisi ile doğrudan ilişkilendirebiliriz?",
+          "choices": {
+            "A": "Ölçme",
+            "B": "Ölçüt belirleme",
+            "C": "Ölçme kuralı belirleme",
+            "D": "Değerlendirme",
+            "E": "Puanlama"
+          },
+          "answer": "A",
+          "explanation": "Öğrenci başarılarını birbiri ile kıyaslayarak “Can en başarılı, Ali 2. en başarılı.... demek” sıralama ölçeği ile ölçme oluşturur. Bu sorudaki kuvvetli çeldirici D seçeneğindeki değerlendirmedir. Ancak şuna dikkat edelim: Değerlendirme için ölçme sonuçlarının ölçütle karşılaştırılması gerekir. Oysa soru kökünde ölçme sonuçları birbirleri ile karşılaştırılmıştır.",
+          "id": "pdf_olcme_02",
+          "educationArea": "Ölçme ve Değerlendirme"
+        },
+        {
+          "sourceNumber": 3,
+          "question": "Öğrenciler hakkında geçti/kaldı, yeterli düzeyde/yetersiz düzeyde gibi kararların verilebilmesi için aşağıdaki süreçlerin hangisine her durumda gerek olmayabilir?",
+          "choices": {
+            "A": "Gözlem veya sınav gibi değişik yöntemlerle öğrenci becerilerinin ölçülmesine",
+            "B": "Elde edilen ölçme sonuçlarının birbiri ile karşılaştırılmasına",
+            "C": "Ölçüm için ölçme kuralının her bir öğrenci için aynı sistemle korunması ve bu ölçme kuralına bağlı kalınmasına",
+            "D": "Ölçme sonuçlarının ölçütle karşılaştırılmasına",
+            "E": "Karar alınması için bir ölçütün işe koşulmasına"
+          },
+          "answer": "B",
+          "explanation": "Soru kökünde tanımlanan durum değerlendirme sonucudur. Değerlendirme sonucuna ulaşmak için; A) Ölçme yapmak şarttır. B) Eğer bağıl değerlendirme yapılmıyorsa öğrenci puanlarının karşılaştırılmasına gerek yoktur. C) Ölçme kuralının herkes için aynı olması şarttır. D) Ölçütle karşılaştırma şarttır. E) Ölçütün işe koşulması şarttır.",
+          "id": "pdf_olcme_03",
+          "educationArea": "Ölçme ve Değerlendirme"
+        },
+        {
+          "sourceNumber": 4,
+          "question": "Eğitim sürecinde öğrenci becerilerinin ve özelliklerinin tespit edilmesinde aşağıdaki kavramlardan hangisine ihtiyaç yoktur?",
+          "choices": {
+            "A": "Hangi özelliğin ölçüleceğinin belirlenmesine",
+            "B": "Özelliğin hangi ölçme kuralı ile ölçüleceğinin belirlenmesine",
+            "C": "Doğrudan veya dolaylı ölçmeye karar verilmesine",
+            "D": "Ölçütü işe koşarak karar verilmesine",
+            "E": "Ölçmenin ne amaçla yapılacağının belirlenmesine"
+          },
+          "answer": "D",
+          "explanation": "Amaçların Belirlenmesi (Ölçme bilgisinin düzeyini belirleme) Test Tipinin Belirlenmesi (Çoktan seçmeli) Ölçme Kuralının Belirlenmesi (100 soru, her soru 1 puan) Ölçme Sınav Yapma (Uygulama) Puanlama (Elde okuma) Ölçme Sonucu (Ayşe= 60 puan) Ölçüt (50 puan alan geçer) Ölçütle Karşılaştırma (60 > 50) Değerlendirme Ayşe Ölçüt Karar (Ayşe geçti) Soru kökünde ölçme tanımlanmıştır. Ölçme yapmak için; A) Amaçların belirlenmesi gerekir. B) Ölçme kuralını belirlemek gerekir. C) Doğrudan veya dolaylı ölçme yapmak gerekir. D) Ölçme için ölçüt gerekli değildir. E) Amaçların belirlenmesi gereklidir.",
+          "id": "pdf_olcme_04",
+          "educationArea": "Ölçme ve Değerlendirme"
+        },
+        {
+          "sourceNumber": 5,
+          "question": "Aşağıdakilerden hangisi bir ölçme kuralını ifade etmemektedir?",
+          "choices": {
+            "A": "Yapılacak olan sınavın süresi 40 dakikadır.",
+            "B": "Sınavdan alınabilecek tam puan 100’dür.",
+            "C": "Sınavda 10 soru vardır ve her soru 1 puandır.",
+            "D": "1. ve 2. sorular kendi aralarında seçimlik sorulardır. Her öğrenci 1. ve 2. sorulardan istediği bir tanesini cevaplayacaktır.",
+            "E": "100 tam puan üzerinden 50 puan alan başarılı sayılır."
+          },
+          "answer": "E",
+          "explanation": "Ölçme kuralı, ölçmenin nasıl yapılacağının kuralıdır. Sınavın soru sayısı, süresi vb. ölçmenin kuralıdır. Ancak E seçeneği ölçme kuralı değil, ölçüttür. Ölçüt, ölçmenin kuralı değil, değerlendirmenin kuralıdır.",
+          "id": "pdf_olcme_05",
+          "educationArea": "Ölçme ve Değerlendirme"
+        },
+        {
+          "sourceNumber": 6,
+          "question": "Aşağıdaki ifadelerden hangisi değerlendirme sonucu içermeyen sadece ölçme bilgisi veren bir cümledir?",
+          "choices": {
+            "A": "Ayşe, ALES’ten yeterli puanı alarak yüksek lisansa başvurdu.",
+            "B": "Notları yeterli bulunan Cansu’nun bursu kesilmedi.",
+            "C": "Ayça, yapılan fizik sınavından en yüksek puanı aldı.",
+            "D": "Adnan’ın yaşı okula başlama yaşının altında olduğu için 1. sınıfa kaydı yapılmadı.",
+            "E": "Hava kirliliği kritik seviyenin üstüne çıktığı için belediye yöneticileri kırmızı alarm verdi."
+          },
+          "answer": "C",
+          "explanation": "A) Değerlendirmedir. B) Değerlendirmedir. C) Bazen en yüksek puanı alan kişi de başarısız sayılabilir. Ayça’nın en yüksek puanı alması değerlendirme değil, sıralama ölçeği düzeyinde ölçmedir. D) Değerlendirmedir. E) Değerlendirmedir.",
+          "id": "pdf_olcme_06",
+          "educationArea": "Ölçme ve Değerlendirme"
+        },
+        {
+          "sourceNumber": 7,
+          "question": "I. Sınıflama ölçeklerinde kullanılan değişkenler sürekli olduğu hâlde, sıralama ölçeklerinde kullanılan değişkenler süreksiz olarak ifade edilir. II. Sıralama ölçekleri, sınıflanmış değişkenleri belli bir özellik yönünden hiyerarşik olarak ifade ettiği için sınıflama ölçeklerine göre daha fazla ölçme bilgisi verir. III. Sınıflama ölçeklerinde sadece sınıflama yapıldığından aritmetik ortalama hesaplanamaz. Oysa sıralama ölçeklerinde aritmetik ortalama hesaplanabilir. Yukarıda verilen sınıflama ve sıralama ölçekleriyle ilgili ifadelerden hangisi veya hangileri doğrudur?",
+          "choices": {
+            "A": "Yalnız I",
+            "B": "Yalnız II",
+            "C": "Yalnız III",
+            "D": "I ve III",
+            "E": "II ve III"
+          },
+          "answer": "B",
+          "explanation": "",
+          "id": "pdf_olcme_07",
+          "educationArea": "Ölçme ve Değerlendirme"
+        },
+        {
+          "sourceNumber": 8,
+          "question": "Aşağıdaki seçeneklerden hangisi sıralama ölçeği düzeyinde ölçme bilgisi vermektedir?",
+          "choices": {
+            "A": "Öğrencileri soyadlarının baş harflerine göre listelemek",
+            "B": "Öğrenci sınav sonuçlarını 100 tam puan üzerinden hesaplayarak 71 puan, 82 puan gibi sembollerle ifade etmek",
+            "C": "Vücutta oluşan bölünme türlerini mayoz bölünme, mitoz bölünme olarak ayırmak",
+            "D": "Askerî sistem içinde “asteğmen, teğmen, yüzbaşı, binbaşı, yarbay...vb.” rütbeler vermek",
+            "E": "Dağın yüksekliğini metre cinsinden belirlemek"
+          },
+          "answer": "D",
+          "explanation": "",
+          "id": "pdf_olcme_08",
+          "educationArea": "Ölçme ve Değerlendirme"
+        },
+        {
+          "sourceNumber": 9,
+          "question": "Eşit aralıklı ölçek ile oluşturulan ölçme bilgisi aşağıdakilerden hangisini göstermez?",
+          "choices": {
+            "A": "Ölçülen özelliğin nesnede ne miktarda bulunduğunun bilgisi",
+            "B": "Ölçülen özelliğin izafi sıfır noktasından ne denli yukarıda (yüksekte) bulunduğunun bilgisi",
+            "C": "Ölçülen iki özelliğin birbiri ile oransal karşılaştırma bilgisi",
+            "D": "Ölçülen özelliğin diğer nesnelere göre büyüklük yönünden karşılaştırma bilgisi",
+            "E": "Ölçülen özelliğin eşit aralık farkları ile ifade edilen niceliksel miktarı"
+          },
+          "answer": "C",
+          "explanation": "",
+          "id": "pdf_olcme_09",
+          "educationArea": "Ölçme ve Değerlendirme"
+        },
+        {
+          "sourceNumber": 10,
+          "question": "Eşit aralıklı ölçeklerde oransal karşılaştırma yapmak anlamlı sonuçlar veremez. Örneğin matematik testinden 60 puan almış öğrencinin, 30 puan almış öğrencinin iki katı matematik bilgisine sahip olduğu söylenemez. Yukarıda belirtilen durumun temel nedeni aşağıdakilerden hangisidir?",
+          "choices": {
+            "A": "Eşit aralıklı ölçmelerin kategorik değişkenlerle ifade edilmesi",
+            "B": "Ölçmenin başlangıç noktasının bağıl 0 noktasından başlaması",
+            "C": "Eşit aralıklı ölçmelerin subjektif olması",
+            "D": "Eşit aralıklı ölçmelerin kullanışlılığının düşük olması",
+            "E": "Eşit aralıklı ölçmelerde standart sapmanın hesaplanamaması"
+          },
+          "answer": "B",
+          "explanation": "",
+          "id": "pdf_olcme_10",
+          "educationArea": "Ölçme ve Değerlendirme"
+        },
+        {
+          "sourceNumber": 11,
+          "question": "Aşağıdaki ölçmelerden hangisi doğrudan ölçme özelliği taşıdığı hâlde, eşit aralıklı ölçme bilgisi vermektedir?",
+          "choices": {
+            "A": "Harun’un zekâ testi puanı 89’dur.",
+            "B": "Seçimlerde en çok oyu alan x partisidir.",
+            "C": "Halil, tarih testindeki soruların %80’ini doğru cevapladı.",
+            "D": "Uludağ’ın yüksekliği 2453 metredir.",
+            "E": "Okan’ın boyu 180 cm’dir."
+          },
+          "answer": "C",
+          "explanation": "",
+          "id": "pdf_olcme_11",
+          "educationArea": "Ölçme ve Değerlendirme"
+        },
+        {
+          "sourceNumber": 12,
+          "question": "Aşağıdaki cümlelerden hangisi hem doğrudan bir ölçmeyi hem de eşit oranlı ölçek düzeyinde belirlenimi ifade etmektedir?",
+          "choices": {
+            "A": "Ali, yarışın bitiş çizgisine 14 saniyede ulaşmıştır.",
+            "B": "Ayşe’nin ilgi tutum ölçeğinden elde ettiği puan sınıf ortalamasının üstündedir.",
+            "C": "Adnan, sınıftaki en uzun saçlı öğrencidir.",
+            "D": "Odanın sıcaklığı 25°C’dir.",
+            "E": "Ozan, proje ödevinden 100 üzerinden 90 puan almıştır."
+          },
+          "answer": "A",
+          "explanation": "",
+          "id": "pdf_olcme_12",
+          "educationArea": "Ölçme ve Değerlendirme"
+        },
+        {
+          "sourceNumber": 13,
+          "question": "Türkiye’nin illerinin hava sıcaklığı ortalamasını Meteoroloji Genel Müdürlüğü, santigrad birim sistemi üzerinden karşılaştırmış ve en sıcak ilin Urfa olduğunu açıklamıştır. Yukarıda verilen cümle ile ilgili aşağıdaki ifadelerden hangisi doğrudur?",
+          "choices": {
+            "A": "Sınıflama ölçeği düzeyindeki bilgiler eşit aralıklı ölçek düzeyinde yorumlanmıştır.",
+            "B": "Eşit aralıklı ölçek düzeyindeki bilgiler üzerinden değerlendirme yapılmıştır.",
+            "C": "Eşit oranlı ölçek düzeyindeki ölçme bilgileri eşit aralıklı ölçek düzeyine çevrilmiştir.",
+            "D": "Eşit aralıklı ölçek düzeyindeki ölçme bilgileri sıralama ölçeği düzeyinde yorumlanmıştır.",
+            "E": "Süresiz değişkenler, sürekli değişken olarak ifade edilmiştir."
+          },
+          "answer": "B",
+          "explanation": "",
+          "id": "pdf_olcme_13",
+          "educationArea": "Ölçme ve Değerlendirme"
+        },
+        {
+          "sourceNumber": 14,
+          "question": "Olcay Öğretmen’in 10/A sınıfına uyguladığı sınavın dağılım grafiğinde x ekseni öğrencilerin doğru cevap adedini, y ekseni ise frekansı göstermektedir. X ve Y eksenindeki ölçmeler sırasıyla hangi ölçek düzeyinde ölçme bilgisi vermektedir?",
+          "choices": {
+            "A": "Eşit aralıklı ölçek / Eşit oranlı ölçek",
+            "B": "Eşit oranlı ölçek / Eşit oranlı ölçek",
+            "C": "Sıralama ölçeği / Eşit oranlı ölçek",
+            "D": "Sınıflama ölçeği / Sıralama ölçeği",
+            "E": "Sıralama ölçeği / Sıralama ölçeği"
+          },
+          "answer": "B",
+          "explanation": "",
+          "id": "pdf_olcme_14",
+          "educationArea": "Ölçme ve Değerlendirme"
+        },
+        {
+          "sourceNumber": 15,
+          "question": "Ölçme sonuçlarının nicel veya nitel olmasının temel nedenleri arasında aşağıdakilerden hangisi yer almaz?",
+          "choices": {
+            "A": "Ölçme sonuçlarının ifade ediliş biçimi",
+            "B": "Ölçme sonuçlarının güvenirlik düzeyi",
+            "C": "Ölçmenin objektif ifade edilebilirliği",
+            "D": "Ölçme sürecinde araç kullanılması veya kullanılmaması",
+            "E": "Ölçme sonuçlarının duyarlılığının (hassasiyetinin) azalması veya artması"
+          },
+          "answer": "B",
+          "explanation": "",
+          "id": "pdf_olcme_15",
+          "educationArea": "Ölçme ve Değerlendirme"
+        },
+        {
+          "sourceNumber": 16,
+          "question": "“Sınıflama ölçeği”, “Sıralama ölçeği”, “Eşit aralıklı ölçek”, “Eşit oranlı ölçek” aşağıdaki kavramlardan hangisinin çeşitliliğini ve alt başlıklarını oluşturmaktadır?",
+          "choices": {
+            "A": "Değişken",
+            "B": "Değerlendirme",
+            "C": "Ölçme",
+            "D": "Ölçme kuralı",
+            "E": "Ölçüt"
+          },
+          "answer": "C",
+          "explanation": "",
+          "id": "pdf_olcme_16",
+          "educationArea": "Ölçme ve Değerlendirme"
+        },
+        {
+          "sourceNumber": 17,
+          "question": "Bir ölçme işleminin doğrudan veya dolaylı olmasını belirleyen unsur aşağıdakilerden hangisidir?",
+          "choices": {
+            "A": "Ölçmede araç kullanıp kullanılmadığı",
+            "B": "Ölçmenin mutlak veya bağıl sıfır noktasından başlaması",
+            "C": "Ölçmenin duyarlılık derecesi",
+            "D": "Ölçmenin güvenirlik derecesi",
+            "E": "Ölçülen özelliğin yapısı"
+          },
+          "answer": "E",
+          "explanation": "",
+          "id": "pdf_olcme_17",
+          "educationArea": "Ölçme ve Değerlendirme"
+        },
+        {
+          "sourceNumber": 18,
+          "question": "Aşağıdakilerden hangisi doğrudan ölçmeyi örneklendirir?",
+          "choices": {
+            "A": "Hava sıcaklığının termometre ile ölçülmesi",
+            "B": "Öğrencinin kompozisyon yazarken yaptığı yazım hatalarının sayılması",
+            "C": "Öğrencilerin zekâ düzeylerinin test ile belirlenmesi",
+            "D": "Öğrencilerin tarih bilgilerinin test ile ölçülmesi",
+            "E": "Fizik dersinde portfolyo dosyalarına rubrik ile puan verilmesi"
+          },
+          "answer": "B",
+          "explanation": "",
+          "id": "pdf_olcme_18",
+          "educationArea": "Ölçme ve Değerlendirme"
+        },
+        {
+          "sourceNumber": 19,
+          "question": "Bir çocuğun ateşinin alnına ellenerek yoklanması basit düzeyde bir ölçmedir. Aşağıdaki ölçmelerden hangisi yukarıdaki durumla benzeşen özellikler taşımaktadır?",
+          "choices": {
+            "A": "Bir defterin sayfa adedinin belirlenmesi",
+            "B": "Dikdörtgen biçimindeki tarlanın eni ve boyu ölçülerek alanının bulunması",
+            "C": "Saate bakarak zaman zamanın belirlenmesi",
+            "D": "Öğrencilerin psikomotor becerilerinin rubrik ile puanlanması",
+            "E": "Miladi takvim sistemi ile yılın belirlenmesi"
+          },
+          "answer": "D",
+          "explanation": "",
+          "id": "pdf_olcme_19",
+          "educationArea": "Ölçme ve Değerlendirme"
+        },
+        {
+          "sourceNumber": 20,
+          "question": "Lise öğrencisi Serhat yeni aldığı romanın ilk sayfasını açtığında ön söz ile karşılaşmıştır. 3 sayfa süren ön söz ve tanıtım bölümünden sonra asıl roman bölümünün başladığını görmüştür. Romanın asli bölümünün sayfaları 1, 2, 3, 4.... gibi sayılarla numaralandırılmıştır. Serhat, 30. sayfaya geldiğinde gerçekte kitabın en başından itibaren 33 sayfa çevrilmiş ve geçilmiştir. Yukarıdaki paragraf dikkate alındığında aşağıdakilerden hangisi doğru bir ifadedir?",
+          "choices": {
+            "A": "Serhat’ın okuduğu 30. sayfa olarak numaralandırılmış bölüm bağıl başlangıç noktasından hareketle tanımlanmış bir ölçmedir.",
+            "B": "1. sayfa, 2. sayfa gibi ifadeler sürekli değişken ile ifade edilen ölçmelerdir.",
+            "C": "Kitabın toplam yaprak sayısı hesaplandığında elde edilecek ölçme sonucu eşit aralıklı ölçek düzeyindedir.",
+            "D": "Kitabın sayfalarını numaralamak dolaylı ölçmedir.",
+            "E": "Kitabın sayfalarını numaralandırmak sınıflama ölçeği düzeyinde ölçme bilgisi verir."
+          },
+          "answer": "A",
+          "explanation": "",
+          "id": "pdf_olcme_20",
+          "educationArea": "Ölçme ve Değerlendirme"
+        }
+      ]
+    },
+    {
+      "id": "edu_pdf_rehberlik",
+      "title": "Rehberlik ve Özel Eğitim",
+      "questions": [
+        {
+          "sourceNumber": 1,
+          "question": "Rehberlik hizmetleri, çağdaş eğitim anlayışına geçilmesi ile birlikte eğitim – öğretim sistemi içerisinde kendisine yer bulmuş bir hizmettir. Bu hizmete neden gerek duyulduğunu anlayabilmek için geleneksel anlayış ile çağdaş anlayışın özelliklerini bilmek gerekmektedir. Çünkü geleneksel anlayışın ve çağdaş anlayışın bilinmemesi, rehberliğe neden gerek duyulduğunu anlamayı zorlaştırır. Bu doğrultuda, aşağıdakilerden hangisi geleneksel eğitim sistemi ile ilgili doğru bir değerlendirme olamaz?",
+          "choices": {
+            "A": "Öğrenci ile etkileşim sınırlı olup davranışçı anlayış tabanında yürütülmektedir.",
+            "B": "Öğretmen öğretici ve bilgi verici konumunda olup tekrarlar yolu ile öğrencinin çeşitli bilgi ve becerileri öğrenmesi sağlanır.",
+            "C": "Öğrencilere kendi bilgilerini oluşturmak yerine var olan bilgileri alıp kullanmaları önerilir.",
+            "D": "Başarının değerlendirmesinde önemli olan öğrencinin ne kadar çok öğrendiğidir.",
+            "E": "Öğrencilerin kendilerini sorgulamaları ve eleştirel düşünmeleri amaçlanır."
+          },
+          "answer": "E",
+          "explanation": "Geleneksel anlayış; öğretmeni ve öğretimi ön plana çıkaran, bireysel farklılıklara yer vermeyen, öğrenciyi yalnızca bilişsel yönü ile değerlendiren, kalıplaşmış yöntem ve teknikleri kullanan, öğrenciyi pasif kılan, öğretmen – öğrenci iletişiminin sınırlı düzeyde olduğu bir sistemdir. Bu doğrultuda seçenekler incelendiğinde A, B, C ve D seçeneklerinde ifade edilenler geleneksel anlayışa uygun düşer. Ancak eleştirel düşünme, kendini sorgulama gibi durumlar geleneksel anlayışta değil çağdaş anlayışta gözlenen durumlardır.",
+          "id": "pdf_rehberlik_01",
+          "educationArea": "Rehberlik"
+        },
+        {
+          "sourceNumber": 2,
+          "question": "Çağdaş eğitimin bireye kazandırmak istediği çeşitli nitelikler vardır. Bunlardan birisi de topluma yarar sağlayan, toplum için çalışan ve üreten bir birey yetiştirmektir. Bu durum, toplum için insan olarak adlandırılmaktadır. Bu bağlamda aşağıdakilerden hangisi çağdaş eğitimin “toplum için insan” hedefi ile ilgili bir davranıştır?",
+          "choices": {
+            "A": "Uygun ve olumlu davranışlar sergileyerek ardından gelen kuşağa örnek olmak",
+            "B": "Kendisine uygun bir mesleki ideal oluşturmak",
+            "C": "Kimlik arayışını başarılı bir şekilde sonlandırarak kendisine uygun bir kimlik edinmek",
+            "D": "Sahip olduğu nitelikleri gerçekçi değerlendirerek bu niteliklerin dış gerçeklik ile bağını sağlamak",
+            "E": "İhtiyaçlarını karşılamasına yardımcı olacak bir maddi gücü elde edebilmeye çalışmak"
+          },
+          "answer": "A",
+          "explanation": "Toplum için insan; topluma yararlı, toplum için çalışan, başkalarına katkı sağlayan, toplumu ileriye götürecek, kültürel mirası ardından gelen kuşaklara aktaracak eylemlerde bulunma ile ilgilidir. Bu doğrultuda seçenekler incelendiğinde B, C, D ve E seçeneklerinde ifade edilenler toplum için değil, bireyin kendisi için yaptığı eylemlerdir. Meslek sahibi olma, başarılı bir kimlik edinme, kendini tanıma, maddi gücü elde etme durumları öncelikle bireye katkı sağlayan durumlardır. Ancak ardından gelen kuşaklara örnek olma durumu, bireyin kendisi için değil başkaları için yaptığı bir şeydir.",
+          "id": "pdf_rehberlik_02",
+          "educationArea": "Rehberlik"
+        },
+        {
+          "sourceNumber": 3,
+          "question": "Bir okulun müdürü, üniversiteler tarafından çeşitli branşlarda organize edilen fizik, kimya ve matematik yarışmalarına okulundaki öğrencilerin de katılmasını istemekte, bu amaçla ilgili branşların öğretmenleri ile görüşerek bu doğrultuda çalışmalar yapmaları konusunda kendilerine maddi ve manevi destek vereceğini söylemektedir. Okul müdürünce yapılması istenen çalışmalar, öğrenci kişilik hizmetleri kapsamında yer alan hizmetlerden hangisi kapsamında değerlendirilebilir?",
+          "choices": {
+            "A": "Sosyal – kültürel hizmetler",
+            "B": "Özel eğitim hizmetleri",
+            "C": "Özel yetiştirme hizmetleri",
+            "D": "Rehberlik hizmetleri",
+            "E": "Sosyal yardım hizmetleri"
+          },
+          "answer": "C",
+          "explanation": "Öğrencilerin kişisel gelişimini desteklemeye, çeşitli alanlarda öğrencilerin daha iyi olmasını sağlamaya, öğrencilerin özel becerilerini geliştirmeye yönelik çalışma, kurs, etüt gibi uygulamalar öğrenci kişilik hizmetlerinden özel yetiştirme hizmeti ile ilgilidir. Soruda öğrencilerin sosyalleşmesi ve zamanı etkili kullanmaları, herhangi bir engeli veya farklılığı ile ilgili destek alması, eğitsel - kişisel veya mesleki konularda destek alması, çeşitli alanlardaki ihtiyaçlarının karşılanması gibi durumlardan söz edilmemiş olup çeşitli branşlarda düzenlenen yarışmalara katılarak öğrencilerin kendilerini geliştirmesinden söz edilmiştir.",
+          "id": "pdf_rehberlik_03",
+          "educationArea": "Rehberlik"
+        },
+        {
+          "sourceNumber": 4,
+          "question": "Aşağıdakilerden hangisi çağdaş eğitim sisteminin öğrencilere kazandırmayı amaçladığı davranışlardan birisi değildir?",
+          "choices": {
+            "A": "Mutlu ve üretken bireyler olma",
+            "B": "Davranışlarının sorumluluğunu alma",
+            "C": "Kendi hakları kadar başkalarının haklarını da gözetme",
+            "D": "Beklentileri ihtiyaçlardan üstün tutma",
+            "E": "Ön yargılara ve kalıplaşmış düşüncelere direnme"
+          },
+          "answer": "D",
+          "explanation": "Çağdaş eğitim anlayışı; kendini yetiştirmiş, kendini geliştirmeye çalışan, topluma ve diğer insanlara duyarlı, yenililiklere açık, mutlu ve üretken bireyler yetiştirmeyi amaçlar. Ancak bu anlayışın içerisinde beklentileri ihtiyaçlardan üstün tutma gibi bir durum yer almaz. Çünkü insanlar, kendilerini geliştirme ve yaşamlarını devam ettirme noktasında öncelikle çeşitli ihtiyaçlarını karşılamak durumundadırlar. Beklentileri ihtiyaçların üstünde tutmak, kendi gerçeğini unutmak ve başkalarına göre yaşamak demektir. Böyle bir durum çağdaş eğitimin amaçları ile bağdaşmaz.",
+          "id": "pdf_rehberlik_04",
+          "educationArea": "Rehberlik"
+        },
+        {
+          "sourceNumber": 5,
+          "question": "Bir öğrenci velisi, ülke düzeyinde yaşanan ekonomik kriz nedeni ile işten çıkarıldığını ve bu nedenle çocuğunun okul servis ücretini ödeyemeyeceğini okul yönetimine iletmiş ve kendisine bu konuda yardımcı olunmasını istemiştir. Okul yönetimince bu durum üzerine yapılan değerlendirme sonucunda öğrencinin eğitim öğretim yılı içerisinde servis ücreti ödememesi kararlaştırılmış ve bu durum okul yönetimince servis şirketine iletilerek gerekli kolaylığın yapılması talep edilmiştir. Okul yönetimince yapılan çalışma, öğrenci kişilik hizmetlerinden hangisi kapsamında değerlendirilmektedir?",
+          "choices": {
+            "A": "Kayıt – kabul hizmetleri",
+            "B": "Sosyal yardım hizmetleri",
+            "C": "Rehberlik ve psikolojik danışma hizmetleri",
+            "D": "Özel eğitim hizmetleri",
+            "E": "Sosyal – kültürel hizmetler"
+          },
+          "answer": "B",
+          "explanation": "Öğrencilerin burs ve kredi, barınma, beslenme, ulaşım, yarı zamanlı çalışma, kılık – kıyafet, kırtasiye gibi çeşitli ihtiyaçlarının karşılanmasına yönelik yardımlar öğrenci kişilik hizmetlerinden sosyal yardım hizmeti ile ilgilidir. Soruda öğrencilerin okula veya sınıfa kayıt işlemleri, eğitsel – kişisel veya mesleki alanda yapılan destek çalışmaları, herhangi bir engel veya farklılığa ilişkin yapılan destek çalışmaları, öğrencilerin sosyalleşmesi ve zamanlarını etkili kullanmasına yönelik aktiviteler üzerinde durulmadığından A, C, D ve E seçenekleri doğru kabul edilemez. Soruda bir öğrencinin maddi imkânsızlıkları nedeni ile okul servislerinden ücretsiz yararlanması üzerinde durulduğundan doğru cevap sosyal yardım hizmetleridir.",
+          "id": "pdf_rehberlik_05",
+          "educationArea": "Rehberlik"
+        },
+        {
+          "sourceNumber": 6,
+          "question": "Özel eğitim hizmeti, tüm öğrencilere değil, çeşitli alanlarda engeli veya farklılığı nedeni ile ihtiyaç duyan öğrencilere yönelik bir hizmettir. Bu doğrultuda aşağıdakilerden hangisi özel eğitim hizmetine ihtiyaç duyan öğrenciler arasında değerlendirilemez?",
+          "choices": {
+            "A": "Zihinsel yetersizlik",
+            "B": "Öğrenme güçlüğü",
+            "C": "Öğrenilmiş çaresizlik",
+            "D": "Dikkat eksikliği ve hiperaktivite",
+            "E": "Üstün ve özel yeteneklilik"
+          },
+          "answer": "C",
+          "explanation": "Özel eğitim hizmeti; herhangi bir alanda engeli veya farklılığı olan bireylere verilen eğitimin adıdır. Bu engel veya farklılık sınıflandırması içerisinde; zihinsel engel, bedensel engel, görme engeli, işitme engeli, öğrenme güçlüğü, dikkat eksikliği ve hiperaktivite, üstün ve özel yeteneklilik gibi durumlar yer alır. Bu durumlar, belirli merkezlerde yapılan incelemeler sonucunda tanılanabilen durumlardır. Ancak öğrenilmiş çaresizlik durumu, özel eğitim hizmeti kapsamında değerlendirilebilecek bir problem değildir. Yaşanan çeşitli başarısızlıkların akabinde bireyin bir şeyi başaramayacağını düşünmesi, bu konuda kendisini çaresiz ve yetersiz hissetmesidir. Bu problem, rehberlik yardımını gerekli kılmakta ve çeşitli rehberlik yardımları ile aşılabilecek bir nitelik taşımaktadır.",
+          "id": "pdf_rehberlik_06",
+          "educationArea": "Rehberlik"
+        },
+        {
+          "sourceNumber": 7,
+          "question": "4-A sınıfının sınıf öğretmeni Dilek Hanım, sınıfındaki bir öğrencinin 4. sınıfa gelmesine rağmen okuma yazma öğrenemediğini, akademik anlamda akranlarının çok gerisinde olduğunu görmüş, öğrenci için farklı yöntemler denemesine rağmen yeterli verimi alamamıştır. Bu durum karşısında Dilek Öğretmen’in aşağıdakilerden hangisini yapması çağdaş anlayışa uygun düşer?",
+          "choices": {
+            "A": "Öğrenciyi ders dışı zamanlarda çalıştırarak eksikliklerini gidermesine yardımcı olma",
+            "B": "Öğrencinin ailesi ile görüşerek evde destekleyici çalışmalar yapmalarını önerme",
+            "C": "Okul yönetimi ile görüşerek bu duruma ilişkin önlemler almalarını ve öğrenciyi başka bir sınıfa nakletmelerini isteme",
+            "D": "Öğrenciden akademik anlamda beklenti içerisine girmeme, öğrenciyi sosyal aktivitelere yönlendirme",
+            "E": "Okul rehber öğretmeni ile görüşerek öğrencinin durumunun anlaşılması için gerekli yönlendirme çalışmalarının yapılmasını isteme"
+          },
+          "answer": "E",
+          "explanation": "Bir öğrencinin 4. sınıfa gelmesine rağmen okuma yazma öğrenememesi, akademik anlamda sınıf seviyesinin ve akranlarının gerisinde olma durumu, öğrenme güçlüğünü veya zihinsel yetersizliği akla getiren durumlardır. Bu ve benzeri durumlarda uygun önlemler almak için öncelikle durumu anlamak, yaşanan sorunun nedenlerini görmek gerekir. Yaşanan problem, özel eğitim hizmeti kapsamında değerlendirilen problemlere benzerlik gösterdiği için öğrenciyi okul rehber öğretmeni ile görüşerek inceleme ve tanılama yapılabilmesi için uygun bir kuruma yönlendirmek en uygun yoldur. Burada yapılacak inceleme ve tanılama çalışmaları sonrası elde edilecek sonuçlara göre uygun işlemler gerçekleştirilebilir.",
+          "id": "pdf_rehberlik_07",
+          "educationArea": "Rehberlik"
+        },
+        {
+          "sourceNumber": 8,
+          "question": "Bir okul müdürü, kaymakamlık tarafından okula gönderilen kışlık kıyafetler ile kırtasiye malzemelerini ihtiyacı olan öğrencilere ulaştırmış, süreçte de öğrencilerin afişe olmaması adına çalışmaları titizlikle yürütmüştür. Belediye tarafından gönderilen malzemelerin ihtiyacı olan öğrencilere ulaştırılması, öğrenci kişilik hizmetlerinden hangisi kapsamında değerlendirilmektedir?",
+          "choices": {
+            "A": "Sosyal yardım hizmetleri",
+            "B": "Özel eğitim hizmetleri",
+            "C": "Rehberlik hizmetleri",
+            "D": "Özel yetiştirme hizmetleri",
+            "E": "Sağlık hizmetleri"
+          },
+          "answer": "A",
+          "explanation": "Öğrencilerin burs ve kredi, barınma, beslenme, ulaşım, yarı zamanlı çalışma, kılık kıyafet, kırtasiye gibi çeşitli ihtiyaçlarının karşılanmasına yönelik yardımlar öğrenci kişilik hizmetlerinden sosyal yardım hizmeti ile ilgilidir. Soruda kaymakamlık tarafından gönderilen kışlık kıyafetlerin ve kırtasiye malzemelerinin ihtiyacı olan öğrencilere dağıtılması üzerinde durulmuştur. Bu durum doğrudan sosyal yardım hizmetleri ile ilişkilendirilebilir. Soruda herhangi bir alanda engeli veya farklılığı olan öğrencilere yönelik destek hizmetleri, öğrencilere eğitsel – kişisel veya mesleki konularda sunulan destek hizmetleri, öğrencilerin özel becerilerini geliştirici aktiviteler veya sağlık konularında yürütülen uygulamalardan söz edilmemiştir.",
+          "id": "pdf_rehberlik_08",
+          "educationArea": "Rehberlik"
+        },
+        {
+          "sourceNumber": 9,
+          "question": "İlköğretimin 8. sınıfında tetanos aşısı yaptırmamış olan öğrencilerin tespit edilerek il sağlık müdürlüğüne bildirilmesi ve bu öğrencilere ilgili aşının 9. sınıfta yapılması ile ilgili okula gönderilen bir yazı gereği okul müdürü, 9. sınıf öğrenci velilerine bilgilendirici bir yazı göndermiş ve bu aşıyı yaptırmak isteyen öğrencilerin okula bildirilmesini istemiştir. Okul müdürünün yapmış olduğu çalışma ve çalışmanın içeriği, öğrenci kişilik hizmetlerinden hangisi ile ilişkilendirilebilir?",
+          "choices": {
+            "A": "Rehberlik hizmetleri",
+            "B": "Kayıt – kabul hizmetleri",
+            "C": "Sosyal yardım hizmetleri",
+            "D": "Özel yetiştirme hizmetleri",
+            "E": "Sağlık hizmetleri"
+          },
+          "answer": "E",
+          "explanation": "",
+          "id": "pdf_rehberlik_09",
+          "educationArea": "Rehberlik"
+        },
+        {
+          "sourceNumber": 10,
+          "question": "Aşağıdakilerden hangisi öğrenci kişilik hizmetlerinin amaçları içerisinde değerlendirilemeyecek durumlardan birisidir?",
+          "choices": {
+            "A": "Öğrencilerin bir bütün olarak kendilerini tanımaları ve geliştirmelerine yardımcı olmak",
+            "B": "Öğrencilerin kendilerine özgü durumlarını tespit etmek ve bu doğrultuda eğitim – öğretim faaliyetleri ayarlamak",
+            "C": "Öğrencilerin kişilik gelişimine katkı sağlamak",
+            "D": "Öğrencilerin sosyal becerilerini geliştirmeleri ve topluma etkin uyum yapabilmesini sağlamak",
+            "E": "Öğrencilerin her derste yüksek başarı göstermesini sağlamak"
+          },
+          "answer": "E",
+          "explanation": "",
+          "id": "pdf_rehberlik_10",
+          "educationArea": "Rehberlik"
+        },
+        {
+          "sourceNumber": 11,
+          "question": "10-A sınıfının sınıf rehber öğretmeni Pınar Hanım, sınıfındaki öğrencilerinden Ezgi ile yaptığı görüşmede, öğrencinin boş zamanlarını bilgisayar kullanarak geçirdiğini, gün içerisinde en az 4 saat bilgisayar kullandığını ve bu nedenle farklı aktivitelere zaman ayıramadığını öğrenmiştir. Öğrencisinin bilgisayar kullanmak yerine farklı etkinliklerle uğraşmasını, böylece sosyalleşmesini ve kendini geliştirmesini isteyen Pınar Hanım, bu amaçla ailelerin de iznini alarak hafta sonları öğrencileri bir araya getirici etkinlikler düzenlemiş ve Ezgi’yi de bu etkinliklerin organizasyonunda görevlendirmiştir. Sınıf rehber öğretmeni Pınar Hanım’ın yapmış olduğu çalışma, öğrenci kişilik hizmetlerinden hangisi kapsamında değerlendirilebilir?",
+          "choices": {
+            "A": "Rehberlik hizmetleri",
+            "B": "Sosyal yardım hizmetleri",
+            "C": "Sosyal – kültürel hizmetler",
+            "D": "Özel yetiştirme hizmetleri",
+            "E": "Kayıt – kabul hizmetleri"
+          },
+          "answer": "C",
+          "explanation": "",
+          "id": "pdf_rehberlik_11",
+          "educationArea": "Rehberlik"
+        },
+        {
+          "sourceNumber": 12,
+          "question": "Bir grup öğrenci, müzik öğretmeninin yanına gelerek bir müzik grubu kurduklarını ve bu alanda kendilerini geliştirmek istediklerini; ancak bu konuda bilgileri ve becerilerinin yeterli olmamasından ötürü kendilerine destek olunmasını ve çalışmalarında yardım edilmesini talep etmiştir. Bu durum üzerine müzik öğretmeni, okul müdürü ile görüşerek hafta içi bir gün, bu talepte bulunan ve müziğe ilgi duyan öğrencilere yönelik bir etkinlik organize etmiş ve bu konuda çeşitli çalışmalar yürütmeye başlamıştır. Müzik öğretmeni tarafından yürütülen çalışma, öğrenci kişilik hizmetlerinden hangisi kapsamında yer almaktadır?",
+          "choices": {
+            "A": "Özel eğitim hizmetleri",
+            "B": "Sosyal – kültürel hizmetler",
+            "C": "Rehberlik hizmetleri",
+            "D": "Sosyal yardım hizmetleri",
+            "E": "Özel yetiştirme hizmetleri"
+          },
+          "answer": "E",
+          "explanation": "",
+          "id": "pdf_rehberlik_12",
+          "educationArea": "Rehberlik"
+        },
+        {
+          "sourceNumber": 13,
+          "question": "Sınıfındaki bir öğrencinin zihinsel açıdan yaşıtlarından ileride olduğunu düşünen ve bu öğrenciye yardım edebilmek için öncelikle durumunun anlaşılması gerektiğini düşünen sınıf rehber öğretmeni Mehmet Bey, öğrencisini okul rehber öğretmenine yönlendirmiş ve yönlendirme gerekçelerini okul rehber öğretmeni ile paylaşmıştır. Okul rehber öğretmeninin bu durum sonrası aşağıdakilerden hangisini yapması, çağdaş anlayışa uygun düşer?",
+          "choices": {
+            "A": "Öğrencinin ailesi ile görüşmek ve öğrencinin durumunun anlaşılması amacıyla öğrenciyi en yakın rehberlik ve araştırma merkezine yönlendirmek",
+            "B": "Öğrencinin ailesi ile görüşmek ve öğrencinin zihinsel olarak akranlarından ileride olması nedeni ile öğrenciyi bilim sanat eğitim merkezine kayıt ettirmelerini istemek",
+            "C": "Okul müdürü ile görüşmek ve öğrencinin seviye olarak daha iyi olan bir sınıfa nakledilmesini istemek",
+            "D": "Öğrenciye çeşitli psikolojik testler uygulamak ve zihinsel düzeyini tespit etmeye çalışmak",
+            "E": "Öğrencinin ailesi ile görüşmek ve öğrencinin becerilerini geliştirebilmesi noktasında destek almasını önermek"
+          },
+          "answer": "A",
+          "explanation": "",
+          "id": "pdf_rehberlik_13",
+          "educationArea": "Rehberlik"
+        },
+        {
+          "sourceNumber": 14,
+          "question": "Aşağıdakilerden hangisi öğrencilerin sosyalleşmesine katkı sağlayan birincil kaynaklar arasında yer alır?",
+          "choices": {
+            "A": "Kitaplar ve dergiler",
+            "B": "Öğrenci toplulukları",
+            "C": "Sosyal paylaşım siteleri",
+            "D": "Televizyon ve radyo",
+            "E": "Cep telefonları ve mesajlaşma aygıtları"
+          },
+          "answer": "B",
+          "explanation": "",
+          "id": "pdf_rehberlik_14",
+          "educationArea": "Rehberlik"
+        },
+        {
+          "sourceNumber": 15,
+          "question": "Bir öğrenci, sınıf rehber öğretmeninin yanına gelerek arkadaşlarının kendisi ile sürekli olarak alay ettiğini ve kendisini istemediğini ifade etmiş, bu durumun neden olduğu duygusal etkilerden ötürü ağlamıştır. Sınıf rehber öğretmeninin bu durum karşısında yapacağı çalışmalar, öğrenci kişilik hizmetlerinden hangisi kapsamında ele alınmaktadır?",
+          "choices": {
+            "A": "Sosyal – kültürel hizmetler",
+            "B": "Sağlık hizmetleri",
+            "C": "Özel eğitim ve özel yetiştirme hizmetleri",
+            "D": "Sosyal yardım hizmetleri",
+            "E": "Rehberlik hizmetleri"
+          },
+          "answer": "E",
+          "explanation": "",
+          "id": "pdf_rehberlik_15",
+          "educationArea": "Rehberlik"
+        },
+        {
+          "sourceNumber": 16,
+          "question": "Özel eğitim hizmetleri kapsamında yürütülen uygulamalardan birisi de kaynaştırma eğitimi uygulamalarıdır. Kaynaştırma eğitimi uygulaması ile ilgili aşağıdaki seçeneklerde verilen bilgilerden hangisi doğru değildir?",
+          "choices": {
+            "A": "Normal eğitimden yararlanamayan, özür ve özelliklerine uygun bir okula ya da sınıfa yerleştirilememiş, özel eğitime muhtaç çocukların eğitim imkânına kavuşturulması ile ilgilidir.",
+            "B": "Bir öğrencinin kaynaştırma eğitimine ihtiyaç duyup duymadığı ancak yapılacak çeşitli inceleme ve araştırma sonuçları sonucunda belirlenebilir.",
+            "C": "Kaynaştırma eğitimine alınan öğrencilere yönelik düzenlenecek çalışmalardan okul rehber öğretmenleri sorumludur.",
+            "D": "Özel eğitime ihtiyaç duyan öğrencilerin normal çocuklarla kaynaşmasına yardımcı olur.",
+            "E": "Gelişi güzel yürütülecek bir uygulama olmayıp çeşitli planlarla ve programlarla desteklenmesi gerekmektedir."
+          },
+          "answer": "C",
+          "explanation": "",
+          "id": "pdf_rehberlik_16",
+          "educationArea": "Rehberlik"
+        },
+        {
+          "sourceNumber": 17,
+          "question": "Çağdaş eğitimin bireye kazandırmak istediği çeşitli nitelikler vardır. Bunlardan birisi de; özerk, bağımsız, kendi kendine yetebilen, davranışlarının sorumluluğunu alabilen bir birey yetiştirmektir. Bu durum, kendisi için insan olarak adlandırılmaktadır. Bu bağlamda aşağıdakilerden hangisi çağdaş eğitimin “kendisi için insan” hedefi ile ilgili bir davranıştır?",
+          "choices": {
+            "A": "Kültürel değerleri içselleştirmesi ve bu değerlere bağlı kalması",
+            "B": "Toplumsal yaşamı düzenleyen kurallara uygun hareket etmesi",
+            "C": "Kendisine bırakılan değerleri genç kuşaklara aktarması ve bu değerlerin yaşamasına yardımcı olması",
+            "D": "Vatandaşlık görevlerini yerine getirmesi ve içinde yaşadığı toplumun sorumlu bir üyesi olması",
+            "E": "Zamanı etkili kullanarak daha verimli ve üretken bir birey olabilmesi"
+          },
+          "answer": "E",
+          "explanation": "",
+          "id": "pdf_rehberlik_17",
+          "educationArea": "Rehberlik"
+        },
+        {
+          "sourceNumber": 18,
+          "question": "Ergenlik döneminde çocuğu olan bir öğrenci velisi, okul rehber öğretmenine başvurarak çocuğu ile bu dönemde anlaşmazlıklar yaşadığını, çocuğun çok değiştiğini ve bu nedenlerden ötürü çaresizlik yaşadığını ifade etmiş, kendisine ergenlik dönemi özellikleri, bu dönemde çocuğa olan yaklaşım konularında bilgiler verilmesini istemiştir. Okul rehber öğretmenince öğrenci velisine ihtiyaç duyulan konularda sunulacak yardımlar, öğrenci kişilik hizmetlerinden hangisi kapsamında değerlendirilmektedir?",
+          "choices": {
+            "A": "Sağlık hizmetleri",
+            "B": "Rehberlik hizmetleri",
+            "C": "Özel yetiştirme hizmetleri",
+            "D": "Sosyal yardım hizmetleri",
+            "E": "Sosyal – kültürel hizmetler"
+          },
+          "answer": "B",
+          "explanation": "",
+          "id": "pdf_rehberlik_18",
+          "educationArea": "Rehberlik"
+        },
+        {
+          "sourceNumber": 19,
+          "question": "I. Eğitim öğretim yılı sonunda okul fen kulübü tarafından düzenlenen bilim şenliği II. İmkânları kısıtlı öğrencilere giyecek ve kırtasiye yardımı yapılması III. Zararlı alışkanlıklar ve madde bağımlılığı konusunda il sağlık müdürlüğünce öğrencilere ve öğretmenlere yönelik bilgilendirme seminerleri IV. YGS ve LYS’ye hazırlanan öğrencilere yönelik okul düzeyinde hafta sonları kurslar açılması Yukarıda ifade edilen çalışmalar, sırasıyla öğrenci kişilik hizmetleri kapsamında yer alan hizmetlerden hangileri ile ilgilidir?",
+          "choices": {
+            "A": "Özel yetiştirme – Sosyal / kültürel – Rehberlik – Özel eğitim",
+            "B": "Sosyal / kültürel – Sosyal yardım – Sağlık – Özel yetiştirme",
+            "C": "Özel eğitim – Özel yetiştirme – Sosyal yardım – Sosyal / kültürel",
+            "D": "Rehberlik – Sağlık – Sosyal / kültürel – Sosyal yardım",
+            "E": "Sosyal yardım – Özel eğitim – Özel yetiştirme – Rehberlik"
+          },
+          "answer": "B",
+          "explanation": "",
+          "id": "pdf_rehberlik_19",
+          "educationArea": "Rehberlik"
+        },
+        {
+          "sourceNumber": 20,
+          "question": "Çağdaş eğitim anlayışını oluşturan temel ögeler açısından aşağıdaki seçeneklerde yer alan bilgilerden hangisinin doğru olmadığını söylemek mümkündür?",
+          "choices": {
+            "A": "Çağdaş eğitim anlayışında öğretim hizmetleri öğretmen yerine öğrenciyi aktif kılmakta, öğretmenin pasif olmasını gerektirmektedir.",
+            "B": "Çağdaş eğitim anlayışında öğrenci kişilik hizmetleri, öğrencinin bütünsel gelişimi için çok çeşitli uygulamalar içermektedir.",
+            "C": "Çağdaş eğitim anlayışında yönetim, öğretime ve öğrenci kişilik hizmetlerine destek veren, bu hizmetlerin etkili yürütülebilmesine yardımcı olan bir işlev üstlenmiştir.",
+            "D": "Çağdaş eğitim anlayışında bireyin sağlıklı gelişimi, tüm ögelerin birbiriyle ahenk içerisinde yürütülmesinden etkilenir.",
+            "E": "Çağdaş eğitim anlayışında öğrenci kişilik hizmetleri, öğretim ve yönetimi tamamlayan ancak öğretim ve yönetimden bağımsız bir hizmet olarak görülmektedir."
+          },
+          "answer": "A",
+          "explanation": "",
+          "id": "pdf_rehberlik_20",
+          "educationArea": "Rehberlik"
+        }
+      ]
+    }
+  ]
+}
