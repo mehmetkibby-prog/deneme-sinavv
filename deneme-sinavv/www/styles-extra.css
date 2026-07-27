@@ -1,0 +1,14 @@
+.feature-grid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:14px;margin-top:20px}
+.feature span{display:block;color:var(--muted);font-size:13px;line-height:1.35}
+.section-title{margin:28px 2px 8px}
+.center{justify-content:center;text-align:center}
+.flashcard{min-height:360px;margin:12px auto;max-width:680px;border:2px solid #2b537b;border-radius:28px;padding:30px;display:grid;place-items:center;text-align:center;background:linear-gradient(145deg,#142e4e,#0d1e35);box-shadow:0 20px 55px #0006}
+.flashcard.flipped{border-color:var(--green);background:linear-gradient(145deg,#123d39,#10283a)}
+.flashcard small{color:var(--blue);font-weight:800;letter-spacing:2px}.flashcard h2{line-height:1.45}.flashcard span{color:var(--muted)}
+.check-row{display:flex;gap:12px;align-items:flex-start;margin:0}.check-row input{width:22px;height:22px;flex:0 0 auto}
+.note-list{margin-top:16px}.text-danger{border:0;background:transparent;color:#ff91a3;padding:8px 0}
+.chat-box{position:sticky;bottom:82px;background:#071225;padding:12px 0;display:flex;gap:9px;align-items:flex-end}.chat-box textarea{min-height:74px}
+#chat{min-height:220px}.message.ai{white-space:pre-wrap}
+input[type=date]{width:100%;background:#0b182a;border:1px solid #294665;color:white;padding:14px;border-radius:13px}
+#bottom-nav button{width:min(20%,160px)}
+@media(max-width:430px){.feature-grid{grid-template-columns:1fr}.flashcard{min-height:310px;padding:22px}}
