@@ -20,3 +20,7 @@ input[type=date]{width:100%;background:#0b182a;border:1px solid #294665;color:wh
 #study-chat{min-height:180px;max-height:48vh;overflow-y:auto}
 .study-compose{bottom:82px}
 @media(max-width:560px){.ai-control-grid{grid-template-columns:1fr}.actions .ai-center-button{flex-basis:100%}}
+.memory-feature{border-color:#8b6a2d;background:linear-gradient(145deg,#3a2b15,#10263d)}
+.memory-hero{background:linear-gradient(135deg,#5a3515,#173955)}
+.memory-counts{display:flex;flex-wrap:wrap;gap:8px;margin-top:14px}
+.memory-counts span{background:#1b2f45;border:1px solid #6d5430;border-radius:999px;padding:7px 11px;color:#ffe0a3;font-size:12px}
