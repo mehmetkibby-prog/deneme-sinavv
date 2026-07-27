@@ -1,6 +1,6 @@
 const $ = s => document.querySelector(s);
 const app = $("#app");
-const state = { data:null, route:"home", section:null, exam:[], index:0, correct:0, wrong:0, answered:false, examTitle:"", recorder:null, chunks:[], audio:null, chat:[] };
+const state = { data:null, route:"home", section:null, exam:[], index:0, correct:0, wrong:0, answered:false, examTitle:"", recorder:null, chunks:[], audio:null, chat:[], studyChat:[] };
 const store = {
   get(k,f){ try { return JSON.parse(localStorage.getItem(k)) ?? f; } catch { return f; } },
   set(k,v){ localStorage.setItem(k,JSON.stringify(v)); }
@@ -17,7 +17,7 @@ function renderHome(){
   const p=store.get("profile",{name:"Çağlar",examDate:""});
   setTitle("Müzik Sınavı",p.name?`Hoş geldin, ${p.name}`:"V24 Android");
   app.innerHTML=`<section class="hero"><h2>Sınava hazırlan</h2><p>${allQuestions().length} soruluk bankadan çalış, yanlışlarını tekrar çöz ve gelişimini izle.</p>
-  <div class="actions"><button class="primary" id="mixed">Karışık Deneme</button><button class="secondary" id="ai-exam">AI Eğitim Bilimleri</button></div></section>
+  <div class="actions"><button class="primary" id="mixed">Karışık Deneme</button><button class="secondary" id="ai-exam">AI Eğitim Bilimleri</button><button class="secondary ai-center-button" id="ai-center">AI Destekli Çalışma Merkezi</button></div></section>
   <div class="feature-grid">
     <button class="card feature" data-go="teacher"><b>🤖 AI Öğretmen</b><span>Sor, öğren, mini sınav yap</span></button>
     <button class="card feature" data-go="cards"><b>🗂 Ezber Kartları</b><span>Kart çevirerek tekrar et</span></button>
@@ -29,6 +29,7 @@ function renderHome(){
   document.querySelectorAll(".section").forEach(b=>b.onclick=()=>renderSection(b.dataset.id));
   $("#mixed").onclick=()=>startExam(shuffle(allQuestions()).slice(0,Math.min(50,allQuestions().length)),"Karışık Deneme");
   $("#ai-exam").onclick=renderAiExam;
+  $("#ai-center").onclick=renderAiStudyCenter;
 }
 function renderSection(id){
   const s=state.data.sections.find(x=>x.id===id);state.section=s;setTitle(s.title,`${s.questions.length} soru`,true);
@@ -84,9 +85,9 @@ function renderStats(){
 function renderMore(){
   setTitle("Çalışma Alanları","Tüm araçlar");app.innerHTML=`<div class="grid">
   <button class="card" data-go="hard"><b>★ Zor Sorular</b></button><button class="card" data-go="cards"><b>🗂 Ezber Kartları</b></button>
-  <button class="card" data-go="teacher"><b>🤖 AI Öğretmen</b></button><button class="card" data-go="study"><b>📚 Konu Çalışma</b></button>
+  <button class="card" data-go="ai-center"><b>✨ AI Çalışma Merkezi</b></button><button class="card" data-go="study"><b>📚 Konu Çalışma</b></button>
   <button class="card" data-go="profile"><b>👤 Kişisel Bilgiler</b></button><button class="card" data-go="settings"><b>⚙ Ayarlar</b></button></div>`;
-  app.onclick=e=>{const b=e.target.closest("[data-go]");if(b)({hard:renderHard,cards:renderFlashcards,teacher:renderTeacher,study:renderStudy,profile:renderProfile,settings:renderSettings}[b.dataset.go])()};
+  app.onclick=e=>{const b=e.target.closest("[data-go]");if(b)({hard:renderHard,cards:renderFlashcards,"ai-center":renderAiStudyCenter,study:renderStudy,profile:renderProfile,settings:renderSettings}[b.dataset.go])()};
 }
 function renderFlashcards(){
   setTitle("Ezber Kartları","Dokun ve cevabı gör",true);const sections=state.data.sections;
@@ -112,14 +113,57 @@ function renderStudy(){
   document.querySelectorAll("[data-check]").forEach(x=>x.onchange=()=>{notes[+x.dataset.check].done=x.checked;store.set("studyNotes",notes)});
   document.querySelectorAll("[data-del]").forEach(x=>x.onclick=()=>{notes.splice(+x.dataset.del,1);store.set("studyNotes",notes);renderStudy()});
 }
+const AI_MODELS=["gpt-5-mini","gpt-5","gpt-4.1-mini","gpt-4.1"];
+const AI_MODES={
+  "AI Öğretmen":"Konuyu öğret: önce anlaşılır biçimde anlat, ardından ezberlenecek maddeleri, karıştırılan kavramları, bir hafıza tekniğini ve kısa kontrol sorularını ver.",
+  "Serbest Soru":"Kullanıcının sorusunu doğrudan, açık ve öğretici biçimde yanıtla. Gerektiğinde kısa örnek ver.",
+  "Soru Üretici":"İstenen konuda dört seçenekli özgün test soruları üret. Her sorunun doğru cevabını ve kısa açıklamasını ver. Çıktıyı numaralı düzenle.",
+  "Çalışma Planı":"Kullanıcının isteğine göre uygulanabilir, günlere bölünmüş çalışma planı hazırla. Tekrar, test ve yanlış analizi sürelerini belirt.",
+  "Yanlış Analizi":"Verilen yanlışları analiz et. Doğru cevabı, çeldiricilerin neden yanlış olduğunu, hafıza tekniğini ve üç benzer soru ver."
+};
+function modelOptions(selected){return AI_MODELS.map(m=>`<option value="${m}" ${m===selected?"selected":""}>${m}</option>`).join("")}
 function renderSettings(){
-  setTitle("Ayarlar","AI ve uygulama",true);app.innerHTML=`<section class="hero"><h2>OpenAI ayarları</h2><p>API anahtarı yalnızca bu cihazda saklanır. Paylaşma veya ekran görüntüsünde gösterme.</p></section><label>OpenAI API anahtarı</label><input id="api-key" type="password" value="${esc(store.get("apiKey",""))}" placeholder="sk-..."><label>AI çalışma talimatı</label><textarea id="instructions">${esc(store.get("instructions","Türkçe konuş. Müzik ve eğitim bilimleri sınavına hazırlanan bir öğretmene kısa, doğru ve öğretici cevaplar ver. İstenirse birer birer soru sor ve cevabı açıklayarak değerlendir."))}</textarea><div class="actions"><button class="primary" id="save-settings">Kaydet</button></div>`;
-  $("#save-settings").onclick=()=>{store.set("apiKey",$("#api-key").value.trim());store.set("instructions",$("#instructions").value.trim());toast("Ayarlar kaydedildi")};
+  const selected=store.get("aiModel","gpt-5-mini");
+  setTitle("Ayarlar","AI ve uygulama",true);app.innerHTML=`<section class="hero"><h2>OpenAI ayarları</h2><p>API anahtarı yalnızca bu cihazda saklanır. Paylaşma veya ekran görüntüsünde gösterme.</p></section><label>OpenAI API anahtarı</label><input id="api-key" type="password" value="${esc(store.get("apiKey",""))}" placeholder="sk-..."><label>AI modeli</label><select id="ai-model">${modelOptions(selected)}</select><label>AI çalışma talimatı</label><textarea id="instructions">${esc(store.get("instructions","Türkçe konuş. Müzik ve eğitim bilimleri sınavına hazırlanan bir öğretmene kısa, doğru ve öğretici cevaplar ver. İstenirse birer birer soru sor ve cevabı açıklayarak değerlendir."))}</textarea><div class="actions"><button class="primary" id="save-settings">Kaydet</button></div>`;
+  $("#save-settings").onclick=()=>{store.set("apiKey",$("#api-key").value.trim());store.set("aiModel",$("#ai-model").value);store.set("instructions",$("#instructions").value.trim());toast("Ayarlar kaydedildi")};
 }
-async function openAIText(input){
+async function openAIText(input,instructions=""){
   const key=store.get("apiKey","");if(!key)throw new Error("Önce Ayarlar bölümüne API anahtarını gir.");
-  const r=await fetch("https://api.openai.com/v1/responses",{method:"POST",headers:{Authorization:`Bearer ${key}`,"Content-Type":"application/json"},body:JSON.stringify({model:"gpt-5-mini",instructions:store.get("instructions","Türkçe konuş ve öğretici ol."),input})});
+  const r=await fetch("https://api.openai.com/v1/responses",{method:"POST",headers:{Authorization:`Bearer ${key}`,"Content-Type":"application/json"},body:JSON.stringify({model:store.get("aiModel","gpt-5-mini"),instructions:instructions||store.get("instructions","Türkçe konuş ve öğretici ol."),input})});
   if(!r.ok)throw new Error((await r.json()).error?.message||`HTTP ${r.status}`);const d=await r.json();return d.output_text||d.output?.flatMap(o=>o.content||[]).find(c=>c.type==="output_text")?.text||"Yanıt alınamadı.";
+}
+function wrongContext(){
+  const wrong=ids("wrongQuestions"),qs=allQuestions().filter(q=>wrong.has(q.id)).slice(0,15);
+  return qs.length?qs.map((q,i)=>`${i+1}. ${q.question} | Doğru: ${q.answer}) ${q.choices[q.answer]}`).join("\n"):"Kayıtlı yanlış soru yok.";
+}
+function renderAiStudyCenter(){
+  const mode=store.get("aiMode","AI Öğretmen"),model=store.get("aiModel","gpt-5-mini");
+  setTitle("AI Destekli Çalışma Merkezi",`${mode} · ${model}`,true);
+  app.innerHTML=`<section class="hero ai-center-hero"><h2>AI Destekli Çalışma Merkezi</h2><p>Çalışma biçimini ve kullanmak istediğin AI modelini seç.</p></section>
+  <div class="ai-control-grid"><div><label>Çalışma modu</label><select id="study-mode">${Object.keys(AI_MODES).map(x=>`<option ${x===mode?"selected":""}>${x}</option>`).join("")}<option ${mode==="AI Deneme Sınavı"?"selected":""}>AI Deneme Sınavı</option><option ${mode==="AI Sesli Öğretmen"?"selected":""}>AI Sesli Öğretmen</option></select></div><div><label>AI modeli</label><select id="study-model">${modelOptions(model)}</select></div></div>
+  <div class="quick-prompts"><button data-prompt="Bu konuyu sınav odaklı öğret: ">Konu Anlat</button><button data-prompt="Bana birer birer soru sor ve cevaplarımı değerlendir. Konu: ">Soru-Cevap</button><button data-prompt="Bu konuda kısa özet ve ezber tekniği hazırla: ">Özet + Ezber</button></div>
+  <div id="study-chat">${state.studyChat.map(m=>`<div class="message ${m.role}"><b>${m.role==="me"?"Sen":"AI"}:</b> ${esc(m.text)}</div>`).join("")}</div>
+  <div class="chat-box study-compose"><textarea id="study-input" placeholder="Örn. Olumsuz pekiştirmeyi örneklerle öğret"></textarea><button class="primary" id="study-send">Gönder</button></div>
+  <div class="actions"><button class="secondary" id="voice-teacher">AI Sesli Öğretmen</button><button class="secondary" id="clear-study-chat">Sohbeti Temizle</button></div>`;
+  $("#study-mode").onchange=e=>{store.set("aiMode",e.target.value);if(e.target.value==="AI Sesli Öğretmen")renderVoice()};
+  $("#study-model").onchange=e=>{store.set("aiModel",e.target.value);setTitle("AI Destekli Çalışma Merkezi",`${$("#study-mode").value} · ${e.target.value}`,true)};
+  document.querySelectorAll("[data-prompt]").forEach(b=>b.onclick=()=>{$("#study-input").value=b.dataset.prompt;$("#study-input").focus()});
+  $("#voice-teacher").onclick=renderVoice;
+  $("#clear-study-chat").onclick=()=>{state.studyChat=[];renderAiStudyCenter()};
+  $("#study-send").onclick=sendStudyRequest;
+}
+async function sendStudyRequest(){
+  const input=$("#study-input").value.trim(),mode=$("#study-mode").value;if(!input)return toast("Çalışmak istediğin konuyu veya soruyu yaz.");
+  store.set("aiMode",mode);store.set("aiModel",$("#study-model").value);
+  if(mode==="AI Sesli Öğretmen")return renderVoice();
+  state.studyChat.push({role:"me",text:input});renderAiStudyCenter();
+  const chat=$("#study-chat");chat.insertAdjacentHTML("beforeend",'<div class="message ai">Yanıt hazırlanıyor…</div>');
+  const base="Sen KKTC/Türkiye müzik öğretmenliği ve Eğitim Bilimleri sınavına hazırlanan kullanıcıya destek veren uzman bir öğretmensin. Türkçe konuş, bilmediğin bilgiyi uydurma.";
+  const local=mode==="Yanlış Analizi"?`\n\nKullanıcının kayıtlı yanlışları:\n${wrongContext()}`:"";
+  try{
+    const answer=await openAIText(input,`${base}\n\nGörev: ${AI_MODES[mode]||AI_MODES["Serbest Soru"]}${local}`);
+    state.studyChat.push({role:"ai",text:answer});renderAiStudyCenter();
+  }catch(e){state.studyChat.push({role:"ai",text:`Hata: ${e.message}`});renderAiStudyCenter()}
 }
 function renderTeacher(){
   setTitle("AI Öğretmen","Yazılı çalışma",true);app.innerHTML=`<section class="hero"><h2>AI Öğretmen</h2><p>Konu sorabilir, açıklama isteyebilir veya “bana bir soru sor” diyebilirsin.</p></section><div id="chat">${state.chat.map(m=>`<div class="message ${m.role}"><b>${m.role==="me"?"Sen":"Öğretmen"}:</b> ${esc(m.text)}</div>`).join("")}</div><div class="chat-box"><textarea id="teacher-input" placeholder="Örn. Olumsuz pekiştirmeyi kısa örnekle anlat"></textarea><button class="primary" id="send-teacher">Gönder</button></div>`;
@@ -141,7 +185,16 @@ function renderVoice(){
 }
 async function startRecording(){
   if(!store.get("apiKey",""))return toast("Önce Ayarlar bölümüne API anahtarını gir.");
-  try{const stream=await navigator.mediaDevices.getUserMedia({audio:true}),mime=MediaRecorder.isTypeSupported("audio/webm;codecs=opus")?"audio/webm;codecs=opus":"audio/webm";state.chunks=[];state.recorder=new MediaRecorder(stream,{mimeType:mime});state.recorder.ondataavailable=e=>{if(e.data.size)state.chunks.push(e.data)};state.recorder.onstop=processVoice;state.recorder.start();renderVoice()}catch(e){$("#voice-status").textContent="Mikrofon açılamadı: "+e.message}
+  try{
+    if(!navigator.mediaDevices?.getUserMedia)throw new Error("Bu cihaz mikrofon erişimini desteklemiyor.");
+    const stream=await navigator.mediaDevices.getUserMedia({audio:true}),mime=MediaRecorder.isTypeSupported("audio/webm;codecs=opus")?"audio/webm;codecs=opus":"audio/webm";
+    state.chunks=[];state.recorder=new MediaRecorder(stream,{mimeType:mime});state.recorder.ondataavailable=e=>{if(e.data.size)state.chunks.push(e.data)};state.recorder.onstop=processVoice;state.recorder.start();renderVoice();
+  }catch(e){
+    const permissionDenied=e?.name==="NotAllowedError"||/permission|izin|denied/i.test(e?.message||"");
+    $("#voice-status").textContent=permissionDenied
+      ?"Mikrofon izni verilmedi. Android Ayarlar > Uygulamalar > Müzik Sınavı > İzinler bölümünden Mikrofon iznini aç."
+      :"Mikrofon açılamadı: "+(e?.message||"Bilinmeyen hata");
+  }
 }
 function stopRecording(){if(state.recorder?.state==="recording")state.recorder.stop()}
 async function processVoice(){
