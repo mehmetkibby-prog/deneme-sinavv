@@ -57,3 +57,8 @@ input[type=date]{width:100%;background:#0b182a;border:1px solid #294665;color:wh
 .solution-actions{margin:16px 0 0}.solution-toggle{width:100%;border:1px solid #4f78a2;background:#183653}
 .solution-box{margin:12px 0 18px;padding:18px;border:1px solid #d6a74a;border-radius:16px;background:linear-gradient(145deg,#332814,#142a3d);box-shadow:0 10px 30px #0004}
 .solution-box b{display:block;color:#ffd27a;margin-bottom:9px}.solution-box p{margin:0;white-space:pre-wrap;line-height:1.62;color:#edf4ff}
+.ai-question-actions{margin:12px 0 0}.ai-question-button{width:100%;border:1px solid #a855f7;background:linear-gradient(135deg,#402675,#173f68)}
+.ai-question-button:disabled{opacity:.7;cursor:wait}
+.ai-question-box{margin:12px 0 18px;padding:18px;border:1px solid #a855f7;border-radius:16px;background:linear-gradient(145deg,#271743,#132b43);box-shadow:0 10px 30px #0004}
+.ai-question-box b{display:block;color:#d8b4fe;margin-bottom:9px}.ai-question-box div{white-space:pre-wrap;line-height:1.62;color:#edf4ff}
+.ai-question-loading{color:#c4b5fd}.ai-question-error{color:#fda4af}

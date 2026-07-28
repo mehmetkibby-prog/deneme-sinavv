@@ -1,6 +1,6 @@
 const $ = s => document.querySelector(s);
 const app = $("#app");
-const state = { data:null, educationData:null, route:"home", section:null, exam:[], index:0, correct:0, wrong:0, answered:false, examTitle:"", customExam:null, simulation:null, simulationTimer:null, rtc:null, voiceStream:null, voiceAudio:null, voiceChannel:null, chat:[], studyChat:[] };
+const state = { data:null, educationData:null, route:"home", section:null, exam:[], index:0, correct:0, wrong:0, answered:false, examTitle:"", customExam:null, simulation:null, simulationTimer:null, rtc:null, voiceStream:null, voiceAudio:null, voiceChannel:null, chat:[], studyChat:[], aiQuestionExplanations:{} };
 const store = {
   get(k,f){ try { return JSON.parse(localStorage.getItem(k)) ?? f; } catch { return f; } },
   set(k,v){ localStorage.setItem(k,JSON.stringify(v)); }
@@ -13,7 +13,7 @@ function offlineEducationSections(){return state.educationData?.sections||[]}
 function offlineEducationQuestions(){return offlineEducationSections().flatMap(s=>s.questions)}
 function allQuestions(){return [...state.data.sections.flatMap(s=>s.questions),...offlineEducationQuestions()]}
 function ids(key){return new Set(store.get(key,[]))}
-function setTitle(t,s="V24.4n Android",back=false){$("#page-title").textContent=t;$("#subtitle").textContent=s;$("#back").classList.toggle("hidden",!back)}
+function setTitle(t,s="V24.4o Android",back=false){$("#page-title").textContent=t;$("#subtitle").textContent=s;$("#back").classList.toggle("hidden",!back)}
 function nav(r){state.route=r;document.querySelectorAll("#bottom-nav button").forEach(b=>b.classList.toggle("active",b.dataset.route===r));({home:renderHome,wrong:renderWrong,stats:renderStats,voice:renderVoice,more:renderMore,settings:renderSettings}[r]||renderHome)()}
 
 function renderHome(){
@@ -82,6 +82,7 @@ function renderQuestion(){
   <div class="progress"><i style="width:${pct}%"></i></div><div class="question">${esc(q.question)}</div>
   <div>${Object.entries(q.choices).map(([k,v])=>`<button class="choice" data-key="${k}"><strong>${k}</strong><span>${esc(v)}</span></button>`).join("")}</div>
   ${hasSolution?`<div class="solution-actions"><button class="secondary solution-toggle" id="solution-toggle" aria-expanded="false">📖 Ayrıntılı Çözümü Göster</button></div><div class="solution-box hidden" id="solution-box"><b>Kitaptaki Ayrıntılı Çözüm</b><p>${esc(q.explanation)}</p></div>`:""}
+  ${aiQuestionSolutionHtml()}
   <div id="feedback"></div><div class="actions"><button class="primary hidden" id="next">${state.index===state.exam.length-1?"Sınavı Bitir":"Sonraki Soru"}</button></div>`;
   $("#hard-check").onchange=e=>toggleId("hardQuestions",q.id,e.target.checked,"Zor Sorular");
   if(hasSolution)$("#solution-toggle").onclick=()=>{
@@ -89,6 +90,7 @@ function renderQuestion(){
     box.classList.toggle("hidden",!opening);button.setAttribute("aria-expanded",String(opening));
     button.textContent=opening?"📕 Ayrıntılı Çözümü Gizle":"📖 Ayrıntılı Çözümü Göster";
   };
+  mountAiQuestionSolution(q,{warnBeforeReveal:()=>!state.answered});
   document.querySelectorAll(".choice").forEach(b=>b.onclick=()=>answer(b.dataset.key));
   $("#next").onclick=()=>{if(++state.index>=state.exam.length)finishExam();else{state.answered=false;renderQuestion()}};
 }
@@ -182,9 +184,11 @@ function renderSimulationQuestion(){
   app.innerHTML=`<div class="simulation-bar"><b id="sim-clock">${simulationTime()}</b><span>${Object.keys(s.answers).length} cevaplandı · ${s.questions.length-Object.keys(s.answers).length} boş</span></div>
   <div class="progress"><i style="width:${Math.round((s.index+1)/s.questions.length*100)}%"></i></div><div class="question">${esc(q.question)}</div>
   <div>${Object.entries(q.choices).map(([k,v])=>`<button class="choice ${selected===k?"selected":""}" data-key="${k}"><strong>${k}</strong><span>${esc(v)}</span></button>`).join("")}</div>
+  ${aiQuestionSolutionHtml()}
   <label class="hard-toggle simulation-mark"><input id="sim-mark" type="checkbox" ${marked?"checked":""}> ★ Bu soruya dön</label>
   <div class="question-map">${s.questions.map((x,i)=>`<button data-index="${i}" class="${i===s.index?"current":""} ${s.answers[x.id]?"answered":""} ${s.marked.includes(x.id)?"marked":""}">${i+1}</button>`).join("")}</div>
   <div class="actions simulation-actions"><button class="secondary" id="sim-prev" ${s.index===0?"disabled":""}>Önceki</button><button class="secondary" id="sim-clear">Cevabı Sil</button><button class="primary" id="sim-next">${s.index===s.questions.length-1?"Sınavı Bitir":"Sonraki"}</button></div>`;
+  mountAiQuestionSolution(q,{simulation:true,selectedAnswer:()=>s.answers[q.id]||""});
   document.querySelectorAll(".choice").forEach(b=>b.onclick=()=>{s.answers[q.id]=b.dataset.key;renderSimulationQuestion()});
   $("#sim-mark").onchange=e=>{s.marked=e.target.checked?[...new Set([...s.marked,q.id])]:s.marked.filter(x=>x!==q.id);renderSimulationQuestion()};
   document.querySelectorAll(".question-map button").forEach(b=>b.onclick=()=>{s.index=+b.dataset.index;renderSimulationQuestion()});
@@ -263,7 +267,8 @@ function renderFlashcards(){
 }
 function showCard(qs,i,reveal){
   const q=qs[i];setTitle("Ezber Kartları",`Kart ${i+1} / ${qs.length}`,true);
-  app.innerHTML=`<div class="flashcard ${reveal?"flipped":""}" id="flash"><div><small>${reveal?"CEVAP":"SORU"}</small><h2>${reveal?`${q.answer}) ${esc(q.choices[q.answer])}`:esc(q.question)}</h2>${reveal&&q.explanation?`<p>${esc(q.explanation)}</p>`:""}<span>Çevirmek için dokun</span></div></div><div class="actions center"><button class="secondary" id="prev" ${i===0?"disabled":""}>Önceki</button><button class="primary" id="next-card">${i===qs.length-1?"Başa Dön":"Sonraki"}</button></div>`;
+  app.innerHTML=`<div class="flashcard ${reveal?"flipped":""}" id="flash"><div><small>${reveal?"CEVAP":"SORU"}</small><h2>${reveal?`${q.answer}) ${esc(q.choices[q.answer])}`:esc(q.question)}</h2>${reveal&&q.explanation?`<p>${esc(q.explanation)}</p>`:""}<span>Çevirmek için dokun</span></div></div>${aiQuestionSolutionHtml()}<div class="actions center"><button class="secondary" id="prev" ${i===0?"disabled":""}>Önceki</button><button class="primary" id="next-card">${i===qs.length-1?"Başa Dön":"Sonraki"}</button></div>`;
+  mountAiQuestionSolution(q,{warnBeforeReveal:()=>!reveal});
   $("#flash").onclick=()=>showCard(qs,i,!reveal);$("#prev").onclick=()=>showCard(qs,i-1,false);$("#next-card").onclick=()=>showCard(qs,i===qs.length-1?0:i+1,false);
 }
 const MEMORY_LABELS={
@@ -521,6 +526,61 @@ async function openAIText(input,instructions="",options={}){
   if(/^gpt-5/.test(model))body.reasoning={effort:"minimal"};
   const r=await fetch("https://api.openai.com/v1/responses",{method:"POST",headers:{Authorization:`Bearer ${key}`,"Content-Type":"application/json"},body:JSON.stringify(body)});
   if(!r.ok)throw new Error((await r.json()).error?.message||`HTTP ${r.status}`);const d=await r.json();return d.output_text||d.output?.flatMap(o=>o.content||[]).find(c=>c.type==="output_text")?.text||"Yanıt alınamadı.";
+}
+function aiQuestionSolutionHtml(){
+  return `<div class="ai-question-actions"><button class="secondary ai-question-button" id="ai-question-button" aria-expanded="false">🤖 AI ile Çözümü Açıkla</button></div>
+  <div class="ai-question-box hidden" id="ai-question-box" aria-live="polite"><b>AI Soru Çözümü</b><div id="ai-question-content"></div></div>`;
+}
+function aiQuestionPrompt(q,selectedAnswer=""){
+  const choices=Object.entries(q.choices||{}).map(([key,value])=>`${key}) ${value}`).join("\n");
+  const area=isEducationQuestion(q)?`Eğitim Bilimleri${q.educationArea?` / ${q.educationArea}`:""}`:"Müzik";
+  const sourceExplanation=q.explanation?.trim()?`\nKaynakta bulunan açıklama:\n${q.explanation.trim()}`:"";
+  const selected=selectedAnswer?`\nKullanıcının işaretlediği seçenek: ${selectedAnswer}) ${q.choices[selectedAnswer]||""}`:"";
+  return `Aşağıdaki çoktan seçmeli sınav sorusunu Türkçe, açık ve öğretici biçimde çöz.
+Alan: ${area}
+Soru: ${q.question}
+Seçenekler:
+${choices}
+Doğru cevap anahtarı: ${q.answer}) ${q.choices[q.answer]}${selected}${sourceExplanation}
+
+Şu sırayı kullan:
+1. Doğru cevabı ve neden doğru olduğunu açıkla.
+2. Diğer seçeneklerin her birinin neden yanlış olduğunu kısaca belirt.
+3. Bir cümlelik hafıza ipucu ver.
+
+Yanıtı 220 kelimeyi geçirmeden sade tut. Soru veya cevap anahtarı hatalı ya da tartışmalı görünüyorsa bunu açıkça belirt; yeni soru üretme.`;
+}
+function mountAiQuestionSolution(q,options={}){
+  const button=$("#ai-question-button"),box=$("#ai-question-box"),content=$("#ai-question-content");
+  if(!button||!box||!content)return;
+  const cacheKey=`${q.id||q.question}|${q.answer}`,cached=state.aiQuestionExplanations[cacheKey];
+  if(cached)content.textContent=cached;
+  button.onclick=async()=>{
+    const opening=box.classList.contains("hidden");
+    if(!opening){
+      box.classList.add("hidden");button.setAttribute("aria-expanded","false");button.textContent="🤖 AI ile Çözümü Açıkla";return;
+    }
+    const shouldWarn=options.simulation||Boolean(options.warnBeforeReveal?.());
+    if(shouldWarn&&!state.aiQuestionExplanations[cacheKey]&&!confirm(options.simulation
+      ?"AI çözümü doğru cevabı gösterecek. Gerçek sınav simülasyonunda devam etmek istiyor musun?"
+      :"AI çözümü doğru cevabı gösterecek. Devam etmek istiyor musun?"))return;
+    box.classList.remove("hidden");button.setAttribute("aria-expanded","true");
+    if(state.aiQuestionExplanations[cacheKey]){
+      content.textContent=state.aiQuestionExplanations[cacheKey];button.textContent="🤖 AI Çözümünü Gizle";return;
+    }
+    button.disabled=true;button.textContent="AI açıklıyor…";content.innerHTML='<span class="ai-question-loading">Çözüm hazırlanıyor…</span>';
+    try{
+      const selectedAnswer=typeof options.selectedAnswer==="function"?options.selectedAnswer():"";
+      const answer=await openAIText(
+        aiQuestionPrompt(q,selectedAnswer),
+        "Sen müzik ve Eğitim Bilimleri alanlarında uzman bir sınav öğretmenisin. Verilen soruyu ve seçenekleri esas al; doğru cevabı gerekçelendir, çeldiricileri tek tek açıkla ve kısa bir hafıza ipucu ver. Türkçe, net ve bilgi odaklı yaz.",
+        {maxOutputTokens:700}
+      );
+      state.aiQuestionExplanations[cacheKey]=answer;content.textContent=answer;button.textContent="🤖 AI Çözümünü Gizle";
+    }catch(error){
+      content.innerHTML=`<span class="ai-question-error">${esc(error.message)}</span>`;button.textContent="↻ AI Çözümünü Yeniden Dene";
+    }finally{button.disabled=false}
+  };
 }
 async function openAIWebText(input,instructions="",options={}){
   const key=store.get("apiKey","");if(!key)throw new Error("Önce Ayarlar bölümüne API anahtarını gir.");
