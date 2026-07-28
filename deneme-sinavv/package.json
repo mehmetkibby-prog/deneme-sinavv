@@ -1,6 +1,6 @@
 {
-  "name": "muzik-sinavi-v23-6",
-  "version": "23.6.0",
+  "name": "muzik-sinavi",
+  "version": "27.3.0",
   "private": true,
   "scripts": {
     "android:add": "npx cap add android",

@@ -1,6 +1,6 @@
 {
   "appId": "com.caglar.muziksinavi",
-  "appName": "Müzik Sınavı V23.6",
+  "appName": "Müzik Sınavı",
   "webDir": "www",
   "server": {
     "androidScheme": "https"
