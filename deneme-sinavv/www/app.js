@@ -5,6 +5,7 @@ const store = {
   get(k,f){ try { return JSON.parse(localStorage.getItem(k)) ?? f; } catch { return f; } },
   set(k,v){ localStorage.setItem(k,JSON.stringify(v)); }
 };
+if(!store.get("v24_4k_fast_model",false)){store.set("aiModel","gpt-4.1-mini");store.set("v24_4k_fast_model",true)}
 const esc = (t="") => String(t).replace(/[&<>"']/g,c=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;"}[c]));
 const shuffle = xs => { const a=[...xs]; for(let i=a.length-1;i;i--){const j=Math.floor(Math.random()*(i+1));[a[i],a[j]]=[a[j],a[i]]} return a; };
 function toast(t){const e=$("#toast");e.textContent=t;e.classList.add("show");setTimeout(()=>e.classList.remove("show"),1900)}
@@ -12,7 +13,7 @@ function offlineEducationSections(){return state.educationData?.sections||[]}
 function offlineEducationQuestions(){return offlineEducationSections().flatMap(s=>s.questions)}
 function allQuestions(){return [...state.data.sections.flatMap(s=>s.questions),...offlineEducationQuestions()]}
 function ids(key){return new Set(store.get(key,[]))}
-function setTitle(t,s="V24.4j Android",back=false){$("#page-title").textContent=t;$("#subtitle").textContent=s;$("#back").classList.toggle("hidden",!back)}
+function setTitle(t,s="V24.4k Android",back=false){$("#page-title").textContent=t;$("#subtitle").textContent=s;$("#back").classList.toggle("hidden",!back)}
 function nav(r){state.route=r;document.querySelectorAll("#bottom-nav button").forEach(b=>b.classList.toggle("active",b.dataset.route===r));({home:renderHome,wrong:renderWrong,stats:renderStats,voice:renderVoice,more:renderMore,settings:renderSettings}[r]||renderHome)()}
 
 function renderHome(){
@@ -380,35 +381,47 @@ function startWeakEducationStudy(){
 }
 function educationPrompt(groups,focus){
   const distribution=groups.map(x=>`${x.area}: ${x.count} soru`).join(", ");
-  return `Türkiye'deki KPSS Eğitim Bilimleri konu testlerinin sade ve temiz diline benzer toplam ${groups.reduce((n,x)=>n+x.count,0)} özgün, dört seçenekli soru üret. Dağılım: ${distribution}. Eğitim Felsefesi ve Eğitim Sosyolojisi kesinlikle dahil olmasın. Odak: ${focus}.
+  return `KPSS Eğitim Bilimleri düzeyinde toplam ${groups.reduce((n,x)=>n+x.count,0)} özgün, dört seçenekli soru üret. Dağılım: ${distribution}. Felsefe ve Sosyoloji dahil olmasın. Odak: ${focus}.
 
-ZORUNLU SORU YAZIM KURALLARI:
-- Sorular lisans düzeyi KPSS Eğitim Bilimleri hazırlığına uygun, çoğunlukla kolay-orta ve orta düzeyde olsun.
-- Her soru yalnızca bir temel bilgiyi, kavramı, ilkeyi, kuramı veya kavramlar arasındaki belirgin farkı ölçsün.
-- Soru kökünü gereksiz ayrıntı, akademik jargon, uzun öncül ve dolambaçlı anlatımla zorlaştırma.
-- Doğrudan bilgi/kavram soruları çoğunlukta olsun. Genel denemede soruların yaklaşık %70'i kısa ve doğrudan, en fazla %30'u kısa öğretmen-öğrenci durumu olsun.
-- Vaka istenirse senaryo 2-4 kısa cümleyi geçmesin ve cevabı tek bir temel kavrama açıkça bağlansın.
-- Birden fazla kuramı aynı soruda iç içe geçiren, istisna veya uç ayrıntı soran, yüksek lisans/uzmanlık düzeyinde soru üretme.
-- Çeldiriciler aynı konudan ve makul olsun; kelime oyunu, aşırı benzer veya tartışmalı seçenek kullanma.
-- "Hangisi değildir?" türünü seyrek kullan; çift olumsuzluk kullanma.
-- Türkiye'de yaygın kullanılan Eğitim Bilimleri terimlerini ve adlandırmalarını kullan.
-- Her sorunun yalnızca bir kesin doğru cevabı bulunsun. Açıklama 1-3 cümleyle doğru cevabı ve temel ayrımı açıkça anlatsın.
-- İnternetteki veya kaynak kitaplardaki soruları birebir kopyalama.
+Kurallar: kısa ve temiz Türkçe; tek kazanım; çoğunlukla doğrudan bilgi/kavram; vaka en fazla %30 ve 2-3 cümle; uzmanlık ayrıntısı, uzun öncül, çift olumsuzluk ve tartışmalı seçenek yok; tek kesin cevap; açıklama tek kısa cümle; kaynak soruyu birebir kopyalama.
 
-Her soruya doğru alan adını ekle. Yalnızca şu JSON yapısını döndür: {"questions":[{"area":"Gelişim Psikolojisi","question":"...","choices":{"A":"...","B":"...","C":"...","D":"..."},"answer":"A","explanation":"Doğru cevabın kısa ve açık nedeni"}]}`;
+Yalnızca JSON döndür: {"questions":[{"area":"alan","question":"soru","choices":{"A":"...","B":"...","C":"...","D":"..."},"answer":"A","explanation":"tek kısa cümle"}]}`;
 }
-async function createEducationQuestionSet(groups,focus){
-  const raw=await openAIText(educationPrompt(groups,focus),"Sen Türkiye'deki KPSS Eğitim Bilimleri sınavına hazırlanan adaylar için anlaşılır konu testleri yazan deneyimli bir öğretmensin. Soruları gereksiz ayrıntıyla zorlaştırma. Yedi alan dışında soru üretme. Her soruda tek ve tartışmasız doğru cevap, makul çeldiriciler ve hatasız Türkçe kullan. Yalnızca geçerli JSON döndür.");
+function splitEducationGroups(groups,size=7){
+  const units=groups.flatMap(x=>Array.from({length:x.count},()=>x.area)),batches=[];
+  for(let i=0;i<units.length;i+=size){
+    const counts={};units.slice(i,i+size).forEach(area=>counts[area]=(counts[area]||0)+1);
+    batches.push(Object.entries(counts).map(([area,count])=>({area,count})));
+  }
+  return batches;
+}
+async function createEducationBatch(groups,focus){
+  const expected=groups.reduce((n,x)=>n+x.count,0);
+  const raw=await openAIText(
+    educationPrompt(groups,focus),
+    "KPSS Eğitim Bilimleri için kısa, açık ve hatasız Türkçe test yaz. Yedi alan dışına çıkma. Tek kesin cevap kullan. Yalnızca JSON döndür.",
+    {maxOutputTokens:Math.max(1200,expected*260)}
+  );
   const parsed=parseJsonResponse(raw);
   if(!Array.isArray(parsed.questions)||!parsed.questions.length)throw new Error("Eğitim Bilimleri soruları oluşturulamadı.");
-  const expected=groups.reduce((n,x)=>n+x.count,0);
   const valid=parsed.questions.filter(q=>q?.question&&q?.choices&&["A","B","C","D"].includes(q.answer)&&q.choices[q.answer]).slice(0,expected);
   if(valid.length!==expected)throw new Error(`AI ${expected} yerine ${valid.length} geçerli soru üretti. Lütfen yeniden dene.`);
-  return valid.map((q,i)=>({id:`edu_${Date.now()}_${i}`,question:q.question,choices:q.choices,answer:q.answer,explanation:q.explanation,educationArea:q.area||groups[0].area}));
+  return valid;
+}
+async function createEducationQuestionSet(groups,focus,onProgress=()=>{}){
+  const batches=splitEducationGroups(groups),results=new Array(batches.length);let next=0,done=0;
+  async function worker(){
+    while(next<batches.length){
+      const i=next++;results[i]=await createEducationBatch(batches[i],focus);
+      done++;onProgress(done,batches.length);
+    }
+  }
+  await Promise.all(Array.from({length:Math.min(3,batches.length)},worker));
+  return results.flat().map((q,i)=>({id:`edu_${Date.now()}_${i}`,question:q.question,choices:q.choices,answer:q.answer,explanation:q.explanation,educationArea:q.area||groups[0].area}));
 }
 async function generateEducationQuestions(groups,focus,title,statusSelector,buttonSelector){
-  const status=$(statusSelector),button=$(buttonSelector);status.innerHTML='<div class="result">Sorular hazırlanıyor ve denetleniyor…</div>';button.disabled=true;
-  try{const qs=await createEducationQuestionSet(groups,focus);startExam(shuffle(qs),title)}
+  const status=$(statusSelector),button=$(buttonSelector);status.innerHTML='<div class="result">Hızlı üretim başladı…</div>';button.disabled=true;
+  try{const qs=await createEducationQuestionSet(groups,focus,(done,total)=>status.innerHTML=`<div class="result">Sorular hazırlanıyor · ${done}/${total} grup tamamlandı</div>`);startExam(shuffle(qs),title)}
   catch(e){status.innerHTML=`<div class="result">Hata: ${esc(e.message)}</div>`;button.disabled=false}
 }
 function renderCustomExamBuilder(){
@@ -447,7 +460,7 @@ function startSimulationWithQuestions(questions,minutes,title="Gerçek Sınav"){
   renderSimulationQuestion();
   state.simulationTimer=setInterval(()=>{const s=state.simulation;if(!s)return clearInterval(state.simulationTimer);if(Date.now()>=s.endsAt)finishSimulation(true);else updateSimulationClock()},1000);
 }
-const AI_MODELS=["gpt-5-mini","gpt-5","gpt-4.1-mini","gpt-4.1"];
+const AI_MODELS=["gpt-4.1-mini","gpt-5-mini","gpt-5","gpt-4.1"];
 const AI_MODES={
   "AI Öğretmen":"Konuyu öğret: önce anlaşılır biçimde anlat, ardından ezberlenecek maddeleri, karıştırılan kavramları, bir hafıza tekniğini ve kısa kontrol sorularını ver.",
   "Serbest Soru":"Kullanıcının sorusunu doğrudan, açık ve öğretici biçimde yanıtla. Gerektiğinde kısa örnek ver.",
@@ -455,20 +468,24 @@ const AI_MODES={
   "Çalışma Planı":"Kullanıcının isteğine göre uygulanabilir, günlere bölünmüş çalışma planı hazırla. Tekrar, test ve yanlış analizi sürelerini belirt.",
   "Yanlış Analizi":"Verilen yanlışları analiz et. Doğru cevabı, çeldiricilerin neden yanlış olduğunu, hafıza tekniğini ve üç benzer soru ver."
 };
-function modelOptions(selected){return AI_MODELS.map(m=>`<option value="${m}" ${m===selected?"selected":""}>${m}</option>`).join("")}
+function modelOptions(selected){return AI_MODELS.map(m=>`<option value="${m}" ${m===selected?"selected":""}>${m}${m==="gpt-4.1-mini"?" · En hızlı":""}</option>`).join("")}
 function renderSettings(){
-  const selected=store.get("aiModel","gpt-5-mini");
+  const selected=store.get("aiModel","gpt-4.1-mini");
   setTitle("Ayarlar","AI ve uygulama",true);app.innerHTML=`<section class="hero"><h2>OpenAI ayarları</h2><p>API anahtarı yalnızca bu cihazda saklanır. Paylaşma veya ekran görüntüsünde gösterme.</p></section><label>OpenAI API anahtarı</label><input id="api-key" type="password" value="${esc(store.get("apiKey",""))}" placeholder="sk-..."><label>AI modeli</label><select id="ai-model">${modelOptions(selected)}</select><label>Realtime oturum sunucusu (önerilen)</label><input id="realtime-endpoint" type="text" value="${esc(store.get("realtimeEndpoint",""))}" placeholder="https://sunucun.com/session"><p class="muted">Boş bırakırsan Realtime bağlantısı cihazdaki API anahtarını kullanır. En güvenlisi kısa ömürlü oturum anahtarı veren kendi sunucunu kullanmaktır.</p><label>AI çalışma talimatı</label><textarea id="instructions">${esc(store.get("instructions","Türkçe konuş. Müzik ve eğitim bilimleri sınavına hazırlanan bir öğretmene kısa, doğru ve öğretici cevaplar ver. İstenirse birer birer soru sor ve cevabı açıklayarak değerlendir."))}</textarea><div class="actions"><button class="primary" id="save-settings">Kaydet</button></div>`;
   $("#save-settings").onclick=()=>{store.set("apiKey",$("#api-key").value.trim());store.set("aiModel",$("#ai-model").value);store.set("realtimeEndpoint",$("#realtime-endpoint").value.trim());store.set("instructions",$("#instructions").value.trim());toast("Ayarlar kaydedildi")};
 }
-async function openAIText(input,instructions=""){
+async function openAIText(input,instructions="",options={}){
   const key=store.get("apiKey","");if(!key)throw new Error("Önce Ayarlar bölümüne API anahtarını gir.");
-  const r=await fetch("https://api.openai.com/v1/responses",{method:"POST",headers:{Authorization:`Bearer ${key}`,"Content-Type":"application/json"},body:JSON.stringify({model:store.get("aiModel","gpt-5-mini"),instructions:instructions||store.get("instructions","Türkçe konuş ve öğretici ol."),input})});
+  const model=options.model||store.get("aiModel","gpt-4.1-mini"),body={model,instructions:instructions||store.get("instructions","Türkçe konuş ve öğretici ol."),input,max_output_tokens:options.maxOutputTokens||1800};
+  if(/^gpt-5/.test(model))body.reasoning={effort:"minimal"};
+  const r=await fetch("https://api.openai.com/v1/responses",{method:"POST",headers:{Authorization:`Bearer ${key}`,"Content-Type":"application/json"},body:JSON.stringify(body)});
   if(!r.ok)throw new Error((await r.json()).error?.message||`HTTP ${r.status}`);const d=await r.json();return d.output_text||d.output?.flatMap(o=>o.content||[]).find(c=>c.type==="output_text")?.text||"Yanıt alınamadı.";
 }
-async function openAIWebText(input,instructions=""){
+async function openAIWebText(input,instructions="",options={}){
   const key=store.get("apiKey","");if(!key)throw new Error("Önce Ayarlar bölümüne API anahtarını gir.");
-  const r=await fetch("https://api.openai.com/v1/responses",{method:"POST",headers:{Authorization:`Bearer ${key}`,"Content-Type":"application/json"},body:JSON.stringify({model:store.get("aiModel","gpt-5-mini"),instructions,input,tools:[{type:"web_search"}]})});
+  const model=options.model||store.get("aiModel","gpt-4.1-mini"),body={model,instructions,input,tools:[{type:"web_search"}],max_output_tokens:options.maxOutputTokens||2400};
+  if(/^gpt-5/.test(model))body.reasoning={effort:"minimal"};
+  const r=await fetch("https://api.openai.com/v1/responses",{method:"POST",headers:{Authorization:`Bearer ${key}`,"Content-Type":"application/json"},body:JSON.stringify(body)});
   if(!r.ok)throw new Error((await r.json()).error?.message||`HTTP ${r.status}`);const d=await r.json();return d.output_text||d.output?.flatMap(o=>o.content||[]).find(c=>c.type==="output_text")?.text||"Yanıt alınamadı.";
 }
 function parseJsonResponse(text){
@@ -481,30 +498,18 @@ function renderOperaBallet(){
   app.innerHTML=`<section class="hero opera-ballet-hero"><h2>Yalnızca Opera ve Bale</h2><p>Temel sınav bilgilerine odaklanır: eser, besteci ve müzik dönemi. Gereksiz ayrıntı sormaz.</p></section>
   <div class="ai-control-grid"><div><label>Alan</label><select id="ob-area"><option>Opera ve Bale Karışık</option><option>Yalnızca Opera</option><option>Yalnızca Bale</option></select></div><div><label>Zorluk</label><select id="ob-level"><option>Kolay</option><option selected>Orta</option><option>Zor</option></select></div></div>
   <label>Soru sayısı</label><select id="ob-count"><option>5</option><option selected>10</option><option>15</option><option>20</option></select>
-  <label class="check-row web-confirm"><input id="ob-web" type="checkbox" checked><span>İnternetten araştırarak doğrulanmış sorular oluştur.</span></label>
+  <label class="check-row web-confirm"><input id="ob-web" type="checkbox"><span>İnternetten ayrıca doğrula (daha yavaş).</span></label>
   <div class="actions"><button class="primary" id="ob-generate">Soruları Hazırla</button></div><div id="ob-status"></div>`;
   $("#ob-generate").onclick=generateOperaBalletExam;
 }
 async function generateOperaBalletExam(){
   const area=$("#ob-area").value,level=$("#ob-level").value,count=+$("#ob-count").value,useWeb=$("#ob-web").checked,status=$("#ob-status");
   status.innerHTML=`<div class="result">${useWeb?"İnternet kaynakları araştırılıyor ve sorular doğrulanıyor…":"Sorular hazırlanıyor…"}</div>`;$("#ob-generate").disabled=true;
-  const prompt=`${area} alanında ${level} düzeyde ${count} özgün, dört seçenekli sınav sorusu üret. Sorular yalnızca opera ve/veya bale hakkında olsun.
-
-ZORUNLU SORU YAZIM KURALLARI:
-- Sorular müzik öğretmenliği yazılı sınavlarında görülen kısa, temiz ve doğrudan test soruları gibi olsun.
-- Soruların en az %80'i şu üç temel bağdan oluşsun: eser-besteci, eser-dönem/akım, besteci-dönem.
-- Kalan sorular yalnızca çok bilinen temel opera/bale terimi, eser türü veya eserin ait olduğu ülke/ulusal okul hakkında olabilir.
-- Librettist, kesin prömiyer günü/yılı, ilk sahnelendiği salon, ayrıntılı karakter adı, olay örgüsünün küçük ayrıntısı, koreograf ve sahneleme bilgisi sorma.
-- Yalnızca yaygın bilinen eser ve bestecileri kullan. Nadir eser, tartışmalı atıf ve uzmanlık düzeyi ayrıntı kullanma.
-- Soru kökleri mümkünse tek cümle olsun; gereksiz öncül, uzun paragraf ve kelime oyunu kullanma.
-- Her soruda tek ve tartışmasız doğru cevap bulunsun; çeldiriciler aynı türden ve makul olsun.
-- Açıklama 1-2 kısa cümle olsun ve eser-besteci-dönem bağını pekiştirsin.
-- İnternetteki soruları birebir kopyalama. Tartışmalı bilgileri sorma ve her cevabı güvenilir kaynaklarla doğrula.
-
-Yalnızca şu JSON yapısını döndür: {"questions":[{"question":"...","choices":{"A":"...","B":"...","C":"...","D":"..."},"answer":"A","explanation":"Kısa ve öğretici açıklama"}]}`;
-  const instructions="Sen müzik öğretmenliği sınavına yönelik sade opera ve bale testleri hazırlayan deneyimli bir müzik tarihi öğretmenisin. Önceliğin eser, besteci ve dönem bilgisidir. Web araştırmasında ansiklopedi, opera/bale kurumları, müze ve güvenilir müzik kuruluşlarını tercih et. Gereksiz ayrıntı sorma, bilgiyi uydurma ve yalnızca geçerli JSON döndür.";
+  const prompt=`${area} alanında ${level} düzeyde ${count} özgün, dört seçenekli kısa soru üret. En az %80 eser-besteci, eser-dönem veya besteci-dönem sorusu olsun. Kalanı yalnız temel terim/tür/ulusal okul olabilir. Nadir eser, librettist, kesin prömiyer, ayrıntılı karakter, olay örgüsü ve koreograf sorma. Tek kesin cevap ve tek cümle açıklama kullan. Yalnızca JSON döndür: {"questions":[{"question":"...","choices":{"A":"...","B":"...","C":"...","D":"..."},"answer":"A","explanation":"..."}]}`;
+  const instructions="Sade müzik öğretmenliği testi yaz. Eser, besteci ve dönem bilgisine odaklan. Tartışmalı bilgi kullanma. Yalnızca JSON döndür.";
   try{
-    const text=useWeb?await openAIWebText(prompt,instructions):await openAIText(prompt,instructions),parsed=parseJsonResponse(text);
+    const maxOutputTokens=Math.max(1200,count*230);
+    const text=useWeb?await openAIWebText(prompt,instructions,{maxOutputTokens}):await openAIText(prompt,instructions,{maxOutputTokens}),parsed=parseJsonResponse(text);
     if(!Array.isArray(parsed.questions)||!parsed.questions.length)throw new Error("Soru listesi boş geldi.");
     const qs=parsed.questions.map((q,i)=>({id:`ob_${Date.now()}_${i}`,...q}));
     startExam(qs,area);
