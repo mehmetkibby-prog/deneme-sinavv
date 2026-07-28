@@ -82,3 +82,31 @@ input[type=date]{width:100%;background:#0b182a;border:1px solid #294665;color:wh
 .similar-regenerate{width:100%;margin-top:12px;border-color:#2dd4bf}
 .similar-question-loading{color:#99f6e4}.similar-question-error{color:#fda4af}
 @media(max-width:520px){.elimination-actions{align-items:stretch;flex-direction:column}.elimination-toggle{width:100%}}
+.topic-lesson-actions{margin:12px 0 0}.topic-lesson-button{width:100%;border:1px solid #f59e0b;background:linear-gradient(135deg,#5c3b13,#173f68)}
+.topic-lesson-button:disabled,.distractor-lab-button:disabled{opacity:.7;cursor:wait}
+.topic-lesson-box{margin:12px 0 18px;padding:18px;border:1px solid #f59e0b;border-radius:16px;background:linear-gradient(145deg,#3b2911,#132b43);box-shadow:0 10px 30px #0004}
+.topic-lesson-box>b{display:block;color:#fcd34d;margin-bottom:9px}.topic-lesson-box div{white-space:pre-wrap;line-height:1.65}
+.distractor-lab{margin-top:12px}.distractor-lab-button{width:100%;border:1px solid #fb7185;background:linear-gradient(135deg,#5a1f34,#253758)}
+.distractor-lab-box{margin-top:12px;padding:18px;border:1px solid #fb7185;border-radius:16px;background:linear-gradient(145deg,#421828,#132b43)}
+.distractor-lab-box>b{display:block;color:#fda4af;margin-bottom:9px}.distractor-lab-box div{white-space:pre-wrap;line-height:1.65}
+.autopsy-hero{border-color:#fb7185}.autopsy-panel{margin:16px 0 24px;padding:20px;border:1px solid #8b5cf6;border-radius:22px;background:linear-gradient(145deg,#251745,#10283e)}
+.autopsy-heading{display:flex;justify-content:space-between;align-items:flex-start;gap:15px}.autopsy-heading small{color:#c4b5fd;font-weight:800;letter-spacing:1.4px}.autopsy-heading h2{margin:4px 0 14px}.autopsy-heading>span{color:var(--muted);font-size:12px;text-align:right}
+.autopsy-grid{display:grid;grid-template-columns:repeat(4,1fr);gap:9px}.autopsy-grid article{padding:14px 9px;text-align:center;border:1px solid #55437c;border-radius:14px;background:#111d35}.autopsy-grid b{display:block;font-size:25px;color:#ddd6fe}.autopsy-grid span{font-size:11px;color:var(--muted)}
+.autopsy-findings{margin:15px 0;padding:2px 16px;border-left:3px solid #8b5cf6;background:#101e34}.autopsy-findings p{line-height:1.55}
+.report-output{white-space:pre-wrap;line-height:1.72;margin:18px 0;padding:22px;border:1px solid #7c3aed;border-radius:18px;background:#111d35;color:#edf4ff}
+.music-report-feature,.music-report-hero{border-color:#ec4899;background:linear-gradient(145deg,#551538,#17334e)}
+.music-report-stats{display:flex;flex-wrap:wrap;gap:9px;margin:16px 0}.music-report-stats span{padding:9px 12px;border:1px solid #9d356d;border-radius:999px;background:#35142d}.music-report-stats b{color:#f9a8d4}
+.print-document{display:none}
+.print-document.pdf-source{display:block;position:fixed;left:-10000px;top:0;width:182mm;box-sizing:border-box;padding:0;background:#fff;color:#111;font-family:"Times New Roman",Times,serif}
+.print-document.pdf-source header{border-bottom:2px solid #111;margin-bottom:18px;padding-bottom:10px}.print-document.pdf-source h1{font-size:25px;margin:0 0 6px}.print-document.pdf-source header p{margin:0;color:#444}
+.print-document.pdf-source>div{font-size:15px;line-height:1.52;white-space:pre-wrap}.print-document.pdf-source footer{margin-top:22px;padding-top:8px;border-top:1px solid #777;font-size:12px;color:#555}
+@media(max-width:620px){.autopsy-grid{grid-template-columns:repeat(2,1fr)}.autopsy-heading{display:block}.autopsy-heading>span{display:block;text-align:left;margin-bottom:10px}}
+@media print{
+  @page{size:A4;margin:16mm 15mm}
+  body.printing-report>*:not(.print-document){display:none!important}
+  body.printing-report{display:block!important;background:#fff!important;color:#111!important;font-family:"Times New Roman",Times,serif!important}
+  body.printing-report .print-document{display:block!important;position:static!important;width:auto!important;margin:0!important;padding:0!important;background:#fff!important;color:#111!important}
+  .print-document header{border-bottom:2px solid #111;margin-bottom:18px;padding-bottom:10px}.print-document h1{font-size:20pt;margin:0 0 6px}.print-document header p{margin:0;color:#444}
+  .print-document>div{font-size:11.5pt;line-height:1.5;white-space:pre-wrap;orphans:3;widows:3}
+  .print-document footer{margin-top:22px;padding-top:8px;border-top:1px solid #777;font-size:9pt;color:#555}
+}
