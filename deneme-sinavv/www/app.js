@@ -1089,6 +1089,7 @@ function wrongVoiceSpeedInstruction(){
 }
 async function createRealtimePeer(instructions,onEvent){
   const key=store.get("apiKey","");
+  const realtimeModel="gpt-realtime-2.1";
   if(!key)throw new Error("Önce Ayarlar bölümüne OpenAI API anahtarını gir.");
   if(!navigator.mediaDevices?.getUserMedia)throw new Error("Bu cihaz canlı mikrofon bağlantısını desteklemiyor.");
   const pc=new RTCPeerConnection();
@@ -1103,14 +1104,14 @@ async function createRealtimePeer(instructions,onEvent){
     dc.onerror=()=>reject(new Error("Canlı ders veri bağlantısı kurulamadı."));
   });
   const offer=await pc.createOffer();await pc.setLocalDescription(offer);
-  const res=await fetch("https://api.openai.com/v1/realtime/calls",{
+  const res=await fetch(`https://api.openai.com/v1/realtime/calls?model=${encodeURIComponent(realtimeModel)}`,{
     method:"POST",headers:{"Content-Type":"application/sdp",Authorization:`Bearer ${key}`},body:offer.sdp
   });
   if(!res.ok)throw new Error((await res.text())||`Realtime bağlantı hatası (${res.status})`);
   await pc.setRemoteDescription({type:"answer",sdp:await res.text()});
   await opened;
   dc.send(JSON.stringify({type:"session.update",session:{
-    type:"realtime",model:"gpt-realtime-2.1",output_modalities:["audio"],
+    type:"realtime",model:realtimeModel,output_modalities:["audio"],
     instructions,
     audio:{input:{transcription:{model:"gpt-4o-mini-transcribe",language:"tr"},turn_detection:{type:"server_vad",create_response:true,interrupt_response:true}},output:{voice:"marin"}}
   }}));
@@ -1538,7 +1539,7 @@ async function startRealtimeVoice(){
     dc.onmessage=e=>{try{handleRealtimeEvent(JSON.parse(e.data))}catch{}};
     dc.onerror=()=>{const el=$("#voice-status");if(el)el.textContent="Realtime veri bağlantısında hata oluştu."};
     const offer=await pc.createOffer();await pc.setLocalDescription(offer);
-    const target=endpoint||"https://api.openai.com/v1/realtime/calls";
+    const target=endpoint||"https://api.openai.com/v1/realtime/calls?model=gpt-realtime-2.1";
     const headers={"Content-Type":"application/sdp"};if(!endpoint)headers.Authorization=`Bearer ${key}`;
     const res=await fetch(target,{method:"POST",headers,body:offer.sdp});
     if(!res.ok)throw new Error((await res.text())||`HTTP ${res.status}`);
