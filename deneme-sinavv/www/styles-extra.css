@@ -54,3 +54,6 @@ input[type=date]{width:100%;background:#0b182a;border:1px solid #294665;color:wh
 .builder-summary{position:sticky;bottom:78px;z-index:3;display:flex;align-items:center;justify-content:space-between;margin:18px 0;padding:15px 18px;border:1px solid #f59e0b;border-radius:16px;background:#3b2a13;box-shadow:0 8px 30px #0008}
 .builder-summary b{font-size:26px;color:#fbbf24}
 @media(max-width:560px){.education-dashboard,.theorist-grid,.offline-education-grid{grid-template-columns:1fr}.builder-row{padding:12px}.builder-row input{width:72px;flex-basis:72px}}
+.solution-actions{margin:16px 0 0}.solution-toggle{width:100%;border:1px solid #4f78a2;background:#183653}
+.solution-box{margin:12px 0 18px;padding:18px;border:1px solid #d6a74a;border-radius:16px;background:linear-gradient(145deg,#332814,#142a3d);box-shadow:0 10px 30px #0004}
+.solution-box b{display:block;color:#ffd27a;margin-bottom:9px}.solution-box p{margin:0;white-space:pre-wrap;line-height:1.62;color:#edf4ff}

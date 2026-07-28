@@ -13,7 +13,7 @@ function offlineEducationSections(){return state.educationData?.sections||[]}
 function offlineEducationQuestions(){return offlineEducationSections().flatMap(s=>s.questions)}
 function allQuestions(){return [...state.data.sections.flatMap(s=>s.questions),...offlineEducationQuestions()]}
 function ids(key){return new Set(store.get(key,[]))}
-function setTitle(t,s="V24.4l Android",back=false){$("#page-title").textContent=t;$("#subtitle").textContent=s;$("#back").classList.toggle("hidden",!back)}
+function setTitle(t,s="V24.4n Android",back=false){$("#page-title").textContent=t;$("#subtitle").textContent=s;$("#back").classList.toggle("hidden",!back)}
 function nav(r){state.route=r;document.querySelectorAll("#bottom-nav button").forEach(b=>b.classList.toggle("active",b.dataset.route===r));({home:renderHome,wrong:renderWrong,stats:renderStats,voice:renderVoice,more:renderMore,settings:renderSettings}[r]||renderHome)()}
 
 function renderHome(){
@@ -55,7 +55,7 @@ function renderSection(id){
 function renderOfflineEducation(){
   const sections=offlineEducationSections(),total=offlineEducationQuestions().length,source=state.educationData?.source||{};
   setTitle("Eğitim Bilimleri",`${total} çevrimdışı soru`,true);
-  app.innerHTML=`<section class="hero offline-education-hero"><h2>Eğitim Bilimleri Bankası</h2><p>Efsane soru bankası, önceki PDF denemesi ve KHK Çalışma Soruları 2025 çevrimdışı olarak aktarılmıştır. Bu alan internetsiz ve API anahtarı olmadan çalışır.</p><div class="actions"><button class="primary" id="offline-all">Tüm Sorulardan Deneme</button><button class="secondary" id="offline-inspect">Tüm Soruları İncele</button></div><small>Çevrimdışı kaynaklar · ${total} doğrulanmış soru</small></section>
+  app.innerHTML=`<section class="hero offline-education-hero"><h2>Eğitim Bilimleri Bankası</h2><p>Önceki deneme, KHK Çalışma Soruları 2025 ve Hoca Kafası 2026 ücretsiz soru bankası çevrimdışı olarak aktarılmıştır. Hoca Kafası sorularında kitaptaki ayrıntılı çözümler bulunur.</p><div class="actions"><button class="primary" id="offline-all">Tüm Sorulardan Deneme</button><button class="secondary" id="offline-inspect">Tüm Soruları İncele</button></div><small>Çevrimdışı kaynaklar · ${total} doğrulanmış soru</small></section>
   <div class="offline-education-grid">${sections.map(s=>`<button class="card offline-education-section" data-id="${s.id}"><b>${esc(s.title)}</b><span class="pill">${s.questions.length} soru</span></button>`).join("")}</div>`;
   $("#offline-all").onclick=()=>startExam(shuffle(offlineEducationQuestions()),"Eğitim Bilimleri PDF Denemesi");
   $("#offline-inspect").onclick=()=>renderQuestionList(offlineEducationQuestions(),"Eğitim Bilimleri PDF Soruları");
@@ -66,7 +66,7 @@ function renderOfflineEducationSection(id){
   if(!section)return renderOfflineEducation();
   setTitle(section.title,`${section.questions.length} çevrimdışı soru`,true);
   const counts=[5,10,15,20,section.questions.length].filter((v,i,a)=>v<=section.questions.length&&a.indexOf(v)===i);
-  app.innerHTML=`<section class="hero offline-education-hero"><h2>${esc(section.title)}</h2><p>PDF’den aktarılan sorular. Çözüm için internet veya AI gerekmez.</p><label>Soru sayısı</label><select id="offline-count">${counts.map(v=>`<option value="${v}">${v===section.questions.length?"Tümü":v}</option>`).join("")}</select><div class="actions"><button class="primary" id="offline-start">Sınavı Başlat</button><button class="secondary" id="offline-list">Soruları İncele</button></div></section>`;
+  app.innerHTML=`<section class="hero offline-education-hero"><h2>${esc(section.title)}</h2><p>Kaynaklardan aktarılan çevrimdışı sorular. Ayrıntılı çözümü bulunan sorularda test sırasında çözüm düğmesi görünür.</p><label>Soru sayısı</label><select id="offline-count">${counts.map(v=>`<option value="${v}">${v===section.questions.length?"Tümü":v}</option>`).join("")}</select><div class="actions"><button class="primary" id="offline-start">Sınavı Başlat</button><button class="secondary" id="offline-list">Soruları İncele</button></div></section>`;
   $("#offline-start").onclick=()=>startExam(shuffle(section.questions).slice(0,+$("#offline-count").value),section.title);
   $("#offline-list").onclick=()=>renderQuestionList(section.questions,section.title);
 }
@@ -76,13 +76,19 @@ function startExam(qs,title){
   Object.assign(state,{exam:qs,index:0,correct:0,wrong:0,answered:false,examTitle:title});renderQuestion();
 }
 function renderQuestion(){
-  const q=state.exam[state.index],hard=ids("hardQuestions").has(q.id),pct=Math.round(state.index/state.exam.length*100);
+  const q=state.exam[state.index],hard=ids("hardQuestions").has(q.id),pct=Math.round(state.index/state.exam.length*100),hasSolution=Boolean(q.explanation?.trim());
   setTitle(state.examTitle,`Soru ${state.index+1} / ${state.exam.length}`,true);
   app.innerHTML=`<div class="exam-head"><span class="pill">Doğru ${state.correct} · Yanlış ${state.wrong}</span><label class="hard-toggle"><input id="hard-check" type="checkbox" ${hard?"checked":""}> ★ Zor</label></div>
   <div class="progress"><i style="width:${pct}%"></i></div><div class="question">${esc(q.question)}</div>
   <div>${Object.entries(q.choices).map(([k,v])=>`<button class="choice" data-key="${k}"><strong>${k}</strong><span>${esc(v)}</span></button>`).join("")}</div>
+  ${hasSolution?`<div class="solution-actions"><button class="secondary solution-toggle" id="solution-toggle" aria-expanded="false">📖 Ayrıntılı Çözümü Göster</button></div><div class="solution-box hidden" id="solution-box"><b>Kitaptaki Ayrıntılı Çözüm</b><p>${esc(q.explanation)}</p></div>`:""}
   <div id="feedback"></div><div class="actions"><button class="primary hidden" id="next">${state.index===state.exam.length-1?"Sınavı Bitir":"Sonraki Soru"}</button></div>`;
   $("#hard-check").onchange=e=>toggleId("hardQuestions",q.id,e.target.checked,"Zor Sorular");
+  if(hasSolution)$("#solution-toggle").onclick=()=>{
+    const box=$("#solution-box"),button=$("#solution-toggle"),opening=box.classList.contains("hidden");
+    box.classList.toggle("hidden",!opening);button.setAttribute("aria-expanded",String(opening));
+    button.textContent=opening?"📕 Ayrıntılı Çözümü Gizle":"📖 Ayrıntılı Çözümü Göster";
+  };
   document.querySelectorAll(".choice").forEach(b=>b.onclick=()=>answer(b.dataset.key));
   $("#next").onclick=()=>{if(++state.index>=state.exam.length)finishExam();else{state.answered=false;renderQuestion()}};
 }
@@ -105,7 +111,7 @@ function answer(key){
   if(ok){state.correct++;removeWrongQuestion(q)}
   else{state.wrong++;saveWrongQuestion(q)}
   document.querySelectorAll(".choice").forEach(b=>{b.disabled=true;if(b.dataset.key===q.answer)b.classList.add("correct");else if(b.dataset.key===key)b.classList.add("wrong")});
-  $("#feedback").innerHTML=`<div class="result"><b>${ok?"Doğru!":"Yanlış."}</b><br>${!ok?`Doğru cevap: ${q.answer}) ${esc(q.choices[q.answer])}<br>`:""}${esc(q.explanation||"")}</div>`;
+  $("#feedback").innerHTML=`<div class="result"><b>${ok?"Doğru!":"Yanlış."}</b>${!ok?`<br>Doğru cevap: ${q.answer}) ${esc(q.choices[q.answer])}`:""}</div>`;
   $("#next").classList.remove("hidden");
 }
 const EDUCATION_AREAS=[
@@ -662,10 +668,18 @@ function migrateWrongQuestions(){
   store.set("v24_4l_wrong_split",true);
 }
 
+function removeEfsaneRecords(){
+  if(store.get("v24_4m_efsane_removed",false))return;
+  const isEfsane=q=>String(q?.id||"").startsWith("efsane-");
+  store.set("wrongEducationQuestions",savedWrongQuestions("wrongEducationQuestions").filter(q=>!isEfsane(q)));
+  store.set("hardQuestions",store.get("hardQuestions",[]).filter(id=>!String(id).startsWith("efsane-")));
+  store.set("v24_4m_efsane_removed",true);
+}
+
 $("#back").onclick=()=>nav("home");$("#settings").onclick=()=>renderSettings();
 document.querySelectorAll("#bottom-nav button").forEach(b=>b.onclick=()=>nav(b.dataset.route));
 Promise.all([
   fetch("questions.json").then(r=>{if(!r.ok)throw new Error("Müzik soru bankası bulunamadı.");return r.json()}),
   fetch("education-questions.json").then(r=>{if(!r.ok)throw new Error("Eğitim Bilimleri soru bankası bulunamadı.");return r.json()})
-]).then(([music,education])=>{state.data=music;state.educationData=education;migrateWrongQuestions();nav("home")})
+]).then(([music,education])=>{state.data=music;state.educationData=education;migrateWrongQuestions();removeEfsaneRecords();nav("home")})
   .catch(e=>app.innerHTML=`<div class="result">Soru bankası yüklenemedi: ${esc(e.message)}</div>`);
