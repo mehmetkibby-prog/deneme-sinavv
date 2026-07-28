@@ -13,7 +13,7 @@ function offlineEducationSections(){return state.educationData?.sections||[]}
 function offlineEducationQuestions(){return offlineEducationSections().flatMap(s=>s.questions)}
 function allQuestions(){return [...state.data.sections.flatMap(s=>s.questions),...offlineEducationQuestions()]}
 function ids(key){return new Set(store.get(key,[]))}
-function setTitle(t,s="V26.0 Kişisel Akademi",back=false){$("#page-title").textContent=t;$("#subtitle").textContent=s;$("#back").classList.toggle("hidden",!back)}
+function setTitle(t,s="V26.1 Kişisel Akademi",back=false){$("#page-title").textContent=t;$("#subtitle").textContent=s;$("#back").classList.toggle("hidden",!back)}
 function nav(r){if(state.voiceLesson?.playing)stopWrongVoiceLesson(false);state.route=r;document.querySelectorAll("#bottom-nav button").forEach(b=>b.classList.toggle("active",b.dataset.route===r));({home:renderHome,wrong:renderWrong,stats:renderStats,voice:renderVoice,more:renderMore,settings:renderSettings}[r]||renderHome)()}
 
 function renderHome(){
@@ -844,20 +844,31 @@ async function printTextReport(title,text){
   document.querySelector(".print-document")?.remove();
   const profile=store.get("profile",{name:""});
   const doc=document.createElement("article");doc.className="print-document";
-  doc.innerHTML=`<header><h1>${esc(title)}</h1><p>${esc(profile.name||"")} · ${new Date().toLocaleDateString("tr-TR")}</p></header><div>${esc(text)}</div><footer>Müzik Sınavı V26.0 · Kişisel çalışma çıktısı</footer>`;
+  doc.innerHTML=`<header><h1>${esc(title)}</h1><p>${esc(profile.name||"")} · ${new Date().toLocaleDateString("tr-TR")}</p></header><div>${esc(text)}</div><footer>Müzik Sınavı V26.1 · Kişisel çalışma çıktısı</footer>`;
   document.body.appendChild(doc);
   if(typeof html2pdf==="function"){
     doc.classList.add("pdf-source");
     const filename=`${title.replace(/[^\p{L}\p{N}]+/gu,"-").replace(/^-|-$/g,"")||"calisma-ozeti"}.pdf`;
+    const options={
+      margin:[14,14,14,14],filename,
+      image:{type:"jpeg",quality:.96},
+      html2canvas:{scale:2,useCORS:true,backgroundColor:"#ffffff"},
+      jsPDF:{unit:"mm",format:"a4",orientation:"portrait"},
+      pagebreak:{mode:["css","legacy"]}
+    };
     try{
-      await html2pdf().set({
-        margin:[14,14,14,14],filename,
-        image:{type:"jpeg",quality:.96},
-        html2canvas:{scale:2,useCORS:true,backgroundColor:"#ffffff"},
-        jsPDF:{unit:"mm",format:"a4",orientation:"portrait"},
-        pagebreak:{mode:["css","legacy"]}
-      }).from(doc).save();
-      toast("PDF indirildi");
+      const nativeSaver=window.Capacitor?.Plugins?.PdfSaver;
+      const isAndroid=window.Capacitor?.getPlatform?.()==="android";
+      if(isAndroid&&nativeSaver){
+        const dataUri=await html2pdf().set(options).from(doc).outputPdf("datauristring");
+        const base64=String(dataUri).split(",")[1];
+        if(!base64)throw new Error("PDF verisi oluşturulamadı.");
+        const result=await nativeSaver.save({base64,filename});
+        toast(result?.saved?"PDF seçtiğin klasöre kaydedildi":"PDF kaydetme iptal edildi");
+      }else{
+        await html2pdf().set(options).from(doc).save();
+        toast("PDF indirildi");
+      }
     }catch(error){toast(`PDF hazırlanamadı: ${error.message}`)}
     finally{doc.remove()}
     return;
