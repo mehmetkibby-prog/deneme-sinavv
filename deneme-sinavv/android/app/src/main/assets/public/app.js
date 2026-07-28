@@ -13,7 +13,7 @@ function offlineEducationSections(){return state.educationData?.sections||[]}
 function offlineEducationQuestions(){return offlineEducationSections().flatMap(s=>s.questions)}
 function allQuestions(){return [...state.data.sections.flatMap(s=>s.questions),...offlineEducationQuestions()]}
 function ids(key){return new Set(store.get(key,[]))}
-function setTitle(t,s="V26.3 Kişisel Akademi",back=false){$("#page-title").textContent=t;$("#subtitle").textContent=s;$("#back").classList.toggle("hidden",!back)}
+function setTitle(t,s="V27 Canlı AI Öğretmen",back=false){$("#page-title").textContent=t;$("#subtitle").textContent=s;$("#back").classList.toggle("hidden",!back)}
 function nav(r){if(state.voiceLesson?.playing)stopWrongVoiceLesson(false);state.route=r;document.querySelectorAll("#bottom-nav button").forEach(b=>b.classList.toggle("active",b.dataset.route===r));({home:renderHome,wrong:renderWrong,stats:renderStats,voice:renderVoice,more:renderMore,settings:renderSettings}[r]||renderHome)()}
 
 function renderHome(){
@@ -923,7 +923,7 @@ async function buildTextPdf(title,text){
   for(let page=1;page<=pages;page++){
     pdf.setPage(page);pdf.setDrawColor(210,218,226);pdf.line(left,pageHeight-12,left+usableWidth,pageHeight-12);
     pdf.setFont("DejaVuSerif","normal");pdf.setFontSize(8);pdf.setTextColor(95,105,117);
-    pdf.text("Müzik Sınavı V26.3 · Kişisel çalışma çıktısı",left,pageHeight-8);
+    pdf.text("Müzik Sınavı V27 · Kişisel çalışma çıktısı",left,pageHeight-8);
     pdf.text(`${page} / ${pages}`,pageWidth-right,pageHeight-8,{align:"right"});
   }
   const arrayBuffer=pdf.output("arraybuffer");
@@ -1039,32 +1039,26 @@ Başlıkları büyük harfle yaz. Yazma alanlarında üç satır "..............
 
 function renderWrongVoiceLesson(){
   const saved=store.get("latestWrongVoiceLesson",null);
-  setTitle("Yanlışlardan Sesli Ders","Dinle · durdur · kalemle yaz",true);
-  app.innerHTML=`<section class="hero voice-lesson-hero"><h2>Not aldıran kişisel sesli ders</h2><p>Yanlışların öğretmen anlatımı hâline gelir. Ders kısa bölümlere ayrılır; “yazma molası” geldiğinde otomatik durur. Notunu yazdıktan sonra devam edersin.</p></section>
+  setTitle("Yanlışlardan Sesli Ders","Canlı kadın AI öğretmen · kalemle not",true);
+  app.innerHTML=`<section class="hero voice-lesson-hero"><h2>Not aldıran canlı kişisel ders</h2><p>Yanlışların doğal kadın sesli AI öğretmen tarafından anlatılır. Yazma molalarında durur; mikrofon açıkken araya girip soru sorabilirsin.</p></section>
   <div class="ai-control-grid"><div><label>Ders alanı</label><select id="voice-lesson-scope"><option value="all">Müzik + Eğitim Bilimleri</option><option value="music">Yalnız Müzik</option><option value="education">Yalnız Eğitim Bilimleri</option></select></div>
   <div><label>Ders uzunluğu</label><select id="voice-lesson-length"><option value="short">5 dakika</option><option value="medium" selected>8–10 dakika</option><option value="long">12–15 dakika</option></select></div></div>
   <label>Konuşma hızı: <b id="voice-rate-label">0.85×</b></label><input id="voice-rate" class="voice-rate" type="range" min="0.60" max="1.35" step="0.05" value="${store.get("wrongVoiceRate",.85)}">
   <label class="check-row voice-pause-option"><input id="voice-auto-pause" type="checkbox" ${store.get("wrongVoiceAutoPause",true)?"checked":""}><span>“Yazma molası”ndan sonra otomatik dur</span></label>
-  <div class="actions"><button class="primary" id="generate-voice-lesson">🎧 Sesli Dersimi Hazırla</button></div>
+  <div class="actions"><button class="primary" id="generate-voice-lesson">🎧 Canlı Dersimi Hazırla</button></div>
   <div class="voice-lesson-controls ${saved?.text?"":"hidden"}" id="voice-lesson-controls">
-    <button class="primary" id="play-voice-lesson">▶ Baştan Oynat</button>
+    <button class="primary" id="play-voice-lesson">● Canlı Dersi Başlat</button>
     <button class="secondary" id="pause-voice-lesson">Ⅱ Duraklat</button>
     <button class="secondary" id="continue-voice-lesson">▶ Devam Et</button>
     <button class="danger" id="stop-voice-lesson">■ Durdur</button>
-    <button class="secondary hidden" id="voice-engine-settings">⚙ Ses Ayarları</button>
   </div>
   <div class="voice-progress ${saved?.text?"":"hidden"}" id="voice-progress"><i></i><span>Hazır</span></div>
   <div class="lesson-transcript ${saved?.text?"":"hidden"}" id="voice-lesson-output">${saved?.text?lessonTranscriptHtml(saved.text):""}</div>`;
   const rate=$("#voice-rate");$("#voice-rate-label").textContent=`${(+rate.value).toFixed(2)}×`;
   rate.oninput=()=>{$("#voice-rate-label").textContent=`${(+rate.value).toFixed(2)}×`;store.set("wrongVoiceRate",+rate.value)};
-  rate.onchange=()=>restartCurrentVoiceChunk();
+  rate.onchange=()=>updateWrongVoiceLessonSpeed();
   $("#voice-auto-pause").onchange=e=>store.set("wrongVoiceAutoPause",e.target.checked);
   $("#generate-voice-lesson").onclick=generateWrongVoiceLesson;
-  const settingsButton=$("#voice-engine-settings");
-  if(nativeTts()&&settingsButton){
-    settingsButton.classList.remove("hidden");
-    settingsButton.onclick=()=>nativeTts().openSettings();
-  }
   mountWrongVoiceControls(saved?.text||"");
 }
 function lessonChunks(text){
@@ -1081,105 +1075,130 @@ function lessonTranscriptHtml(text){
 function mountWrongVoiceControls(text){
   const play=$("#play-voice-lesson"),pause=$("#pause-voice-lesson"),cont=$("#continue-voice-lesson"),stop=$("#stop-voice-lesson");
   if(!play||!text)return;
-  play.onclick=()=>startWrongVoiceLesson(text,0);
+  play.onclick=()=>startRealtimeWrongVoiceLesson(text,0);
   pause.onclick=pauseWrongVoiceLesson;
   cont.onclick=continueWrongVoiceLesson;
   stop.onclick=()=>stopWrongVoiceLesson(true);
 }
-function nativeTts(){
-  return window.Capacitor?.Plugins?.NativeTts||null;
+function wrongVoiceSpeedInstruction(){
+  const rate=+($("#voice-rate")?.value||store.get("wrongVoiceRate",.85));
+  if(rate<=.72)return "Çok yavaş, tane tane ve not alınabilecek uzunlukta duraklarla konuş.";
+  if(rate<=.95)return "Sakin, anlaşılır ve not alınabilecek bir hızda konuş.";
+  if(rate<=1.15)return "Doğal ve akıcı bir konuşma hızında anlat.";
+  return "Canlı ve hızlı konuş; kelimeleri yine de açık telaffuz et.";
 }
-function canUseVoiceEngine(){
-  return !!nativeTts()||("speechSynthesis" in window&&typeof window.SpeechSynthesisUtterance==="function");
-}
-async function cancelVoiceEngine(){
-  const native=nativeTts();
-  if(native){
-    try{await native.stop()}catch(_){}
-    return;
-  }
-  if("speechSynthesis" in window)window.speechSynthesis.cancel();
-}
-function speakVoiceText(text,rate){
-  const native=nativeTts();
-  if(native)return native.speak({text,rate});
-  return new Promise((resolve,reject)=>{
-    if(!canUseVoiceEngine())return reject(new Error("Bu cihazın sesli okuma motoru kullanılamıyor."));
-    const utterance=new SpeechSynthesisUtterance(text);
-    utterance.lang="tr-TR";utterance.rate=rate;utterance.pitch=1;
-    utterance.onend=()=>resolve({stopped:false});
-    utterance.onerror=e=>{
-      if(e.error==="canceled"||e.error==="interrupted")resolve({stopped:true});
-      else reject(new Error("Sesli okuma durdu."));
-    };
-    window.speechSynthesis.speak(utterance);
+async function createRealtimePeer(instructions,onEvent){
+  const key=store.get("apiKey","");
+  const realtimeModel="gpt-realtime-2.1";
+  if(!key)throw new Error("Önce Ayarlar bölümüne OpenAI API anahtarını gir.");
+  if(!navigator.mediaDevices?.getUserMedia)throw new Error("Bu cihaz canlı mikrofon bağlantısını desteklemiyor.");
+  const pc=new RTCPeerConnection();
+  const audio=document.createElement("audio");audio.autoplay=true;audio.setAttribute("playsinline","");
+  pc.ontrack=e=>{audio.srcObject=e.streams[0];audio.play().catch(()=>{})};
+  const stream=await navigator.mediaDevices.getUserMedia({audio:{echoCancellation:true,noiseSuppression:true,autoGainControl:true}});
+  stream.getAudioTracks().forEach(track=>pc.addTrack(track,stream));
+  const dc=pc.createDataChannel("oai-events");
+  dc.onmessage=e=>{try{onEvent?.(JSON.parse(e.data))}catch(_){}};
+  const opened=new Promise((resolve,reject)=>{
+    dc.onopen=resolve;
+    dc.onerror=()=>reject(new Error("Canlı ders veri bağlantısı kurulamadı."));
   });
+  const offer=await pc.createOffer();await pc.setLocalDescription(offer);
+  const res=await fetch(`https://api.openai.com/v1/realtime/calls?model=${encodeURIComponent(realtimeModel)}`,{
+    method:"POST",headers:{"Content-Type":"application/sdp",Authorization:`Bearer ${key}`},body:offer.sdp
+  });
+  if(!res.ok)throw new Error((await res.text())||`Realtime bağlantı hatası (${res.status})`);
+  await pc.setRemoteDescription({type:"answer",sdp:await res.text()});
+  await opened;
+  dc.send(JSON.stringify({type:"session.update",session:{
+    type:"realtime",model:realtimeModel,output_modalities:["audio"],
+    instructions,
+    audio:{input:{transcription:{model:"gpt-4o-mini-transcribe",language:"tr"},turn_detection:{type:"server_vad",create_response:true,interrupt_response:true}},output:{voice:"marin"}}
+  }}));
+  return {pc,dc,stream,audio};
 }
-async function startWrongVoiceLesson(text,startIndex=0){
-  if(!canUseVoiceEngine())return toast("Bu cihazın sesli okuma motoru kullanılamıyor.");
-  if(state.voiceLesson){
-    state.voiceLesson.playing=false;
-    state.voiceLesson.generation=(state.voiceLesson.generation||0)+1;
-  }
-  await cancelVoiceEngine();
-  state.voiceLesson={text,chunks:lessonChunks(text),index:startIndex,playing:true,paused:false,generation:0};
-  speakWrongVoiceChunk();
-}
-async function speakWrongVoiceChunk(){
-  const lesson=state.voiceLesson;if(!lesson?.playing||lesson.paused)return;
+function sendWrongVoiceChunk(){
+  const lesson=state.voiceLesson;
+  if(!lesson?.playing||lesson.paused||lesson.responding||!lesson.dc||lesson.dc.readyState!=="open")return;
   if(lesson.index>=lesson.chunks.length){stopWrongVoiceLesson(true,"Ders tamamlandı");return}
+  const chunk=lesson.chunks[lesson.index].replace(/\[|\]/g,"");
   document.querySelectorAll("[data-lesson-chunk]").forEach(x=>x.classList.toggle("active",+x.dataset.lessonChunk===lesson.index));
   const progress=$("#voice-progress"),pct=Math.round(lesson.index/lesson.chunks.length*100);
-  if(progress){progress.classList.remove("hidden");progress.querySelector("i").style.width=`${pct}%`;progress.querySelector("span").textContent=`Bölüm ${lesson.index+1} / ${lesson.chunks.length}`}
-  const generation=++lesson.generation;
-  const chunkIndex=lesson.index;
+  if(progress){progress.classList.remove("hidden");progress.querySelector("i").style.width=`${pct}%`;progress.querySelector("span").textContent=`Canlı anlatım · Bölüm ${lesson.index+1} / ${lesson.chunks.length}`}
+  lesson.responding=true;
+  lesson.dc.send(JSON.stringify({type:"conversation.item.create",item:{type:"message",role:"user",content:[{type:"input_text",text:`Ders metninin sıradaki bölümünü doğal kadın öğretmen sesiyle anlat. Metne sadık kal, ekrana dair yorum yapma. ${wrongVoiceSpeedInstruction()}\n\n${chunk}`} ]}}));
+  lesson.dc.send(JSON.stringify({type:"response.create"}));
+}
+async function startRealtimeWrongVoiceLesson(text,startIndex=0){
+  stopWrongVoiceLesson(false);
+  const progress=$("#voice-progress");if(progress){progress.classList.remove("hidden");progress.querySelector("span").textContent="Canlı kadın öğretmen bağlanıyor…"}
   try{
-    const result=await speakVoiceText(
-      lesson.chunks[chunkIndex].replace(/\[|\]/g,""),
-      +($("#voice-rate")?.value||store.get("wrongVoiceRate",.85))
+    const lesson={text,chunks:lessonChunks(text),index:startIndex,playing:true,paused:false,responding:false,pc:null,dc:null,stream:null,audio:null};
+    state.voiceLesson=lesson;
+    const peer=await createRealtimePeer(
+      `Sen Türkçe konuşan, sıcak ama ciddi bir kadın özel ders öğretmenisin. Öğrencinin müzik ve Eğitim Bilimleri yanlışlarını öğret. Verilen ders metnini doğal tonlama ve vurgu ile anlat. Öğrenci araya girip soru sorarsa kısa ve doğru cevap ver, sonra kaldığın ders bölümüne dön. "Yazma molası" ifadesini belirgin söyle. ${wrongVoiceSpeedInstruction()}`,
+      e=>handleWrongVoiceRealtimeEvent(lesson,e)
     );
-    if(state.voiceLesson!==lesson||!lesson.playing||lesson.paused||lesson.generation!==generation||result?.stopped)return;
-    const wasWritingPause=/\[?YAZMA MOLASI\]?/i.test(lesson.chunks[chunkIndex]);
+    if(state.voiceLesson!==lesson){peer.stream.getTracks().forEach(t=>t.stop());peer.pc.close();return}
+    Object.assign(lesson,peer);sendWrongVoiceChunk();
+  }catch(error){
+    stopWrongVoiceLesson(false);
+    const denied=error?.name==="NotAllowedError"||/permission|izin|denied/i.test(error?.message||"");
+    if(progress)progress.querySelector("span").textContent=denied?"Mikrofon izni gerekli.":"Canlı ders başlatılamadı.";
+    toast(denied?"Android uygulama izinlerinden Mikrofonu aç.":String(error?.message||error));
+  }
+}
+function handleWrongVoiceRealtimeEvent(lesson,e){
+  if(state.voiceLesson!==lesson)return;
+  if(e.type==="response.done"){
+    lesson.responding=false;
+    if(lesson.paused)return;
+    const wasWritingPause=/\[?YAZMA MOLASI\]?/i.test(lesson.chunks[lesson.index]||"");
     lesson.index++;
     if(wasWritingPause&&($("#voice-auto-pause")?.checked??true)){
       lesson.paused=true;
       const p=$("#voice-progress");if(p)p.querySelector("span").textContent="Kalemle yazma molası · Hazır olunca Devam Et";
       toast("Yazma molası");
-      return;
-    }
-    speakWrongVoiceChunk();
-  }catch(error){
-    if(state.voiceLesson!==lesson||lesson.generation!==generation)return;
-    lesson.playing=false;
-    const message=String(error?.message||error||"Sesli okuma durdu.");
-    toast(message.includes("Türkçe ses verisi")?"Türkçe ses verisi kurulu değil. Telefonun Sesli Okuma ayarlarından Türkçe sesi indir.":message);
+    }else sendWrongVoiceChunk();
   }
+  if(e.type==="conversation.item.input_audio_transcription.completed"){
+    const p=$("#voice-progress");if(p)p.querySelector("span").textContent=`Sorun dinlendi: ${e.transcript||""}`;
+  }
+  if(e.type==="error"){
+    lesson.responding=false;
+    const p=$("#voice-progress");if(p)p.querySelector("span").textContent=`Canlı ders hatası: ${e.error?.message||"Bilinmeyen hata"}`;
+  }
+}
+function updateWrongVoiceLessonSpeed(){
+  const lesson=state.voiceLesson;
+  if(!lesson?.dc||lesson.dc.readyState!=="open")return;
+  lesson.dc.send(JSON.stringify({type:"session.update",session:{type:"realtime",instructions:
+    `Sen Türkçe konuşan doğal kadın özel ders öğretmenisin. Öğrenci araya girerse cevap verip derse dön. ${wrongVoiceSpeedInstruction()}`
+  }}));
+  toast("Konuşma hızı sonraki anlatıma uygulanacak");
 }
 function pauseWrongVoiceLesson(){
   if(!state.voiceLesson?.playing)return;
-  state.voiceLesson.paused=true;state.voiceLesson.generation++;cancelVoiceEngine();
+  state.voiceLesson.paused=true;
+  if(state.voiceLesson.responding&&state.voiceLesson.dc?.readyState==="open"){
+    state.voiceLesson.dc.send(JSON.stringify({type:"response.cancel"}));
+    state.voiceLesson.responding=false;
+  }
+  state.voiceLesson.audio?.pause();
   const p=$("#voice-progress");if(p)p.querySelector("span").textContent="Duraklatıldı";
 }
 function continueWrongVoiceLesson(){
   if(!state.voiceLesson?.playing){
-    const saved=store.get("latestWrongVoiceLesson",null);if(saved?.text)startWrongVoiceLesson(saved.text,0);
+    const saved=store.get("latestWrongVoiceLesson",null);if(saved?.text)startRealtimeWrongVoiceLesson(saved.text,0);
     return;
   }
-  state.voiceLesson.paused=false;restartCurrentVoiceChunk();
-}
-async function restartCurrentVoiceChunk(){
-  const lesson=state.voiceLesson;
-  if(!lesson?.playing||lesson.paused)return;
-  lesson.generation++;
-  await cancelVoiceEngine();
-  if(state.voiceLesson===lesson&&lesson.playing&&!lesson.paused)speakWrongVoiceChunk();
+  state.voiceLesson.paused=false;
+  state.voiceLesson.audio?.play().catch(()=>{});
+  sendWrongVoiceChunk();
 }
 function stopWrongVoiceLesson(update=true,label="Durduruldu"){
-  if(state.voiceLesson){
-    state.voiceLesson.playing=false;
-    state.voiceLesson.generation=(state.voiceLesson.generation||0)+1;
-  }
-  cancelVoiceEngine();
+  const lesson=state.voiceLesson;
+  if(lesson){lesson.playing=false;lesson.stream?.getTracks().forEach(t=>t.stop());lesson.dc?.close();lesson.pc?.close();if(lesson.audio){lesson.audio.pause();lesson.audio.srcObject=null}}
   state.voiceLesson=null;
   if(update){
     document.querySelectorAll("[data-lesson-chunk]").forEach(x=>x.classList.remove("active"));
@@ -1217,7 +1236,7 @@ Kurallar:
     store.set("latestWrongVoiceLesson",saved);
     output.innerHTML=lessonTranscriptHtml(text);
     $("#voice-lesson-controls").classList.remove("hidden");$("#voice-progress").classList.remove("hidden");
-    mountWrongVoiceControls(text);button.textContent="↻ Sesli Dersi Yeniden Hazırla";
+    mountWrongVoiceControls(text);button.textContent="↻ Canlı Dersi Yeniden Hazırla";
   }catch(error){output.textContent=`Hata: ${error.message}`;button.textContent="↻ Yeniden Dene"}
   finally{button.disabled=false}
 }
@@ -1520,7 +1539,7 @@ async function startRealtimeVoice(){
     dc.onmessage=e=>{try{handleRealtimeEvent(JSON.parse(e.data))}catch{}};
     dc.onerror=()=>{const el=$("#voice-status");if(el)el.textContent="Realtime veri bağlantısında hata oluştu."};
     const offer=await pc.createOffer();await pc.setLocalDescription(offer);
-    const target=endpoint||"https://api.openai.com/v1/realtime/calls";
+    const target=endpoint||"https://api.openai.com/v1/realtime/calls?model=gpt-realtime-2.1";
     const headers={"Content-Type":"application/sdp"};if(!endpoint)headers.Authorization=`Bearer ${key}`;
     const res=await fetch(target,{method:"POST",headers,body:offer.sdp});
     if(!res.ok)throw new Error((await res.text())||`HTTP ${res.status}`);

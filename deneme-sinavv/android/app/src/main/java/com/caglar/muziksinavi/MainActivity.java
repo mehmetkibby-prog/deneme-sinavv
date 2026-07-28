@@ -15,7 +15,6 @@ public class MainActivity extends BridgeActivity {
     @Override
     public void onCreate(Bundle savedInstanceState) {
         registerPlugin(PdfSaverPlugin.class);
-        registerPlugin(NativeTtsPlugin.class);
         super.onCreate(savedInstanceState);
         requestMicrophonePermissionIfNeeded();
     }
