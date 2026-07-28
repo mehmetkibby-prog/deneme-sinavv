@@ -1,6 +1,6 @@
 const $ = s => document.querySelector(s);
 const app = $("#app");
-const state = { data:null, educationData:null, route:"home", section:null, exam:[], index:0, correct:0, wrong:0, answered:false, examTitle:"", examResults:[], questionStartedAt:0, customExam:null, simulation:null, simulationTimer:null, rtc:null, voiceStream:null, voiceAudio:null, voiceChannel:null, chat:[], studyChat:[], aiQuestionExplanations:{}, aiSimilarQuestions:{}, aiTopicLessons:{}, aiDistractorAnalyses:{}, eliminatedChoices:{}, eliminationMode:false, activeReport:null };
+const state = { data:null, educationData:null, route:"home", section:null, exam:[], index:0, correct:0, wrong:0, answered:false, examTitle:"", examResults:[], questionStartedAt:0, customExam:null, simulation:null, simulationTimer:null, rtc:null, voiceStream:null, voiceAudio:null, voiceChannel:null, voiceLesson:null, chat:[], studyChat:[], aiQuestionExplanations:{}, aiSimilarQuestions:{}, aiTopicLessons:{}, aiDistractorAnalyses:{}, eliminatedChoices:{}, eliminationMode:false, activeReport:null };
 const store = {
   get(k,f){ try { return JSON.parse(localStorage.getItem(k)) ?? f; } catch { return f; } },
   set(k,v){ localStorage.setItem(k,JSON.stringify(v)); }
@@ -13,8 +13,8 @@ function offlineEducationSections(){return state.educationData?.sections||[]}
 function offlineEducationQuestions(){return offlineEducationSections().flatMap(s=>s.questions)}
 function allQuestions(){return [...state.data.sections.flatMap(s=>s.questions),...offlineEducationQuestions()]}
 function ids(key){return new Set(store.get(key,[]))}
-function setTitle(t,s="V25.0 Akıllı Öğretmen",back=false){$("#page-title").textContent=t;$("#subtitle").textContent=s;$("#back").classList.toggle("hidden",!back)}
-function nav(r){state.route=r;document.querySelectorAll("#bottom-nav button").forEach(b=>b.classList.toggle("active",b.dataset.route===r));({home:renderHome,wrong:renderWrong,stats:renderStats,voice:renderVoice,more:renderMore,settings:renderSettings}[r]||renderHome)()}
+function setTitle(t,s="V26.0 Kişisel Akademi",back=false){$("#page-title").textContent=t;$("#subtitle").textContent=s;$("#back").classList.toggle("hidden",!back)}
+function nav(r){if(state.voiceLesson?.playing)stopWrongVoiceLesson(false);state.route=r;document.querySelectorAll("#bottom-nav button").forEach(b=>b.classList.toggle("active",b.dataset.route===r));({home:renderHome,wrong:renderWrong,stats:renderStats,voice:renderVoice,more:renderMore,settings:renderSettings}[r]||renderHome)()}
 
 function renderHome(){
   const p=store.get("profile",{name:"Çağlar",examDate:""});
@@ -28,12 +28,15 @@ function renderHome(){
     <button class="card feature offline-education-feature" data-go="offline-education"><b>📘 Eğitim Bilimleri</b><span>${offlineEducationQuestions().length} çevrimdışı soru · AI gerektirmez</span></button>
     <button class="card feature education-feature" data-go="education"><b>🎓 AI Eğitim Bilimleri</b><span>7 alan, vaka, kuramcı ve zayıflık analizi</span></button>
     <button class="card feature music-report-feature" data-go="music-wrong-ai"><b>🧬 AI Müzik Yanlışları</b><span>Yanlışlarından kişisel özet ve yazdırılabilir PDF hazırla</span></button>
+    <button class="card feature workbook-feature" data-go="workbook"><b>📕 Kişisel Çalışma Kitabı</b><span>Yanlışlarından konu özeti, etkinlik ve yazdırılabilir kitapçık</span></button>
+    <button class="card feature voice-lesson-feature" data-go="wrong-voice-lesson"><b>🎧 Yanlışlardan Sesli Ders</b><span>Not alma durakları ve ayarlanabilir konuşma hızı</span></button>
+    <button class="card feature forgetting-feature" data-go="forgetting-risk"><b>⏳ Bugün Hatırlaman Gerekenler</b><span>Unutma riski yükselen bilgileri zamanında tekrar et</span></button>
     <button class="card feature custom-exam-feature" data-go="custom-exam"><b>🧩 Deneme Oluşturucu</b><span>Bölümleri ve soru sayılarını kendin birleştir</span></button>
     <button class="card feature" data-go="study"><b>📚 Konu Çalışma Köşesi</b><span>Plan ve notlarını tut</span></button>
     <button class="card feature" data-go="profile"><b>👤 Kişisel Bilgi Köşesi</b><span>Hedeflerini düzenle</span></button>
   </div>
   <h3 class="section-title">Soru Bankası</h3><div class="grid">${state.data.sections.map(s=>`<button class="card section" data-id="${s.id}"><b>${esc(s.title)}</b><span class="pill">${s.questions.length} soru</span></button>`).join("")}</div>`;
-  $(".feature-grid").onclick=e=>{const b=e.target.closest("[data-go]");if(b)({teacher:renderTeacher,cards:renderFlashcards,memory:renderMemoryCenter,"offline-education":renderOfflineEducation,education:renderEducationCenter,"music-wrong-ai":renderMusicWrongAnalysis,"custom-exam":renderCustomExamBuilder,study:renderStudy,profile:renderProfile}[b.dataset.go])()};
+  $(".feature-grid").onclick=e=>{const b=e.target.closest("[data-go]");if(b)({teacher:renderTeacher,cards:renderFlashcards,memory:renderMemoryCenter,"offline-education":renderOfflineEducation,education:renderEducationCenter,"music-wrong-ai":renderMusicWrongAnalysis,workbook:renderPersonalWorkbook,"wrong-voice-lesson":renderWrongVoiceLesson,"forgetting-risk":renderForgettingRisk,"custom-exam":renderCustomExamBuilder,study:renderStudy,profile:renderProfile}[b.dataset.go])()};
   document.querySelectorAll(".section").forEach(b=>b.onclick=()=>renderSection(b.dataset.id));
   $("#mixed").onclick=()=>startExam(shuffle(allQuestions()).slice(0,Math.min(50,allQuestions().length)),"Karışık Deneme");
   $("#custom-exam").onclick=renderCustomExamBuilder;
@@ -306,9 +309,13 @@ function renderWrong(){
     <button class="card wrong-category" data-key="wrongMusicQuestions"><b>🎼 Müzik Alanı Yanlışları</b><span class="pill">${music.length} soru</span></button>
     <button class="card wrong-category" data-key="wrongEducationQuestions"><b>🎓 Eğitim Bilimleri Yanlışları</b><span class="pill">${education.length} soru</span></button>
     <button class="card music-report-feature" id="music-wrong-analysis"><b>🧬 AI Müzik Yanlışları</b><span>Yanlışlarını incelet, kişisel özet ve PDF hazırla</span></button>
+    <button class="card workbook-feature" id="personal-workbook"><b>📕 Kişisel Çalışma Kitabı</b><span>Yanlışlarından yazdırılabilir çalışma föyü üret</span></button>
+    <button class="card voice-lesson-feature" id="wrong-voice-lesson"><b>🎧 Yanlışlardan Sesli Ders</b><span>Dinle, durdur ve kalemle not al</span></button>
   </div>`;
   document.querySelectorAll(".wrong-category").forEach(b=>b.onclick=()=>renderWrongCategory(b.dataset.key));
   $("#music-wrong-analysis").onclick=renderMusicWrongAnalysis;
+  $("#personal-workbook").onclick=renderPersonalWorkbook;
+  $("#wrong-voice-lesson").onclick=renderWrongVoiceLesson;
 }
 function renderWrongCategory(key){
   const education=key==="wrongEducationQuestions";
@@ -343,10 +350,13 @@ function renderMore(){
   <button class="card offline-education-feature" data-go="offline-education"><b>📘 Eğitim Bilimleri</b></button>
   <button class="card education-feature" data-go="education"><b>🎓 AI Eğitim Bilimleri Merkezi</b></button>
   <button class="card music-report-feature" data-go="music-wrong-ai"><b>🧬 AI Müzik Yanlışları</b></button>
+  <button class="card workbook-feature" data-go="workbook"><b>📕 Kişisel Çalışma Kitabı</b></button>
+  <button class="card voice-lesson-feature" data-go="wrong-voice-lesson"><b>🎧 Yanlışlardan Sesli Ders</b></button>
+  <button class="card forgetting-feature" data-go="forgetting-risk"><b>⏳ Unutma Riski Sistemi</b></button>
   <button class="card custom-exam-feature" data-go="custom-exam"><b>🧩 Özel Deneme Oluştur</b></button>
   <button class="card" data-go="ai-center"><b>✨ AI Çalışma Merkezi</b></button><button class="card" data-go="study"><b>📚 Konu Çalışma</b></button>
   <button class="card" data-go="profile"><b>👤 Kişisel Bilgiler</b></button><button class="card" data-go="settings"><b>⚙ Ayarlar</b></button></div>`;
-  app.onclick=e=>{const b=e.target.closest("[data-go]");if(b)({hard:renderHard,cards:renderFlashcards,memory:renderMemoryCenter,simulation:renderSimulationSetup,"opera-ballet":renderOperaBallet,"offline-education":renderOfflineEducation,education:renderEducationCenter,"music-wrong-ai":renderMusicWrongAnalysis,"custom-exam":renderCustomExamBuilder,"ai-center":renderAiStudyCenter,study:renderStudy,profile:renderProfile,settings:renderSettings}[b.dataset.go])()};
+  app.onclick=e=>{const b=e.target.closest("[data-go]");if(b)({hard:renderHard,cards:renderFlashcards,memory:renderMemoryCenter,simulation:renderSimulationSetup,"opera-ballet":renderOperaBallet,"offline-education":renderOfflineEducation,education:renderEducationCenter,"music-wrong-ai":renderMusicWrongAnalysis,workbook:renderPersonalWorkbook,"wrong-voice-lesson":renderWrongVoiceLesson,"forgetting-risk":renderForgettingRisk,"custom-exam":renderCustomExamBuilder,"ai-center":renderAiStudyCenter,study:renderStudy,profile:renderProfile,settings:renderSettings}[b.dataset.go])()};
 }
 function renderFlashcards(){
   setTitle("Ezber Kartları","Dokun ve cevabı gör",true);const sections=state.data.sections;
@@ -834,7 +844,7 @@ async function printTextReport(title,text){
   document.querySelector(".print-document")?.remove();
   const profile=store.get("profile",{name:""});
   const doc=document.createElement("article");doc.className="print-document";
-  doc.innerHTML=`<header><h1>${esc(title)}</h1><p>${esc(profile.name||"")} · ${new Date().toLocaleDateString("tr-TR")}</p></header><div>${esc(text)}</div><footer>Müzik Sınavı V25.0 · Kişisel çalışma çıktısı</footer>`;
+  doc.innerHTML=`<header><h1>${esc(title)}</h1><p>${esc(profile.name||"")} · ${new Date().toLocaleDateString("tr-TR")}</p></header><div>${esc(text)}</div><footer>Müzik Sınavı V26.0 · Kişisel çalışma çıktısı</footer>`;
   document.body.appendChild(doc);
   if(typeof html2pdf==="function"){
     doc.classList.add("pdf-source");
@@ -858,6 +868,266 @@ async function printTextReport(title,text){
   setTimeout(()=>{try{window.print()}catch{toast("Bu cihazda yazdırma penceresi açılamadı.")}},80);
   setTimeout(cleanup,60000);
 }
+
+function learningSourceItems(scope="all",limit=30){
+  const subjectOk=x=>scope==="all"||x.subject===scope;
+  const byQuestion=new Map();
+  mistakeHistory().filter(subjectOk).forEach(item=>{
+    const old=byQuestion.get(item.questionId);
+    if(!old)byQuestion.set(item.questionId,{...item});
+    else{
+      old.count=(old.count||1)+(item.count||1);
+      if(new Date(item.lastDate||item.date)>new Date(old.lastDate||old.date))Object.assign(old,{...item,count:old.count});
+    }
+  });
+  const current=new Map(allQuestions().map(q=>[String(q.id),q]));
+  let items=[...byQuestion.values()].sort((a,b)=>
+    (b.count||1)-(a.count||1)||new Date(b.lastDate||b.date)-new Date(a.lastDate||a.date)
+  ).map(x=>({...x,q:current.get(String(x.questionId))||{
+    id:x.questionId,question:x.question,choices:x.choices,answer:x.answer,
+    educationArea:x.subject==="education"?(x.area||"Eğitim Bilimleri"):undefined
+  }}));
+  if(!items.length){
+    const fallbacks=[
+      ...(scope!=="education"?savedWrongQuestions("wrongMusicQuestions").map(q=>({q,subject:"music",area:questionAreaLabel(q),count:1})):[]),
+      ...(scope!=="music"?savedWrongQuestions("wrongEducationQuestions").map(q=>({q,subject:"education",area:questionAreaLabel(q),count:1})):[])
+    ];
+    items=fallbacks;
+  }
+  return items.slice(0,limit);
+}
+function scopeLabel(scope){
+  return scope==="music"?"Müzik":scope==="education"?"Eğitim Bilimleri":"Müzik + Eğitim Bilimleri";
+}
+function renderPersonalWorkbook(){
+  const latest=store.get("latestPersonalWorkbook",null);
+  setTitle("Kişisel Çalışma Kitabı","Yanlışlarından yazdırılabilir kitapçık",true);
+  app.innerHTML=`<section class="hero workbook-hero"><h2>Sana özel çalışma kitabı</h2><p>AI, gerçek yanlışlarını konu kümelerine ayırır; kısa ders notu, kavram karşılaştırması, yeni alıştırmalar ve en sonda ayrı cevap anahtarı hazırlar.</p></section>
+  <div class="ai-control-grid"><div><label>İçerik alanı</label><select id="workbook-scope"><option value="all">Müzik + Eğitim Bilimleri</option><option value="music">Yalnız Müzik</option><option value="education">Yalnız Eğitim Bilimleri</option></select></div>
+  <div><label>İncelenecek yanlış</label><select id="workbook-count"><option>10</option><option selected>20</option><option>30</option><option>40</option></select></div></div>
+  <div class="workbook-options">
+    <label class="check-row"><input id="workbook-summaries" type="checkbox" checked><span>Kısa konu anlatımları ve kavram karşılaştırmaları</span></label>
+    <label class="check-row"><input id="workbook-similar" type="checkbox" checked><span>Benzer çoktan seçmeli alıştırmalar</span></label>
+    <label class="check-row"><input id="workbook-fill" type="checkbox" checked><span>Boşluk doldurma ve kısa cevap etkinlikleri</span></label>
+    <label class="check-row"><input id="workbook-writing" type="checkbox" checked><span>Kalemle yazılacak “Bunu kendi cümlenle yaz” alanları</span></label>
+  </div>
+  <div class="actions"><button class="primary" id="generate-workbook">📕 Çalışma Kitabımı Oluştur</button><button class="secondary" id="print-workbook" ${latest?.text?"":"disabled"}>🖨 PDF Olarak İndir / Yazdır</button></div>
+  <div class="report-output ${latest?.text?"":"hidden"}" id="workbook-output">${latest?.text?esc(latest.text):""}</div>`;
+  if(latest?.text)state.activeReport=latest;
+  $("#generate-workbook").onclick=generatePersonalWorkbook;
+  $("#print-workbook").onclick=()=>{const report=state.activeReport||latest;if(report?.text)printTextReport("Kişisel Çalışma Kitabım",report.text)};
+}
+async function generatePersonalWorkbook(){
+  const scope=$("#workbook-scope").value,count=+$("#workbook-count").value;
+  const items=learningSourceItems(scope,count),button=$("#generate-workbook"),output=$("#workbook-output"),print=$("#print-workbook");
+  if(!items.length)return toast("Bu alanda henüz kayıtlı yanlış yok.");
+  const options={
+    summaries:$("#workbook-summaries").checked,similar:$("#workbook-similar").checked,
+    fill:$("#workbook-fill").checked,writing:$("#workbook-writing").checked
+  };
+  const data=items.map(x=>({
+    alan:x.area||questionAreaLabel(x.q),soru:x.q.question,
+    secilen:x.selected&&x.q.choices?.[x.selected]?x.q.choices[x.selected]:"Bilinmiyor",
+    dogru:x.q.choices?.[x.q.answer],aciklama:x.q.explanation||"",yanlisTekrari:x.count||1
+  }));
+  const sections=[
+    options.summaries?"KISA KONU DERSLERİ ve KARIŞTIRILAN KAVRAMLAR":"KONU BAŞLIKLARI",
+    options.writing?"KALEMLE YAZ – Her ana bilgi için öğrencinin kendi cümlesiyle tamamlayacağı çizgili alan bırak.":"KISA TEKRAR",
+    options.similar?"PEKİŞTİRME TESTİ – Verilen doğrulanmış bilgilerden 10-15 özgün çoktan seçmeli soru üret.":"KONTROL SORULARI",
+    options.fill?"BOŞLUK DOLDURMA ve KISA CEVAP ETKİNLİKLERİ":"HIZLI KONTROL",
+    "CEVAP ANAHTARI – Bütün alıştırmaların cevaplarını yalnız en sonda ver."
+  ].join("\n");
+  const prompt=`Aşağıdaki gerçek yanlış kayıtlarından ${scopeLabel(scope)} alanında kişisel bir çalışma kitabı hazırla:
+${JSON.stringify(data)}
+
+Bu çıktı A4 kâğıda basılıp kalemle çalışılacak. Deneyimli bir öğretmenin öğrenciye özel hazırladığı gibi seçici, doğal ve düzenli olsun. Soruları tek tek kopyalamak yerine ortak eksikleri öğret. Yalnız verilen doğru cevaplar ve açıklamalardan kesin çıkarılabilen bilgileri kullan; doğrulanmamış ayrıntı uydurma.
+
+Kitabın sırası:
+ÖĞRETMENDEN KISA NOT
+${sections}
+
+Başlıkları büyük harfle yaz. Yazma alanlarında üç satır "........................................................................" kullan. Cevapları etkinliklerin yanında gösterme. Türkçe, yaklaşık 1600-2300 kelime yaz.`;
+  output.classList.remove("hidden");output.textContent="Yanlışlar konu kümelerine ayrılıyor ve kitapçık hazırlanıyor…";
+  button.disabled=true;button.textContent="Kitabın hazırlanıyor…";
+  try{
+    const text=await openAIText(prompt,"Sen müzik öğretmenliği ve Eğitim Bilimleri sınavlarında deneyimli bir öğretmen ve çalışma föyü yazarı­sın. Verilen yanlışlardan A4'e uygun, doğru, sade ve gerçekten öğretici kişisel çalışma kitabı hazırla.",{maxOutputTokens:4800});
+    const report={text,date:new Date().toISOString(),count:items.length,scope};
+    store.set("latestPersonalWorkbook",report);state.activeReport=report;
+    output.textContent=text;print.disabled=false;button.textContent="↻ Kitabı Yeniden Oluştur";
+    print.onclick=()=>printTextReport("Kişisel Çalışma Kitabım",text);
+  }catch(error){output.textContent=`Hata: ${error.message}`;button.textContent="↻ Yeniden Dene"}
+  finally{button.disabled=false}
+}
+
+function renderWrongVoiceLesson(){
+  const saved=store.get("latestWrongVoiceLesson",null);
+  setTitle("Yanlışlardan Sesli Ders","Dinle · durdur · kalemle yaz",true);
+  app.innerHTML=`<section class="hero voice-lesson-hero"><h2>Not aldıran kişisel sesli ders</h2><p>Yanlışların öğretmen anlatımı hâline gelir. Ders kısa bölümlere ayrılır; “yazma molası” geldiğinde otomatik durur. Notunu yazdıktan sonra devam edersin.</p></section>
+  <div class="ai-control-grid"><div><label>Ders alanı</label><select id="voice-lesson-scope"><option value="all">Müzik + Eğitim Bilimleri</option><option value="music">Yalnız Müzik</option><option value="education">Yalnız Eğitim Bilimleri</option></select></div>
+  <div><label>Ders uzunluğu</label><select id="voice-lesson-length"><option value="short">5 dakika</option><option value="medium" selected>8–10 dakika</option><option value="long">12–15 dakika</option></select></div></div>
+  <label>Konuşma hızı: <b id="voice-rate-label">0.85×</b></label><input id="voice-rate" class="voice-rate" type="range" min="0.60" max="1.35" step="0.05" value="${store.get("wrongVoiceRate",.85)}">
+  <label class="check-row voice-pause-option"><input id="voice-auto-pause" type="checkbox" ${store.get("wrongVoiceAutoPause",true)?"checked":""}><span>“Yazma molası”ndan sonra otomatik dur</span></label>
+  <div class="actions"><button class="primary" id="generate-voice-lesson">🎧 Sesli Dersimi Hazırla</button></div>
+  <div class="voice-lesson-controls ${saved?.text?"":"hidden"}" id="voice-lesson-controls">
+    <button class="primary" id="play-voice-lesson">▶ Baştan Oynat</button>
+    <button class="secondary" id="pause-voice-lesson">Ⅱ Duraklat</button>
+    <button class="secondary" id="continue-voice-lesson">▶ Devam Et</button>
+    <button class="danger" id="stop-voice-lesson">■ Durdur</button>
+  </div>
+  <div class="voice-progress ${saved?.text?"":"hidden"}" id="voice-progress"><i></i><span>Hazır</span></div>
+  <div class="lesson-transcript ${saved?.text?"":"hidden"}" id="voice-lesson-output">${saved?.text?lessonTranscriptHtml(saved.text):""}</div>`;
+  const rate=$("#voice-rate");$("#voice-rate-label").textContent=`${(+rate.value).toFixed(2)}×`;
+  rate.oninput=()=>{$("#voice-rate-label").textContent=`${(+rate.value).toFixed(2)}×`;store.set("wrongVoiceRate",+rate.value)};
+  rate.onchange=()=>{if(state.voiceLesson?.playing&&!state.voiceLesson.paused){state.voiceLesson.paused=true;speechSynthesis.cancel();state.voiceLesson.paused=false;speakWrongVoiceChunk()}};
+  $("#voice-auto-pause").onchange=e=>store.set("wrongVoiceAutoPause",e.target.checked);
+  $("#generate-voice-lesson").onclick=generateWrongVoiceLesson;
+  mountWrongVoiceControls(saved?.text||"");
+}
+function lessonChunks(text){
+  return String(text||"").split(/\n\s*\n/).map(x=>x.trim()).filter(Boolean).flatMap(paragraph=>{
+    if(paragraph.length<=650)return [paragraph];
+    const sentences=paragraph.match(/[^.!?]+[.!?]+|[^.!?]+$/g)||[paragraph],chunks=[];let current="";
+    sentences.forEach(sentence=>{if((current+sentence).length>600&&current){chunks.push(current.trim());current=""}current+=sentence});
+    if(current.trim())chunks.push(current.trim());return chunks;
+  });
+}
+function lessonTranscriptHtml(text){
+  return lessonChunks(text).map((x,i)=>`<section data-lesson-chunk="${i}" class="${/\[?YAZMA MOLASI\]?/i.test(x)?"writing-pause":""}"><small>${i+1}</small><p>${esc(x.replace(/\[|\]/g,""))}</p></section>`).join("");
+}
+function mountWrongVoiceControls(text){
+  const play=$("#play-voice-lesson"),pause=$("#pause-voice-lesson"),cont=$("#continue-voice-lesson"),stop=$("#stop-voice-lesson");
+  if(!play||!text)return;
+  play.onclick=()=>startWrongVoiceLesson(text,0);
+  pause.onclick=pauseWrongVoiceLesson;
+  cont.onclick=continueWrongVoiceLesson;
+  stop.onclick=()=>stopWrongVoiceLesson(true);
+}
+function startWrongVoiceLesson(text,startIndex=0){
+  if(!("speechSynthesis" in window))return toast("Bu cihazın sesli okuma motoru kullanılamıyor.");
+  if(state.voiceLesson)state.voiceLesson.playing=false;
+  speechSynthesis.cancel();
+  state.voiceLesson={text,chunks:lessonChunks(text),index:startIndex,playing:true,paused:false};
+  speakWrongVoiceChunk();
+}
+function speakWrongVoiceChunk(){
+  const lesson=state.voiceLesson;if(!lesson?.playing||lesson.paused)return;
+  if(lesson.index>=lesson.chunks.length){stopWrongVoiceLesson(true,"Ders tamamlandı");return}
+  document.querySelectorAll("[data-lesson-chunk]").forEach(x=>x.classList.toggle("active",+x.dataset.lessonChunk===lesson.index));
+  const progress=$("#voice-progress"),pct=Math.round(lesson.index/lesson.chunks.length*100);
+  if(progress){progress.classList.remove("hidden");progress.querySelector("i").style.width=`${pct}%`;progress.querySelector("span").textContent=`Bölüm ${lesson.index+1} / ${lesson.chunks.length}`}
+  const utterance=new SpeechSynthesisUtterance(lesson.chunks[lesson.index].replace(/\[|\]/g,""));
+  utterance.lang="tr-TR";utterance.rate=+($("#voice-rate")?.value||store.get("wrongVoiceRate",.85));utterance.pitch=1;
+  utterance.onend=()=>{
+    if(!state.voiceLesson?.playing||state.voiceLesson.paused)return;
+    const wasWritingPause=/\[?YAZMA MOLASI\]?/i.test(lesson.chunks[lesson.index]);
+    lesson.index++;
+    if(wasWritingPause&&($("#voice-auto-pause")?.checked??true)){
+      lesson.paused=true;
+      const p=$("#voice-progress");if(p)p.querySelector("span").textContent="Kalemle yazma molası · Hazır olunca Devam Et";
+      toast("Yazma molası");
+      return;
+    }
+    speakWrongVoiceChunk();
+  };
+  utterance.onerror=e=>{if(e.error!=="canceled")toast("Sesli okuma durdu.")};
+  lesson.utterance=utterance;speechSynthesis.speak(utterance);
+}
+function pauseWrongVoiceLesson(){
+  if(!state.voiceLesson?.playing)return;
+  state.voiceLesson.paused=true;speechSynthesis.cancel();
+  const p=$("#voice-progress");if(p)p.querySelector("span").textContent="Duraklatıldı";
+}
+function continueWrongVoiceLesson(){
+  if(!state.voiceLesson?.playing){
+    const saved=store.get("latestWrongVoiceLesson",null);if(saved?.text)startWrongVoiceLesson(saved.text,0);
+    return;
+  }
+  state.voiceLesson.paused=true;speechSynthesis.cancel();state.voiceLesson.paused=false;speakWrongVoiceChunk();
+}
+function stopWrongVoiceLesson(update=true,label="Durduruldu"){
+  if("speechSynthesis" in window)speechSynthesis.cancel();
+  state.voiceLesson=null;
+  if(update){
+    document.querySelectorAll("[data-lesson-chunk]").forEach(x=>x.classList.remove("active"));
+    const p=$("#voice-progress");if(p){p.querySelector("i").style.width="0%";p.querySelector("span").textContent=label}
+  }
+}
+async function generateWrongVoiceLesson(){
+  const scope=$("#voice-lesson-scope").value,length=$("#voice-lesson-length").value;
+  const limits={short:12,medium:22,long:35},words={short:"650-850",medium:"1100-1400",long:"1600-2000"};
+  const items=learningSourceItems(scope,limits[length]),button=$("#generate-voice-lesson"),output=$("#voice-lesson-output");
+  if(!items.length)return toast("Bu alanda henüz kayıtlı yanlış yok.");
+  const data=items.map(x=>({
+    alan:x.area||questionAreaLabel(x.q),soru:x.q.question,
+    secilen:x.selected&&x.q.choices?.[x.selected]?x.q.choices[x.selected]:"Bilinmiyor",
+    dogru:x.q.choices?.[x.q.answer],aciklama:x.q.explanation||"",tekrar:x.count||1
+  }));
+  output.classList.remove("hidden");output.textContent="Yanlışların konuşma dersine dönüştürülüyor…";
+  button.disabled=true;button.textContent="Ders hazırlanıyor…";stopWrongVoiceLesson(false);
+  const prompt=`Aşağıdaki gerçek yanlışlardan ${scopeLabel(scope)} alanında, dinlerken kalemle not alınacak kişisel bir sesli ders metni hazırla:
+${JSON.stringify(data)}
+
+Bir öğretmenin öğrencisinin yanlış kâğıdına bakarak yüz yüze ders anlatması gibi doğal konuş. Sadece doğru cevabı sıralama: temel bilgiyi açıkla, seçilen çeldiriciyle farkını göster, kısa örnek veya hafıza bağlantısı kur. Veride olmayan kesin ayrıntıları uydurma.
+
+Kurallar:
+- ${words[length]} kelime.
+- 4-7 kısa ders bölümü kullan.
+- Her bölümde önce "BÖLÜM: ..." başlığı olsun.
+- Cümleler yavaş dinlemeye ve yazmaya uygun, kısa ve açık olsun.
+- Her önemli bölümün ardından ayrı paragraf olarak "[YAZMA MOLASI] Şimdi şu üç net bilgiyi defterine yaz: ..." de ve yazılacak maddeleri söyle.
+- Sonunda "DERS SONU HIZLI TEKRAR" yap.
+- Markdown tablosu kullanma; sesli okunacak temiz Türkçe yaz.`;
+  try{
+    const text=await openAIText(prompt,"Sen sabırlı, anlaşılır ve sınav odaklı bir özel ders öğretmenisin. Öğrencinin kalemle not alabilmesi için konuşma temposuna uygun, durakları belirgin kişisel ders metni yaz.",{maxOutputTokens:length==="long"?4200:3000});
+    const saved={text,date:new Date().toISOString(),count:items.length,scope};
+    store.set("latestWrongVoiceLesson",saved);
+    output.innerHTML=lessonTranscriptHtml(text);
+    $("#voice-lesson-controls").classList.remove("hidden");$("#voice-progress").classList.remove("hidden");
+    mountWrongVoiceControls(text);button.textContent="↻ Sesli Dersi Yeniden Hazırla";
+  }catch(error){output.textContent=`Hata: ${error.message}`;button.textContent="↻ Yeniden Dene"}
+  finally{button.disabled=false}
+}
+
+function forgettingRiskEntries(){
+  const history=store.get("answerHistory",[]).filter(x=>x?.questionId&&x?.date);
+  const groups=new Map();
+  history.forEach(x=>{const key=String(x.questionId);if(!groups.has(key))groups.set(key,[]);groups.get(key).push(x)});
+  const current=new Map(allQuestions().map(q=>[String(q.id),q])),now=Date.now();
+  const intervals=[.25,1,3,7,14,30,60];
+  return [...groups.entries()].map(([id,attempts])=>{
+    attempts.sort((a,b)=>new Date(b.date)-new Date(a.date));
+    let streak=0;for(const x of attempts){if(!x.ok)break;streak++}
+    const last=attempts[0],lastMs=new Date(last.date).getTime(),days=Math.max(0,(now-lastMs)/86400000);
+    const interval=intervals[Math.min(streak,intervals.length-1)];
+    const wrongRate=attempts.filter(x=>!x.ok).length/attempts.length;
+    const risk=Math.max(0,Math.min(100,Math.round((days/interval)*82+wrongRate*18+(last.ok?0:28))));
+    const q=current.get(id)||{id,question:last.question,choices:last.choices,answer:last.answer,educationArea:last.subject==="education"?(last.area||"Eğitim Bilimleri"):undefined};
+    return {id,q,attempts:attempts.length,streak,days,interval,risk,lastOk:last.ok,area:last.area||questionAreaLabel(q),dueIn:interval-days};
+  }).filter(x=>x.q?.question&&x.q?.choices&&x.q?.answer).sort((a,b)=>b.risk-a.risk||b.attempts-a.attempts);
+}
+function riskLabel(x){
+  if(x.risk>=85)return ["Yüksek","high"];
+  if(x.risk>=55)return ["Yaklaşıyor","medium"];
+  return ["Düşük","low"];
+}
+function dueText(x){
+  if(x.dueIn<=0)return `${Math.max(0,Math.floor(-x.dueIn))} gün gecikti`;
+  if(x.dueIn<1)return "Bugün tekrar edilmeli";
+  return `${Math.ceil(x.dueIn)} gün sonra`;
+}
+function renderForgettingRisk(){
+  const entries=forgettingRiskEntries(),high=entries.filter(x=>x.risk>=85),medium=entries.filter(x=>x.risk>=55&&x.risk<85);
+  setTitle("Unutma Riski Sistemi","Aralıklı tekrar radarı",true);
+  app.innerHTML=`<section class="hero forgetting-hero"><h2>Bugün Hatırlaman Gerekenler</h2><p>Her bilgi için son görülme zamanı, doğru serisi ve geçmiş yanlışlar birlikte değerlendirilir. Tekrar yaptıkça bir sonraki hatırlatma aralığı otomatik uzar.</p>
+  <div class="risk-summary"><article><b>${high.length}</b><span>Bugün</span></article><article><b>${medium.length}</b><span>Yaklaşıyor</span></article><article><b>${entries.length}</b><span>Takipte</span></article></div>
+  <div class="actions"><button class="primary" id="review-risk" ${entries.length?"":"disabled"}>⏳ En Riskli 10 Bilgiyi Tekrar Et</button><button class="secondary" id="review-risk-20" ${entries.length?"":"disabled"}>İlk 20’yi Çöz</button></div></section>
+  ${entries.length?`<div class="risk-list">${entries.slice(0,40).map((x,i)=>{const [label,klass]=riskLabel(x);return `<article class="risk-card ${klass}"><div class="risk-card-head"><span>${i+1}. ${esc(x.area)}</span><b>%${x.risk} · ${label}</b></div><p>${esc(x.q.question)}</p><div class="risk-meter"><i style="width:${x.risk}%"></i></div><small>${dueText(x)} · Son doğru serisi: ${x.streak} · ${x.attempts} çözüm kaydı</small></article>`}).join("")}</div>`:`<section class="hero"><h2>Henüz yeterli veri yok</h2><p>Test çözdükçe uygulama her bilginin unutma riskini hesaplayacak. İlk çözümden sonra bu ekran otomatik dolmaya başlar.</p></section>`}`;
+  if(entries.length){
+    $("#review-risk").onclick=()=>startExam(entries.slice(0,10).map(x=>x.q),"Bugün Hatırlaman Gerekenler");
+    $("#review-risk-20").onclick=()=>startExam(entries.slice(0,20).map(x=>x.q),"Unutma Riski Tekrarı");
+  }
+}
+
 function aiQuestionSolutionHtml(){
   return `<div class="ai-question-actions"><button class="secondary ai-question-button" id="ai-question-button" aria-expanded="false">🤖 AI ile Çözümü Açıkla</button></div>
   <div class="ai-question-box hidden" id="ai-question-box" aria-live="polite"><b>AI Soru Çözümü</b><div id="ai-question-content"></div></div>`;
