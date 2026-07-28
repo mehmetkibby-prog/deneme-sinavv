@@ -13,7 +13,7 @@ function offlineEducationSections(){return state.educationData?.sections||[]}
 function offlineEducationQuestions(){return offlineEducationSections().flatMap(s=>s.questions)}
 function allQuestions(){return [...state.data.sections.flatMap(s=>s.questions),...offlineEducationQuestions()]}
 function ids(key){return new Set(store.get(key,[]))}
-function setTitle(t,s="V26.1 Kişisel Akademi",back=false){$("#page-title").textContent=t;$("#subtitle").textContent=s;$("#back").classList.toggle("hidden",!back)}
+function setTitle(t,s="V26.3 Kişisel Akademi",back=false){$("#page-title").textContent=t;$("#subtitle").textContent=s;$("#back").classList.toggle("hidden",!back)}
 function nav(r){if(state.voiceLesson?.playing)stopWrongVoiceLesson(false);state.route=r;document.querySelectorAll("#bottom-nav button").forEach(b=>b.classList.toggle("active",b.dataset.route===r));({home:renderHome,wrong:renderWrong,stats:renderStats,voice:renderVoice,more:renderMore,settings:renderSettings}[r]||renderHome)()}
 
 function renderHome(){
@@ -840,44 +840,111 @@ Her bilgi maddesi kısa ama öğretici olsun. Veride olmayan ayrıntıları uydu
   }catch(error){output.textContent=`Hata: ${error.message}`;button.textContent="↻ Özeti Yeniden Dene"}
   finally{button.disabled=false}
 }
-async function printTextReport(title,text){
-  document.querySelector(".print-document")?.remove();
-  const profile=store.get("profile",{name:""});
-  const doc=document.createElement("article");doc.className="print-document";
-  doc.innerHTML=`<header><h1>${esc(title)}</h1><p>${esc(profile.name||"")} · ${new Date().toLocaleDateString("tr-TR")}</p></header><div>${esc(text)}</div><footer>Müzik Sınavı V26.1 · Kişisel çalışma çıktısı</footer>`;
-  document.body.appendChild(doc);
-  if(typeof html2pdf==="function"){
-    doc.classList.add("pdf-source");
-    const filename=`${title.replace(/[^\p{L}\p{N}]+/gu,"-").replace(/^-|-$/g,"")||"calisma-ozeti"}.pdf`;
-    const options={
-      margin:[14,14,14,14],filename,
-      image:{type:"jpeg",quality:.96},
-      html2canvas:{scale:2,useCORS:true,backgroundColor:"#ffffff"},
-      jsPDF:{unit:"mm",format:"a4",orientation:"portrait"},
-      pagebreak:{mode:["css","legacy"]}
-    };
-    try{
-      const nativeSaver=window.Capacitor?.Plugins?.PdfSaver;
-      const isAndroid=window.Capacitor?.getPlatform?.()==="android";
-      if(isAndroid&&nativeSaver){
-        const dataUri=await html2pdf().set(options).from(doc).outputPdf("datauristring");
-        const base64=String(dataUri).split(",")[1];
-        if(!base64)throw new Error("PDF verisi oluşturulamadı.");
-        const result=await nativeSaver.save({base64,filename});
-        toast(result?.saved?"PDF seçtiğin klasöre kaydedildi":"PDF kaydetme iptal edildi");
-      }else{
-        await html2pdf().set(options).from(doc).save();
-        toast("PDF indirildi");
-      }
-    }catch(error){toast(`PDF hazırlanamadı: ${error.message}`)}
-    finally{doc.remove()}
-    return;
+let embeddedPdfFonts=null;
+function arrayBufferToBase64(buffer){
+  const bytes=new Uint8Array(buffer);let binary="";
+  for(let i=0;i<bytes.length;i+=0x8000){
+    binary+=String.fromCharCode(...bytes.subarray(i,i+0x8000));
   }
-  document.body.classList.add("printing-report");
-  const cleanup=()=>{document.body.classList.remove("printing-report");doc.remove()};
-  window.addEventListener("afterprint",cleanup,{once:true});
-  setTimeout(()=>{try{window.print()}catch{toast("Bu cihazda yazdırma penceresi açılamadı.")}},80);
-  setTimeout(cleanup,60000);
+  return btoa(binary);
+}
+async function loadEmbeddedPdfFonts(){
+  if(embeddedPdfFonts)return embeddedPdfFonts;
+  const [regular,bold]=await Promise.all([
+    fetch("DejaVuSerif.ttf").then(r=>{if(!r.ok)throw new Error("PDF yazı tipi yüklenemedi.");return r.arrayBuffer()}),
+    fetch("DejaVuSerif-Bold.ttf").then(r=>{if(!r.ok)throw new Error("PDF kalın yazı tipi yüklenemedi.");return r.arrayBuffer()})
+  ]);
+  embeddedPdfFonts={regular:arrayBufferToBase64(regular),bold:arrayBufferToBase64(bold)};
+  return embeddedPdfFonts;
+}
+function cleanPdfText(value){
+  return String(value||"")
+    .replace(/\r\n?/g,"\n")
+    .replace(/\*\*([^*]+)\*\*/g,"$1")
+    .replace(/^#{1,6}\s*/gm,"")
+    .replace(/[ \t]+\n/g,"\n")
+    .trim();
+}
+function isPdfHeading(line){
+  const value=line.trim().replace(/^[\dIVXÇĞİÖŞÜ().-]+\s*/i,"");
+  if(!value||value.length>95)return false;
+  return value===value.toLocaleUpperCase("tr-TR")&&/[A-ZÇĞİÖŞÜ]/.test(value);
+}
+async function buildTextPdf(title,text){
+  const content=cleanPdfText(text);
+  if(content.length<20)throw new Error("PDF'ye yazılacak içerik boş.");
+  const JsPdf=window.jspdf?.jsPDF;
+  if(!JsPdf)throw new Error("PDF oluşturucu yüklenemedi.");
+  const fonts=await loadEmbeddedPdfFonts();
+  const pdf=new JsPdf({unit:"mm",format:"a4",orientation:"portrait",compress:true,putOnlyUsedFonts:true});
+  pdf.addFileToVFS("DejaVuSerif.ttf",fonts.regular);
+  pdf.addFont("DejaVuSerif.ttf","DejaVuSerif","normal");
+  pdf.addFileToVFS("DejaVuSerif-Bold.ttf",fonts.bold);
+  pdf.addFont("DejaVuSerif-Bold.ttf","DejaVuSerif","bold");
+
+  const pageWidth=pdf.internal.pageSize.getWidth(),pageHeight=pdf.internal.pageSize.getHeight();
+  const left=17,right=17,top=19,bottom=18,usableWidth=pageWidth-left-right;
+  let y=top;
+  const addPage=()=>{pdf.addPage();y=top};
+  const ensureSpace=needed=>{if(y+needed>pageHeight-bottom)addPage()};
+  const writeWrapped=(value,{size=10.5,bold=false,gap=2,lineHeight=5.25,color=[31,41,55]}={})=>{
+    const lines=pdf.splitTextToSize(value,usableWidth);
+    const needed=Math.max(lineHeight,lines.length*lineHeight)+gap;
+    ensureSpace(needed);
+    pdf.setFont("DejaVuSerif",bold?"bold":"normal");
+    pdf.setFontSize(size);pdf.setTextColor(...color);
+    pdf.text(lines,left,y,{baseline:"top"});
+    y+=lines.length*lineHeight+gap;
+  };
+
+  pdf.setFillColor(20,55,86);pdf.roundedRect(left,y,usableWidth,24,2,2,"F");
+  pdf.setFont("DejaVuSerif","bold");pdf.setFontSize(16);pdf.setTextColor(255,255,255);
+  const titleLines=pdf.splitTextToSize(cleanPdfText(title),usableWidth-10).slice(0,2);
+  pdf.text(titleLines,left+5,y+5,{baseline:"top"});
+  y+=28;
+  const profile=store.get("profile",{name:""});
+  const meta=[profile.name||"",new Date().toLocaleDateString("tr-TR")].filter(Boolean).join(" · ");
+  if(meta)writeWrapped(meta,{size:9,gap:4,color:[80,91,105]});
+
+  const blocks=content.split(/\n/);
+  for(const raw of blocks){
+    const line=raw.trim();
+    if(!line){y+=2.5;continue}
+    if(isPdfHeading(line)){
+      ensureSpace(13);
+      if(y>top+32){pdf.setDrawColor(199,210,221);pdf.line(left,y,left+usableWidth,y);y+=3}
+      writeWrapped(line,{size:12,bold:true,gap:3,color:[20,55,86]});
+    }else{
+      writeWrapped(line,{size:10.3,bold:false,gap:1.8,lineHeight:5.15});
+    }
+  }
+
+  const pages=pdf.getNumberOfPages();
+  for(let page=1;page<=pages;page++){
+    pdf.setPage(page);pdf.setDrawColor(210,218,226);pdf.line(left,pageHeight-12,left+usableWidth,pageHeight-12);
+    pdf.setFont("DejaVuSerif","normal");pdf.setFontSize(8);pdf.setTextColor(95,105,117);
+    pdf.text("Müzik Sınavı V26.3 · Kişisel çalışma çıktısı",left,pageHeight-8);
+    pdf.text(`${page} / ${pages}`,pageWidth-right,pageHeight-8,{align:"right"});
+  }
+  const arrayBuffer=pdf.output("arraybuffer");
+  if(!arrayBuffer||arrayBuffer.byteLength<5000)throw new Error("PDF içeriği doğrulanamadı; boş dosya kaydedilmedi.");
+  return {pdf,arrayBuffer,base64:arrayBufferToBase64(arrayBuffer),pages};
+}
+async function printTextReport(title,text){
+  const filename=`${title.replace(/[^\p{L}\p{N}]+/gu,"-").replace(/^-|-$/g,"")||"calisma-ozeti"}.pdf`;
+  try{
+    toast("PDF hazırlanıyor…");
+    const built=await buildTextPdf(title,text);
+    const nativeSaver=window.Capacitor?.Plugins?.PdfSaver;
+    const isAndroid=window.Capacitor?.getPlatform?.()==="android";
+    if(isAndroid&&nativeSaver){
+      const result=await nativeSaver.save({base64:built.base64,filename});
+      toast(result?.saved?`PDF ${built.pages} sayfa ve dolu olarak kaydedildi.`:"PDF kaydetme iptal edildi.");
+    }else{
+      built.pdf.save(filename);
+      toast(`PDF ${built.pages} sayfa olarak indirildi.`);
+    }
+  }catch(error){toast(`PDF hazırlanamadı: ${error.message}`)}
 }
 
 function learningSourceItems(scope="all",limit=30){
@@ -984,14 +1051,20 @@ function renderWrongVoiceLesson(){
     <button class="secondary" id="pause-voice-lesson">Ⅱ Duraklat</button>
     <button class="secondary" id="continue-voice-lesson">▶ Devam Et</button>
     <button class="danger" id="stop-voice-lesson">■ Durdur</button>
+    <button class="secondary hidden" id="voice-engine-settings">⚙ Ses Ayarları</button>
   </div>
   <div class="voice-progress ${saved?.text?"":"hidden"}" id="voice-progress"><i></i><span>Hazır</span></div>
   <div class="lesson-transcript ${saved?.text?"":"hidden"}" id="voice-lesson-output">${saved?.text?lessonTranscriptHtml(saved.text):""}</div>`;
   const rate=$("#voice-rate");$("#voice-rate-label").textContent=`${(+rate.value).toFixed(2)}×`;
   rate.oninput=()=>{$("#voice-rate-label").textContent=`${(+rate.value).toFixed(2)}×`;store.set("wrongVoiceRate",+rate.value)};
-  rate.onchange=()=>{if(state.voiceLesson?.playing&&!state.voiceLesson.paused){state.voiceLesson.paused=true;speechSynthesis.cancel();state.voiceLesson.paused=false;speakWrongVoiceChunk()}};
+  rate.onchange=()=>restartCurrentVoiceChunk();
   $("#voice-auto-pause").onchange=e=>store.set("wrongVoiceAutoPause",e.target.checked);
   $("#generate-voice-lesson").onclick=generateWrongVoiceLesson;
+  const settingsButton=$("#voice-engine-settings");
+  if(nativeTts()&&settingsButton){
+    settingsButton.classList.remove("hidden");
+    settingsButton.onclick=()=>nativeTts().openSettings();
+  }
   mountWrongVoiceControls(saved?.text||"");
 }
 function lessonChunks(text){
@@ -1013,24 +1086,60 @@ function mountWrongVoiceControls(text){
   cont.onclick=continueWrongVoiceLesson;
   stop.onclick=()=>stopWrongVoiceLesson(true);
 }
-function startWrongVoiceLesson(text,startIndex=0){
-  if(!("speechSynthesis" in window))return toast("Bu cihazın sesli okuma motoru kullanılamıyor.");
-  if(state.voiceLesson)state.voiceLesson.playing=false;
-  speechSynthesis.cancel();
-  state.voiceLesson={text,chunks:lessonChunks(text),index:startIndex,playing:true,paused:false};
+function nativeTts(){
+  return window.Capacitor?.Plugins?.NativeTts||null;
+}
+function canUseVoiceEngine(){
+  return !!nativeTts()||("speechSynthesis" in window&&typeof window.SpeechSynthesisUtterance==="function");
+}
+async function cancelVoiceEngine(){
+  const native=nativeTts();
+  if(native){
+    try{await native.stop()}catch(_){}
+    return;
+  }
+  if("speechSynthesis" in window)window.speechSynthesis.cancel();
+}
+function speakVoiceText(text,rate){
+  const native=nativeTts();
+  if(native)return native.speak({text,rate});
+  return new Promise((resolve,reject)=>{
+    if(!canUseVoiceEngine())return reject(new Error("Bu cihazın sesli okuma motoru kullanılamıyor."));
+    const utterance=new SpeechSynthesisUtterance(text);
+    utterance.lang="tr-TR";utterance.rate=rate;utterance.pitch=1;
+    utterance.onend=()=>resolve({stopped:false});
+    utterance.onerror=e=>{
+      if(e.error==="canceled"||e.error==="interrupted")resolve({stopped:true});
+      else reject(new Error("Sesli okuma durdu."));
+    };
+    window.speechSynthesis.speak(utterance);
+  });
+}
+async function startWrongVoiceLesson(text,startIndex=0){
+  if(!canUseVoiceEngine())return toast("Bu cihazın sesli okuma motoru kullanılamıyor.");
+  if(state.voiceLesson){
+    state.voiceLesson.playing=false;
+    state.voiceLesson.generation=(state.voiceLesson.generation||0)+1;
+  }
+  await cancelVoiceEngine();
+  state.voiceLesson={text,chunks:lessonChunks(text),index:startIndex,playing:true,paused:false,generation:0};
   speakWrongVoiceChunk();
 }
-function speakWrongVoiceChunk(){
+async function speakWrongVoiceChunk(){
   const lesson=state.voiceLesson;if(!lesson?.playing||lesson.paused)return;
   if(lesson.index>=lesson.chunks.length){stopWrongVoiceLesson(true,"Ders tamamlandı");return}
   document.querySelectorAll("[data-lesson-chunk]").forEach(x=>x.classList.toggle("active",+x.dataset.lessonChunk===lesson.index));
   const progress=$("#voice-progress"),pct=Math.round(lesson.index/lesson.chunks.length*100);
   if(progress){progress.classList.remove("hidden");progress.querySelector("i").style.width=`${pct}%`;progress.querySelector("span").textContent=`Bölüm ${lesson.index+1} / ${lesson.chunks.length}`}
-  const utterance=new SpeechSynthesisUtterance(lesson.chunks[lesson.index].replace(/\[|\]/g,""));
-  utterance.lang="tr-TR";utterance.rate=+($("#voice-rate")?.value||store.get("wrongVoiceRate",.85));utterance.pitch=1;
-  utterance.onend=()=>{
-    if(!state.voiceLesson?.playing||state.voiceLesson.paused)return;
-    const wasWritingPause=/\[?YAZMA MOLASI\]?/i.test(lesson.chunks[lesson.index]);
+  const generation=++lesson.generation;
+  const chunkIndex=lesson.index;
+  try{
+    const result=await speakVoiceText(
+      lesson.chunks[chunkIndex].replace(/\[|\]/g,""),
+      +($("#voice-rate")?.value||store.get("wrongVoiceRate",.85))
+    );
+    if(state.voiceLesson!==lesson||!lesson.playing||lesson.paused||lesson.generation!==generation||result?.stopped)return;
+    const wasWritingPause=/\[?YAZMA MOLASI\]?/i.test(lesson.chunks[chunkIndex]);
     lesson.index++;
     if(wasWritingPause&&($("#voice-auto-pause")?.checked??true)){
       lesson.paused=true;
@@ -1039,13 +1148,16 @@ function speakWrongVoiceChunk(){
       return;
     }
     speakWrongVoiceChunk();
-  };
-  utterance.onerror=e=>{if(e.error!=="canceled")toast("Sesli okuma durdu.")};
-  lesson.utterance=utterance;speechSynthesis.speak(utterance);
+  }catch(error){
+    if(state.voiceLesson!==lesson||lesson.generation!==generation)return;
+    lesson.playing=false;
+    const message=String(error?.message||error||"Sesli okuma durdu.");
+    toast(message.includes("Türkçe ses verisi")?"Türkçe ses verisi kurulu değil. Telefonun Sesli Okuma ayarlarından Türkçe sesi indir.":message);
+  }
 }
 function pauseWrongVoiceLesson(){
   if(!state.voiceLesson?.playing)return;
-  state.voiceLesson.paused=true;speechSynthesis.cancel();
+  state.voiceLesson.paused=true;state.voiceLesson.generation++;cancelVoiceEngine();
   const p=$("#voice-progress");if(p)p.querySelector("span").textContent="Duraklatıldı";
 }
 function continueWrongVoiceLesson(){
@@ -1053,10 +1165,21 @@ function continueWrongVoiceLesson(){
     const saved=store.get("latestWrongVoiceLesson",null);if(saved?.text)startWrongVoiceLesson(saved.text,0);
     return;
   }
-  state.voiceLesson.paused=true;speechSynthesis.cancel();state.voiceLesson.paused=false;speakWrongVoiceChunk();
+  state.voiceLesson.paused=false;restartCurrentVoiceChunk();
+}
+async function restartCurrentVoiceChunk(){
+  const lesson=state.voiceLesson;
+  if(!lesson?.playing||lesson.paused)return;
+  lesson.generation++;
+  await cancelVoiceEngine();
+  if(state.voiceLesson===lesson&&lesson.playing&&!lesson.paused)speakWrongVoiceChunk();
 }
 function stopWrongVoiceLesson(update=true,label="Durduruldu"){
-  if("speechSynthesis" in window)speechSynthesis.cancel();
+  if(state.voiceLesson){
+    state.voiceLesson.playing=false;
+    state.voiceLesson.generation=(state.voiceLesson.generation||0)+1;
+  }
+  cancelVoiceEngine();
   state.voiceLesson=null;
   if(update){
     document.querySelectorAll("[data-lesson-chunk]").forEach(x=>x.classList.remove("active"));
