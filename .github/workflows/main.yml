@@ -1,4 +1,4 @@
-name: Android APK Oluştur
+name: APK oluştur
 
 on:
   workflow_dispatch:
@@ -11,38 +11,37 @@ jobs:
     runs-on: ubuntu-latest
 
     steps:
-      - name: Projeyi indir
+      - name: Kaynakları al
         uses: actions/checkout@v4
 
-      - name: Node.js kur
+      - name: Node.js 22 kur
         uses: actions/setup-node@v4
         with:
-          node-version: "22"
+          node-version: 22
 
-      - name: Java kur
+      - name: Java 21 kur
         uses: actions/setup-java@v4
         with:
           distribution: temurin
-          java-version: "21"
+          java-version: 21
 
-      - name: Bağımlılıkları kur
-        working-directory: deneme-sinavv
+      - name: NPM paketlerini kur
         run: npm install
 
-    
-
-      - name: Android projesini güncelle
-        working-directory: deneme-sinavv
+      - name: Android dosyalarını eşitle
         run: npx cap sync android
 
-      - name: APK oluştur
-        working-directory: deneme-sinavv/android
-        run: |
-          chmod +x gradlew
-          ./gradlew assembleDebug
+      - name: Gradle izni ver
+        run: chmod +x android/gradlew
+
+      - name: Debug APK oluştur
+        working-directory: android
+        run: ./gradlew assembleDebug
 
       - name: APK dosyasını yükle
         uses: actions/upload-artifact@v4
         with:
-          name: Muzik-Sinavi-APK
-          path: deneme-sinavv/android/app/build/outputs/apk/debug/app-debug.apk
+          name: Muzik-Sinavi-V27.6-Debug-APK
+          path: android/app/build/outputs/apk/debug/app-debug.apk
+          if-no-files-found: error
+

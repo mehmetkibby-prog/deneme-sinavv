@@ -1,73 +1,42 @@
-name: Imzali Android APK Olustur
+name: APK oluştur (eski sistem)
 
 on:
   workflow_dispatch:
-  push:
-    branches:
-      - main
 
 jobs:
   build:
     runs-on: ubuntu-latest
-    permissions:
-      contents: read
 
     steps:
-      - name: Kaynaklari al
+      - name: Kaynakları al
         uses: actions/checkout@v4
 
-      - name: Java 17 kur
+      - name: Node.js 22 kur
+        uses: actions/setup-node@v4
+        with:
+          node-version: 22
+
+      - name: Java 21 kur
         uses: actions/setup-java@v4
         with:
           distribution: temurin
-          java-version: "17"
-
-      - name: Node.js kur
-        uses: actions/setup-node@v4
-        with:
-          node-version: "22"
-         
+          java-version: 21
 
       - name: NPM paketlerini kur
         run: npm install
 
-      - name: Android platformunu hazırla
-  run: |
-    if [ ! -d "android/app" ]; then
-      npx cap add android
-    fi
-    npx cap sync android
+      - name: Android dosyalarını eşitle
+        run: npx cap sync android
 
-      - name: Kalici imza anahtarini hazirla
-        shell: bash
-        env:
-          SIGNING_KEYSTORE_BASE64: ${{ secrets.SIGNING_KEYSTORE_BASE64 }}
-        run: |
-          if [ -z "$SIGNING_KEYSTORE_BASE64" ]; then
-            echo "SIGNING_KEYSTORE_BASE64 secret eksik."
-            exit 1
-          fi
-          printf '%s' "$SIGNING_KEYSTORE_BASE64" | base64 --decode > "$RUNNER_TEMP/muzik-sinavi-release.jks"
-
-      - name: Imzali release APK olustur
+      - name: Debug APK oluştur
         working-directory: android
-        env:
-          SIGNING_STORE_FILE: ${{ runner.temp }}/muzik-sinavi-release.jks
-          SIGNING_STORE_PASSWORD: ${{ secrets.SIGNING_STORE_PASSWORD }}
-          SIGNING_KEY_ALIAS: ${{ secrets.SIGNING_KEY_ALIAS }}
-          SIGNING_KEY_PASSWORD: ${{ secrets.SIGNING_KEY_PASSWORD }}
         run: |
           chmod +x gradlew
-          ./gradlew assembleRelease
+          ./gradlew assembleDebug
 
-      - name: Imzayi dogrula
-        run: |
-          "$ANDROID_HOME/build-tools/$(ls "$ANDROID_HOME/build-tools" | sort -V | tail -1)/apksigner" verify --verbose android/app/build/outputs/apk/release/app-release.apk
-
-      - name: APK dosyasini yukle
+      - name: APK dosyasını yükle
         uses: actions/upload-artifact@v4
         with:
-          name: Muzik-Sinavi-Imzali-Release-APK
-          path: android/app/build/outputs/apk/release/app-release.apk
+          name: Muzik-Sinavi-V27.6-Debug-APK
+          path: android/app/build/outputs/apk/debug/app-debug.apk
           if-no-files-found: error
-          retention-days: 30
