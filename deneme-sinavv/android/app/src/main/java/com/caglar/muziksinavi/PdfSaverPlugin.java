@@ -14,10 +14,16 @@ import com.getcapacitor.PluginMethod;
 import com.getcapacitor.annotation.ActivityCallback;
 import com.getcapacitor.annotation.CapacitorPlugin;
 
+import java.io.File;
+import java.io.FileInputStream;
+import java.io.FileOutputStream;
+import java.io.InputStream;
 import java.io.OutputStream;
 
 @CapacitorPlugin(name = "PdfSaver")
 public class PdfSaverPlugin extends Plugin {
+    private static final int MINIMUM_PDF_BYTES = 5000;
+    private File pendingPdf;
 
     @PluginMethod
     public void save(PluginCall call) {
@@ -34,12 +40,26 @@ public class PdfSaverPlugin extends Plugin {
                     && decoded[2] == 'D'
                     && decoded[3] == 'F'
                     && decoded[4] == '-';
-            if (decoded.length < 5000 || !hasPdfHeader) {
+            if (decoded.length < MINIMUM_PDF_BYTES || !hasPdfHeader) {
                 call.reject("PDF içeriği geçersiz veya boş; dosya kaydedilmedi.");
                 return;
             }
-        } catch (IllegalArgumentException error) {
-            call.reject("PDF verisi çözülemedi.", error);
+
+            clearPendingPdf();
+            pendingPdf = File.createTempFile("muzik-sinavi-pdf-", ".pdf", getContext().getCacheDir());
+            try (FileOutputStream tempOutput = new FileOutputStream(pendingPdf, false)) {
+                tempOutput.write(decoded);
+                tempOutput.flush();
+                tempOutput.getFD().sync();
+            }
+            if (!pendingPdf.isFile() || pendingPdf.length() != decoded.length) {
+                clearPendingPdf();
+                call.reject("PDF geçici dosyaya eksiksiz hazırlanamadı.");
+                return;
+            }
+        } catch (Exception error) {
+            clearPendingPdf();
+            call.reject("PDF verisi hazırlanamadı.", error);
             return;
         }
 
@@ -65,26 +85,63 @@ public class PdfSaverPlugin extends Plugin {
         if (result.getResultCode() != Activity.RESULT_OK
                 || result.getData() == null
                 || result.getData().getData() == null) {
+            clearPendingPdf();
             response.put("saved", false);
             call.resolve(response);
             return;
         }
 
         Uri destination = result.getData().getData();
-        String base64 = call.getString("base64");
-        try (OutputStream output = getContext().getContentResolver().openOutputStream(destination)) {
+        if (pendingPdf == null || !pendingPdf.isFile() || pendingPdf.length() < MINIMUM_PDF_BYTES) {
+            clearPendingPdf();
+            call.reject("Hazırlanan PDF bulunamadı; boş dosya kaydedilmedi.");
+            return;
+        }
+
+        long expectedBytes = pendingPdf.length();
+        try (InputStream input = new FileInputStream(pendingPdf);
+             OutputStream output = getContext().getContentResolver().openOutputStream(destination, "rwt")) {
             if (output == null) {
+                clearPendingPdf();
                 call.reject("Seçilen dosya açılamadı.");
                 return;
             }
-            output.write(Base64.decode(base64, Base64.DEFAULT));
+            byte[] buffer = new byte[64 * 1024];
+            int read;
+            long written = 0;
+            while ((read = input.read(buffer)) != -1) {
+                output.write(buffer, 0, read);
+                written += read;
+            }
             output.flush();
+
+            if (written != expectedBytes) {
+                throw new IllegalStateException(
+                        "Eksik veri yazıldı: " + written + " / " + expectedBytes + " bayt."
+                );
+            }
+
             response.put("saved", true);
-            response.put("bytes", Base64.decode(base64, Base64.DEFAULT).length);
+            response.put("bytes", written);
             response.put("uri", destination.toString());
+            clearPendingPdf();
             call.resolve(response);
         } catch (Exception error) {
+            clearPendingPdf();
+            try {
+                getContext().getContentResolver().delete(destination, null, null);
+            } catch (Exception ignored) {
+                // Bazı belge sağlayıcıları silmeye izin vermez.
+            }
             call.reject("PDF kaydedilemedi: " + error.getMessage(), error);
         }
+    }
+
+    private void clearPendingPdf() {
+        if (pendingPdf != null && pendingPdf.exists()) {
+            //noinspection ResultOfMethodCallIgnored
+            pendingPdf.delete();
+        }
+        pendingPdf = null;
     }
 }
