@@ -26,6 +26,22 @@ public class PdfSaverPlugin extends Plugin {
             call.reject("PDF verisi boş.");
             return;
         }
+        try {
+            byte[] decoded = Base64.decode(base64, Base64.DEFAULT);
+            boolean hasPdfHeader = decoded.length >= 5
+                    && decoded[0] == '%'
+                    && decoded[1] == 'P'
+                    && decoded[2] == 'D'
+                    && decoded[3] == 'F'
+                    && decoded[4] == '-';
+            if (decoded.length < 5000 || !hasPdfHeader) {
+                call.reject("PDF içeriği geçersiz veya boş; dosya kaydedilmedi.");
+                return;
+            }
+        } catch (IllegalArgumentException error) {
+            call.reject("PDF verisi çözülemedi.", error);
+            return;
+        }
 
         String requestedName = call.getString("filename", "calisma-ozeti.pdf");
         String safeName = requestedName.replaceAll("[\\\\/:*?\"<>|]", "-");
@@ -64,6 +80,7 @@ public class PdfSaverPlugin extends Plugin {
             output.write(Base64.decode(base64, Base64.DEFAULT));
             output.flush();
             response.put("saved", true);
+            response.put("bytes", Base64.decode(base64, Base64.DEFAULT).length);
             response.put("uri", destination.toString());
             call.resolve(response);
         } catch (Exception error) {
