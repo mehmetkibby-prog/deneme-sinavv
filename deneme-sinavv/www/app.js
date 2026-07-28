@@ -12,7 +12,7 @@ function offlineEducationSections(){return state.educationData?.sections||[]}
 function offlineEducationQuestions(){return offlineEducationSections().flatMap(s=>s.questions)}
 function allQuestions(){return [...state.data.sections.flatMap(s=>s.questions),...offlineEducationQuestions()]}
 function ids(key){return new Set(store.get(key,[]))}
-function setTitle(t,s="V24.4i Android",back=false){$("#page-title").textContent=t;$("#subtitle").textContent=s;$("#back").classList.toggle("hidden",!back)}
+function setTitle(t,s="V24.4j Android",back=false){$("#page-title").textContent=t;$("#subtitle").textContent=s;$("#back").classList.toggle("hidden",!back)}
 function nav(r){state.route=r;document.querySelectorAll("#bottom-nav button").forEach(b=>b.classList.toggle("active",b.dataset.route===r));({home:renderHome,wrong:renderWrong,stats:renderStats,voice:renderVoice,more:renderMore,settings:renderSettings}[r]||renderHome)()}
 
 function renderHome(){
@@ -339,9 +339,9 @@ function renderEducationLesson(selected="Gelişim Psikolojisi"){
 }
 function renderEducationCases(){
   setTitle("AI Vaka Soruları","Senaryo tabanlı çalışma",true);
-  app.innerHTML=`<section class="hero education-hero"><h2>Vaka soruları</h2><p>Tanım ezberinden farklı olarak öğretmen ve öğrenci senaryoları üzerinden kavramı bul.</p></section>
+  app.innerHTML=`<section class="hero education-hero"><h2>Vaka soruları</h2><p>KPSS düzeyinde, kısa öğretmen ve öğrenci durumları üzerinden temel kavramı bul.</p></section>
   <div class="ai-control-grid"><div><label>Alan</label>${educationAreaSelect("edu-case-area")}</div><div><label>Soru sayısı</label><select id="edu-case-count"><option>5</option><option selected>10</option><option>15</option><option>20</option></select></div></div>
-  <label>Zorluk</label><select id="edu-case-level"><option>Orta</option><option selected>Zor</option><option>Çok Zor</option></select>
+  <label>Zorluk</label><select id="edu-case-level"><option>Kolay</option><option selected>Orta</option><option>Zor</option></select>
   <div class="actions"><button class="primary" id="edu-case-generate">Vaka Testini Oluştur</button></div><div id="edu-case-status"></div>`;
   $("#edu-case-generate").onclick=()=>generateEducationQuestions([{area:$("#edu-case-area").value,count:+$("#edu-case-count").value}],`Vaka · ${$("#edu-case-level").value}`,"AI Vaka Soruları","#edu-case-status","#edu-case-generate");
 }
@@ -380,10 +380,25 @@ function startWeakEducationStudy(){
 }
 function educationPrompt(groups,focus){
   const distribution=groups.map(x=>`${x.area}: ${x.count} soru`).join(", ");
-  return `Eğitim Bilimleri alanında toplam ${groups.reduce((n,x)=>n+x.count,0)} özgün, dört seçenekli soru üret. Dağılım: ${distribution}. Eğitim Felsefesi ve Eğitim Sosyolojisi kesinlikle dahil olmasın. Odak: ${focus}. Bilgi, kavram ve öğretmen-öğrenci vaka sorularını dengeli kullan. Her soruya doğru alan adını ekle. Yalnızca şu JSON yapısını döndür: {"questions":[{"area":"Gelişim Psikolojisi","question":"...","choices":{"A":"...","B":"...","C":"...","D":"..."},"answer":"A","explanation":"Doğru cevabın nedeni ve kritik ayrım"}]}`;
+  return `Türkiye'deki KPSS Eğitim Bilimleri konu testlerinin sade ve temiz diline benzer toplam ${groups.reduce((n,x)=>n+x.count,0)} özgün, dört seçenekli soru üret. Dağılım: ${distribution}. Eğitim Felsefesi ve Eğitim Sosyolojisi kesinlikle dahil olmasın. Odak: ${focus}.
+
+ZORUNLU SORU YAZIM KURALLARI:
+- Sorular lisans düzeyi KPSS Eğitim Bilimleri hazırlığına uygun, çoğunlukla kolay-orta ve orta düzeyde olsun.
+- Her soru yalnızca bir temel bilgiyi, kavramı, ilkeyi, kuramı veya kavramlar arasındaki belirgin farkı ölçsün.
+- Soru kökünü gereksiz ayrıntı, akademik jargon, uzun öncül ve dolambaçlı anlatımla zorlaştırma.
+- Doğrudan bilgi/kavram soruları çoğunlukta olsun. Genel denemede soruların yaklaşık %70'i kısa ve doğrudan, en fazla %30'u kısa öğretmen-öğrenci durumu olsun.
+- Vaka istenirse senaryo 2-4 kısa cümleyi geçmesin ve cevabı tek bir temel kavrama açıkça bağlansın.
+- Birden fazla kuramı aynı soruda iç içe geçiren, istisna veya uç ayrıntı soran, yüksek lisans/uzmanlık düzeyinde soru üretme.
+- Çeldiriciler aynı konudan ve makul olsun; kelime oyunu, aşırı benzer veya tartışmalı seçenek kullanma.
+- "Hangisi değildir?" türünü seyrek kullan; çift olumsuzluk kullanma.
+- Türkiye'de yaygın kullanılan Eğitim Bilimleri terimlerini ve adlandırmalarını kullan.
+- Her sorunun yalnızca bir kesin doğru cevabı bulunsun. Açıklama 1-3 cümleyle doğru cevabı ve temel ayrımı açıkça anlatsın.
+- İnternetteki veya kaynak kitaplardaki soruları birebir kopyalama.
+
+Her soruya doğru alan adını ekle. Yalnızca şu JSON yapısını döndür: {"questions":[{"area":"Gelişim Psikolojisi","question":"...","choices":{"A":"...","B":"...","C":"...","D":"..."},"answer":"A","explanation":"Doğru cevabın kısa ve açık nedeni"}]}`;
 }
 async function createEducationQuestionSet(groups,focus){
-  const raw=await openAIText(educationPrompt(groups,focus),"Sen uzman bir Eğitim Bilimleri soru yazarı ve denetleyicisisin. Yedi alan dışında soru üretme. Tek doğru cevap, güçlü çeldiriciler ve hatasız Türkçe kullan. Yalnızca geçerli JSON döndür.");
+  const raw=await openAIText(educationPrompt(groups,focus),"Sen Türkiye'deki KPSS Eğitim Bilimleri sınavına hazırlanan adaylar için anlaşılır konu testleri yazan deneyimli bir öğretmensin. Soruları gereksiz ayrıntıyla zorlaştırma. Yedi alan dışında soru üretme. Her soruda tek ve tartışmasız doğru cevap, makul çeldiriciler ve hatasız Türkçe kullan. Yalnızca geçerli JSON döndür.");
   const parsed=parseJsonResponse(raw);
   if(!Array.isArray(parsed.questions)||!parsed.questions.length)throw new Error("Eğitim Bilimleri soruları oluşturulamadı.");
   const expected=groups.reduce((n,x)=>n+x.count,0);
@@ -463,8 +478,8 @@ function parseJsonResponse(text){
 }
 function renderOperaBallet(){
   setTitle("AI Opera ve Bale","İnternet destekli soru çözümü",true);
-  app.innerHTML=`<section class="hero opera-ballet-hero"><h2>Yalnızca Opera ve Bale</h2><p>AI, internetten güvenilir müzik kaynaklarını araştırır; eser, besteci, librettist, prömiyer, dönem, karakter ve bale koreografisi konularında soru üretir.</p></section>
-  <div class="ai-control-grid"><div><label>Alan</label><select id="ob-area"><option>Opera ve Bale Karışık</option><option>Yalnızca Opera</option><option>Yalnızca Bale</option></select></div><div><label>Zorluk</label><select id="ob-level"><option>Orta</option><option selected>Zor</option><option>Çok Zor</option></select></div></div>
+  app.innerHTML=`<section class="hero opera-ballet-hero"><h2>Yalnızca Opera ve Bale</h2><p>Temel sınav bilgilerine odaklanır: eser, besteci ve müzik dönemi. Gereksiz ayrıntı sormaz.</p></section>
+  <div class="ai-control-grid"><div><label>Alan</label><select id="ob-area"><option>Opera ve Bale Karışık</option><option>Yalnızca Opera</option><option>Yalnızca Bale</option></select></div><div><label>Zorluk</label><select id="ob-level"><option>Kolay</option><option selected>Orta</option><option>Zor</option></select></div></div>
   <label>Soru sayısı</label><select id="ob-count"><option>5</option><option selected>10</option><option>15</option><option>20</option></select>
   <label class="check-row web-confirm"><input id="ob-web" type="checkbox" checked><span>İnternetten araştırarak doğrulanmış sorular oluştur.</span></label>
   <div class="actions"><button class="primary" id="ob-generate">Soruları Hazırla</button></div><div id="ob-status"></div>`;
@@ -473,8 +488,21 @@ function renderOperaBallet(){
 async function generateOperaBalletExam(){
   const area=$("#ob-area").value,level=$("#ob-level").value,count=+$("#ob-count").value,useWeb=$("#ob-web").checked,status=$("#ob-status");
   status.innerHTML=`<div class="result">${useWeb?"İnternet kaynakları araştırılıyor ve sorular doğrulanıyor…":"Sorular hazırlanıyor…"}</div>`;$("#ob-generate").disabled=true;
-  const prompt=`${area} alanında ${level} düzeyde ${count} özgün, dört seçenekli sınav sorusu üret. Sorular yalnızca opera ve/veya bale hakkında olsun. Eser-besteci, librettist, prömiyer, dönem, karakter, konu, koreograf ve önemli tarih bilgilerini dengeli kullan. Tartışmalı bilgileri sorma; her cevabı güvenilir kaynaklarla doğrula. Yalnızca şu JSON yapısını döndür: {"questions":[{"question":"...","choices":{"A":"...","B":"...","C":"...","D":"..."},"answer":"A","explanation":"Kısa açıklama"}]}`;
-  const instructions="Sen titiz bir müzik tarihi sınav uzmanısın. Web araştırmasında ansiklopedi, opera/bale kurumları, müze ve güvenilir müzik kuruluşlarını tercih et. Bilgiyi uydurma. Yalnızca geçerli JSON döndür.";
+  const prompt=`${area} alanında ${level} düzeyde ${count} özgün, dört seçenekli sınav sorusu üret. Sorular yalnızca opera ve/veya bale hakkında olsun.
+
+ZORUNLU SORU YAZIM KURALLARI:
+- Sorular müzik öğretmenliği yazılı sınavlarında görülen kısa, temiz ve doğrudan test soruları gibi olsun.
+- Soruların en az %80'i şu üç temel bağdan oluşsun: eser-besteci, eser-dönem/akım, besteci-dönem.
+- Kalan sorular yalnızca çok bilinen temel opera/bale terimi, eser türü veya eserin ait olduğu ülke/ulusal okul hakkında olabilir.
+- Librettist, kesin prömiyer günü/yılı, ilk sahnelendiği salon, ayrıntılı karakter adı, olay örgüsünün küçük ayrıntısı, koreograf ve sahneleme bilgisi sorma.
+- Yalnızca yaygın bilinen eser ve bestecileri kullan. Nadir eser, tartışmalı atıf ve uzmanlık düzeyi ayrıntı kullanma.
+- Soru kökleri mümkünse tek cümle olsun; gereksiz öncül, uzun paragraf ve kelime oyunu kullanma.
+- Her soruda tek ve tartışmasız doğru cevap bulunsun; çeldiriciler aynı türden ve makul olsun.
+- Açıklama 1-2 kısa cümle olsun ve eser-besteci-dönem bağını pekiştirsin.
+- İnternetteki soruları birebir kopyalama. Tartışmalı bilgileri sorma ve her cevabı güvenilir kaynaklarla doğrula.
+
+Yalnızca şu JSON yapısını döndür: {"questions":[{"question":"...","choices":{"A":"...","B":"...","C":"...","D":"..."},"answer":"A","explanation":"Kısa ve öğretici açıklama"}]}`;
+  const instructions="Sen müzik öğretmenliği sınavına yönelik sade opera ve bale testleri hazırlayan deneyimli bir müzik tarihi öğretmenisin. Önceliğin eser, besteci ve dönem bilgisidir. Web araştırmasında ansiklopedi, opera/bale kurumları, müze ve güvenilir müzik kuruluşlarını tercih et. Gereksiz ayrıntı sorma, bilgiyi uydurma ve yalnızca geçerli JSON döndür.";
   try{
     const text=useWeb?await openAIWebText(prompt,instructions):await openAIText(prompt,instructions),parsed=parseJsonResponse(text);
     if(!Array.isArray(parsed.questions)||!parsed.questions.length)throw new Error("Soru listesi boş geldi.");
@@ -520,14 +548,14 @@ function renderTeacher(){
   $("#send-teacher").onclick=async()=>{const t=$("#teacher-input").value.trim();if(!t)return;state.chat.push({role:"me",text:t});renderTeacher();const box=$("#chat");box.insertAdjacentHTML("beforeend",'<div class="message ai">Yanıt hazırlanıyor…</div>');try{const answer=await openAIText(t);state.chat.push({role:"ai",text:answer});renderTeacher()}catch(e){toast(e.message)}};
 }
 async function renderAiExam(){
-  setTitle("AI Eğitim Bilimleri","AI denemesi oluştur",true);app.innerHTML=`<section class="hero education-hero"><h2>Eğitim Bilimleri Denemesi</h2><p>Felsefe ve sosyoloji hariç; bilgi, kavram ve vaka sorularından açıklamalı deneme oluşturur.</p></section><label>Alan</label><select id="ai-area"><option>Tüm alanlar</option>${EDUCATION_AREAS.map(x=>`<option>${x}</option>`).join("")}</select><div class="ai-control-grid"><div><label>Soru sayısı</label><select id="ai-count"><option>5</option><option>10</option><option>15</option><option selected>21</option><option>35</option></select></div><div><label>Zorluk</label><select id="ai-level"><option>Orta</option><option selected>Zor</option><option>Çok Zor</option></select></div></div><div class="actions"><button class="primary" id="generate">Deneme Oluştur</button><button class="secondary" id="education-home">Eğitim Bilimleri Merkezi</button></div><div id="ai-status"></div>`;
+  setTitle("AI Eğitim Bilimleri","AI denemesi oluştur",true);app.innerHTML=`<section class="hero education-hero"><h2>Eğitim Bilimleri Denemesi</h2><p>KPSS düzeyinde; kısa, anlaşılır ve temel kazanımları ölçen açıklamalı sorular oluşturur.</p></section><label>Alan</label><select id="ai-area"><option>Tüm alanlar</option>${EDUCATION_AREAS.map(x=>`<option>${x}</option>`).join("")}</select><div class="ai-control-grid"><div><label>Soru sayısı</label><select id="ai-count"><option>5</option><option>10</option><option>15</option><option selected>21</option><option>35</option></select></div><div><label>Zorluk</label><select id="ai-level"><option>Kolay</option><option selected>Orta</option><option>Zor</option></select></div></div><div class="actions"><button class="primary" id="generate">Deneme Oluştur</button><button class="secondary" id="education-home">Eğitim Bilimleri Merkezi</button></div><div id="ai-status"></div>`;
   $("#generate").onclick=generateAiExam;
   $("#education-home").onclick=renderEducationCenter;
 }
 async function generateAiExam(){
   const area=$("#ai-area").value,count=+$("#ai-count").value,level=$("#ai-level").value;
   const groups=area==="Tüm alanlar"?EDUCATION_AREAS.map((x,i)=>({area:x,count:Math.floor(count/7)+(i<count%7?1:0)})).filter(x=>x.count):[{area,count}];
-  await generateEducationQuestions(groups,`${level} düzey; bilgi, kavram ve vaka dengesi`,"AI Eğitim Bilimleri","#ai-status","#generate");
+  await generateEducationQuestions(groups,`${level} KPSS düzeyi; kısa ve doğrudan bilgi-kavram soruları çoğunlukta, kısa vaka soruları en fazla %30`,"AI Eğitim Bilimleri","#ai-status","#generate");
 }
 function renderVoice(){
   const live=!!state.rtc;setTitle("Realtime AI Voice","Canlı konuşma",false);
