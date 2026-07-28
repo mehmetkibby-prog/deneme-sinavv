@@ -31,8 +31,12 @@ jobs:
       - name: NPM paketlerini kur
         run: npm install
 
-      - name: Android dosyalarini esitle
-        run: npx cap sync android
+      - name: Android platformunu hazırla
+  run: |
+    if [ ! -d "android/app" ]; then
+      npx cap add android
+    fi
+    npx cap sync android
 
       - name: Kalici imza anahtarini hazirla
         shell: bash
