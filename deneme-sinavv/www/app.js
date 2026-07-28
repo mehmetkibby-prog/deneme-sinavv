@@ -13,7 +13,7 @@ function offlineEducationSections(){return state.educationData?.sections||[]}
 function offlineEducationQuestions(){return offlineEducationSections().flatMap(s=>s.questions)}
 function allQuestions(){return [...state.data.sections.flatMap(s=>s.questions),...offlineEducationQuestions()]}
 function ids(key){return new Set(store.get(key,[]))}
-function setTitle(t,s="V24.4k Android",back=false){$("#page-title").textContent=t;$("#subtitle").textContent=s;$("#back").classList.toggle("hidden",!back)}
+function setTitle(t,s="V24.4l Android",back=false){$("#page-title").textContent=t;$("#subtitle").textContent=s;$("#back").classList.toggle("hidden",!back)}
 function nav(r){state.route=r;document.querySelectorAll("#bottom-nav button").forEach(b=>b.classList.toggle("active",b.dataset.route===r));({home:renderHome,wrong:renderWrong,stats:renderStats,voice:renderVoice,more:renderMore,settings:renderSettings}[r]||renderHome)()}
 
 function renderHome(){
@@ -87,11 +87,23 @@ function renderQuestion(){
   $("#next").onclick=()=>{if(++state.index>=state.exam.length)finishExam();else{state.answered=false;renderQuestion()}};
 }
 function toggleId(key,id,on,label){const s=ids(key);on?s.add(id):s.delete(id);store.set(key,[...s]);toast(on?`${label} bölümüne eklendi`:`${label} bölümünden çıkarıldı`)}
+function isEducationQuestion(q){return Boolean(q?.educationArea)}
+function wrongStoreKey(q){return isEducationQuestion(q)?"wrongEducationQuestions":"wrongMusicQuestions"}
+function savedWrongQuestions(key){return store.get(key,[]).filter(q=>q&&q.id&&q.question&&q.choices&&q.answer)}
+function saveWrongQuestion(q){
+  const key=wrongStoreKey(q),items=savedWrongQuestions(key),at=items.findIndex(x=>x.id===q.id);
+  if(at<0)items.unshift(q);else items[at]=q;
+  store.set(key,items.slice(0,1000));
+}
+function removeWrongQuestion(q){
+  const key=wrongStoreKey(q);
+  store.set(key,savedWrongQuestions(key).filter(x=>x.id!==q.id));
+}
 function answer(key){
   if(state.answered)return;state.answered=true;const q=state.exam[state.index],ok=key===q.answer;
   recordEducationAnswer(q,ok);
-  if(ok){state.correct++;const w=ids("wrongQuestions");w.delete(q.id);store.set("wrongQuestions",[...w])}
-  else{state.wrong++;const w=ids("wrongQuestions");w.add(q.id);store.set("wrongQuestions",[...w])}
+  if(ok){state.correct++;removeWrongQuestion(q)}
+  else{state.wrong++;saveWrongQuestion(q)}
   document.querySelectorAll(".choice").forEach(b=>{b.disabled=true;if(b.dataset.key===q.answer)b.classList.add("correct");else if(b.dataset.key===key)b.classList.add("wrong")});
   $("#feedback").innerHTML=`<div class="result"><b>${ok?"Doğru!":"Yanlış."}</b><br>${!ok?`Doğru cevap: ${q.answer}) ${esc(q.choices[q.answer])}<br>`:""}${esc(q.explanation||"")}</div>`;
   $("#next").classList.remove("hidden");
@@ -184,14 +196,37 @@ function finishSimulation(auto){
   results.filter(x=>x.selected).forEach(x=>recordEducationAnswer(x.q,x.ok));
   const correct=results.filter(x=>x.ok).length,blank=results.filter(x=>!x.selected).length,wrong=results.length-correct-blank,score=Math.round(correct/results.length*100);
   const history=store.get("history",[]);history.unshift({date:new Date().toISOString(),title:s.title==="Özel Deneme"?"Özel Deneme · Sınav Modu":"Gerçek Sınav Simülasyonu",total:results.length,correct,wrong,blank,score});store.set("history",history.slice(0,100));
-  results.filter(x=>x.selected&&!x.ok).forEach(x=>{const w=ids("wrongQuestions");w.add(x.q.id);store.set("wrongQuestions",[...w])});
+  results.filter(x=>x.selected).forEach(x=>x.ok?removeWrongQuestion(x.q):saveWrongQuestion(x.q));
   state.simulation=null;setTitle("Simülasyon Sonucu",auto?"Süre doldu":"Sınav tamamlandı",true);
   app.innerHTML=`<section class="hero center simulation-hero"><h2>%${score}</h2><p>${correct} doğru · ${wrong} yanlış · ${blank} boş</p></section>
   <div class="list">${results.filter(x=>!x.ok).map((x,i)=>`<article class="list-item"><h3>${i+1}. ${esc(x.q.question)}</h3><p class="muted">Senin cevabın: ${x.selected?`${x.selected}) ${esc(x.q.choices[x.selected])}`:"Boş"}<br>Doğru cevap: <b>${x.q.answer}) ${esc(x.q.choices[x.q.answer])}</b></p>${x.q.explanation?`<p>${esc(x.q.explanation)}</p>`:""}</article>`).join("")||'<div class="result">Tüm sorular doğru!</div>'}</div>
   <div class="actions center"><button class="primary" id="sim-again">Yeni Simülasyon</button><button class="secondary" id="sim-home">Ana Sayfa</button></div>`;
   $("#sim-again").onclick=renderSimulationSetup;$("#sim-home").onclick=()=>nav("home");
 }
-function renderWrong(){renderSavedQuestions("Yanlış Sorular","wrongQuestions","Yanlış Soruları Çöz","Yanlış cevapladığın sorular otomatik olarak burada birikir. Doğru çözdüğünde listeden çıkar.")}
+function renderWrong(){
+  const music=savedWrongQuestions("wrongMusicQuestions"),education=savedWrongQuestions("wrongEducationQuestions");
+  setTitle("Yanlış Sorular","Alanına göre ayrı tekrar");
+  app.innerHTML=`<section class="hero"><h2>Yanlışlarını tekrar çöz</h2><p>Müzik Alanı ve Eğitim Bilimleri yanlışları birbirine karışmadan ayrı tutulur.</p></section>
+  <div class="grid">
+    <button class="card wrong-category" data-key="wrongMusicQuestions"><b>🎼 Müzik Alanı Yanlışları</b><span class="pill">${music.length} soru</span></button>
+    <button class="card wrong-category" data-key="wrongEducationQuestions"><b>🎓 Eğitim Bilimleri Yanlışları</b><span class="pill">${education.length} soru</span></button>
+  </div>`;
+  document.querySelectorAll(".wrong-category").forEach(b=>b.onclick=()=>renderWrongCategory(b.dataset.key));
+}
+function renderWrongCategory(key){
+  const education=key==="wrongEducationQuestions";
+  renderSavedWrongQuestions(
+    education?"Eğitim Bilimleri Yanlışları":"Müzik Alanı Yanlışları",
+    key,
+    education?"Eğitim Yanlışlarını Çöz":"Müzik Yanlışlarını Çöz",
+    education?"AI ve çevrimdışı Eğitim Bilimleri yanlışların burada birikir.":"Batı Müziği Tarihi dâhil bütün müzik alanı yanlışların burada birikir."
+  );
+}
+function renderSavedWrongQuestions(title,key,button,empty){
+  setTitle(title,"Tekrar çalışma",true);const qs=savedWrongQuestions(key);
+  app.innerHTML=qs.length?`<section class="hero"><h2>${qs.length} soru</h2><p>Hazır olduğunda yeniden çöz.</p><div class="actions"><button class="primary" id="solve">${button}</button><button class="danger" id="clear">Listeyi Temizle</button></div></section><div class="list">${qs.map(q=>`<article class="list-item"><h3>${esc(q.question)}</h3><div class="muted">${esc(q.choices[q.answer])}</div></article>`).join("")}</div>`:`<section class="hero"><h2>Liste boş</h2><p>${empty}</p></section>`;
+  if(qs.length){$("#solve").onclick=()=>startExam(shuffle(qs),title);$("#clear").onclick=()=>{if(confirm("Bu liste temizlensin mi?")){store.set(key,[]);renderWrongCategory(key)}}}
+}
 function renderHard(){renderSavedQuestions("Zor Sorular","hardQuestions","Zor Soruları Çöz","Yıldızla işaretlediğin sorular burada birikir.")}
 function renderSavedQuestions(title,key,button,empty){
   setTitle(title,"Tekrar çalışma",false);const s=ids(key),qs=allQuestions().filter(q=>s.has(q.id));
@@ -516,7 +551,7 @@ async function generateOperaBalletExam(){
   }catch(e){status.innerHTML=`<div class="result">Hata: ${esc(e.message)}</div>`;$("#ob-generate").disabled=false}
 }
 function wrongContext(){
-  const wrong=ids("wrongQuestions"),qs=allQuestions().filter(q=>wrong.has(q.id)).slice(0,15);
+  const qs=[...savedWrongQuestions("wrongMusicQuestions"),...savedWrongQuestions("wrongEducationQuestions")].slice(0,15);
   return qs.length?qs.map((q,i)=>`${i+1}. ${q.question} | Doğru: ${q.answer}) ${q.choices[q.answer]}`).join("\n"):"Kayıtlı yanlış soru yok.";
 }
 function renderAiStudyCenter(){
@@ -619,11 +654,18 @@ function stopRealtimeVoice(redraw=true){
   if(state.voiceAudio){state.voiceAudio.pause();state.voiceAudio.srcObject=null}
   state.rtc=null;state.voiceStream=null;state.voiceAudio=null;state.voiceChannel=null;if(redraw)renderVoice();
 }
+function migrateWrongQuestions(){
+  if(store.get("v24_4l_wrong_split",false))return;
+  const old=ids("wrongQuestions");
+  allQuestions().filter(q=>old.has(q.id)).forEach(saveWrongQuestion);
+  store.set("wrongQuestions",[]);
+  store.set("v24_4l_wrong_split",true);
+}
 
 $("#back").onclick=()=>nav("home");$("#settings").onclick=()=>renderSettings();
 document.querySelectorAll("#bottom-nav button").forEach(b=>b.onclick=()=>nav(b.dataset.route));
 Promise.all([
   fetch("questions.json").then(r=>{if(!r.ok)throw new Error("Müzik soru bankası bulunamadı.");return r.json()}),
   fetch("education-questions.json").then(r=>{if(!r.ok)throw new Error("Eğitim Bilimleri soru bankası bulunamadı.");return r.json()})
-]).then(([music,education])=>{state.data=music;state.educationData=education;nav("home")})
+]).then(([music,education])=>{state.data=music;state.educationData=education;migrateWrongQuestions();nav("home")})
   .catch(e=>app.innerHTML=`<div class="result">Soru bankası yüklenemedi: ${esc(e.message)}</div>`);
