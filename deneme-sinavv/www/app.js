@@ -12,7 +12,7 @@ function offlineEducationSections(){return state.educationData?.sections||[]}
 function offlineEducationQuestions(){return offlineEducationSections().flatMap(s=>s.questions)}
 function allQuestions(){return [...state.data.sections.flatMap(s=>s.questions),...offlineEducationQuestions()]}
 function ids(key){return new Set(store.get(key,[]))}
-function setTitle(t,s="V24.4f Android",back=false){$("#page-title").textContent=t;$("#subtitle").textContent=s;$("#back").classList.toggle("hidden",!back)}
+function setTitle(t,s="V24.4h Android",back=false){$("#page-title").textContent=t;$("#subtitle").textContent=s;$("#back").classList.toggle("hidden",!back)}
 function nav(r){state.route=r;document.querySelectorAll("#bottom-nav button").forEach(b=>b.classList.toggle("active",b.dataset.route===r));({home:renderHome,wrong:renderWrong,stats:renderStats,voice:renderVoice,more:renderMore,settings:renderSettings}[r]||renderHome)()}
 
 function renderHome(){
@@ -24,7 +24,7 @@ function renderHome(){
     <button class="card feature" data-go="teacher"><b>🤖 AI Öğretmen</b><span>Sor, öğren, mini sınav yap</span></button>
     <button class="card feature" data-go="cards"><b>🗂 Ezber Kartları</b><span>Kart çevirerek tekrar et</span></button>
     <button class="card feature memory-feature" data-go="memory"><b>🧠 Yoğun Ezber Soruları</b><span>Eser–besteci, dönem ve ağır bilgi soruları</span></button>
-    <button class="card feature offline-education-feature" data-go="offline-education"><b>📘 Eğitim Bilimleri</b><span>PDF’den aktarılan 115 soru · AI gerektirmez</span></button>
+    <button class="card feature offline-education-feature" data-go="offline-education"><b>📘 Eğitim Bilimleri</b><span>${offlineEducationQuestions().length} çevrimdışı soru · AI gerektirmez</span></button>
     <button class="card feature education-feature" data-go="education"><b>🎓 AI Eğitim Bilimleri</b><span>7 alan, vaka, kuramcı ve zayıflık analizi</span></button>
     <button class="card feature custom-exam-feature" data-go="custom-exam"><b>🧩 Deneme Oluşturucu</b><span>Bölümleri ve soru sayılarını kendin birleştir</span></button>
     <button class="card feature" data-go="study"><b>📚 Konu Çalışma Köşesi</b><span>Plan ve notlarını tut</span></button>
@@ -54,7 +54,7 @@ function renderSection(id){
 function renderOfflineEducation(){
   const sections=offlineEducationSections(),total=offlineEducationQuestions().length,source=state.educationData?.source||{};
   setTitle("Eğitim Bilimleri",`${total} çevrimdışı soru`,true);
-  app.innerHTML=`<section class="hero offline-education-hero"><h2>PDF Deneme Bankası</h2><p>Gönderdiğin PDF’deki soru ve seçenekler bölümlere ayrılarak aktarıldı. Bu alan internetsiz ve API anahtarı olmadan çalışır.</p><div class="actions"><button class="primary" id="offline-all">Tüm Sorulardan Deneme</button><button class="secondary" id="offline-inspect">Tüm Soruları İncele</button></div><small>${esc(source.publisher||"Pegem Akademi")} · ${esc(source.edition||"2021")} · ${total} soru</small></section>
+  app.innerHTML=`<section class="hero offline-education-hero"><h2>Eğitim Bilimleri Bankası</h2><p>Efsane soru bankası, önceki PDF denemesi ve KHK Çalışma Soruları 2025 çevrimdışı olarak aktarılmıştır. Bu alan internetsiz ve API anahtarı olmadan çalışır.</p><div class="actions"><button class="primary" id="offline-all">Tüm Sorulardan Deneme</button><button class="secondary" id="offline-inspect">Tüm Soruları İncele</button></div><small>Çevrimdışı kaynaklar · ${total} doğrulanmış soru</small></section>
   <div class="offline-education-grid">${sections.map(s=>`<button class="card offline-education-section" data-id="${s.id}"><b>${esc(s.title)}</b><span class="pill">${s.questions.length} soru</span></button>`).join("")}</div>`;
   $("#offline-all").onclick=()=>startExam(shuffle(offlineEducationQuestions()),"Eğitim Bilimleri PDF Denemesi");
   $("#offline-inspect").onclick=()=>renderQuestionList(offlineEducationQuestions(),"Eğitim Bilimleri PDF Soruları");
