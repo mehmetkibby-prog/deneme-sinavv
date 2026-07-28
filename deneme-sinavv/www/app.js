@@ -939,7 +939,14 @@ async function printTextReport(title,text){
     const isAndroid=window.Capacitor?.getPlatform?.()==="android";
     if(isAndroid&&nativeSaver){
       const result=await nativeSaver.save({base64:built.base64,filename});
-      toast(result?.saved?`PDF ${built.pages} sayfa ve dolu olarak kaydedildi.`:"PDF kaydetme iptal edildi.");
+      if(result?.saved){
+        const expectedBytes=built.arrayBuffer.byteLength;
+        const writtenBytes=Number(result.bytes||0);
+        if(writtenBytes!==expectedBytes)throw new Error(`PDF eksik kaydedildi (${writtenBytes}/${expectedBytes} bayt).`);
+        toast(`PDF ${built.pages} sayfa, ${Math.ceil(writtenBytes/1024)} KB olarak kaydedildi.`);
+      }else{
+        toast("PDF kaydetme iptal edildi.");
+      }
     }else{
       built.pdf.save(filename);
       toast(`PDF ${built.pages} sayfa olarak indirildi.`);
