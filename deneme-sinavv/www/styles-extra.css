@@ -62,3 +62,23 @@ input[type=date]{width:100%;background:#0b182a;border:1px solid #294665;color:wh
 .ai-question-box{margin:12px 0 18px;padding:18px;border:1px solid #a855f7;border-radius:16px;background:linear-gradient(145deg,#271743,#132b43);box-shadow:0 10px 30px #0004}
 .ai-question-box b{display:block;color:#d8b4fe;margin-bottom:9px}.ai-question-box div{white-space:pre-wrap;line-height:1.62;color:#edf4ff}
 .ai-question-loading{color:#c4b5fd}.ai-question-error{color:#fda4af}
+.elimination-actions{display:flex;align-items:center;gap:10px;margin:14px 0 10px}
+.elimination-actions small{color:var(--muted);line-height:1.35}
+.elimination-toggle{flex:0 0 auto;border:1px solid #64748b;background:#17263a}
+.elimination-toggle.active{border-color:#f59e0b;background:#493113;color:#fde68a;box-shadow:0 0 0 2px #f59e0b33}
+.choice.eliminated{opacity:.46;border-style:dashed;filter:saturate(.35)}
+.choice.eliminated span{text-decoration:line-through;text-decoration-thickness:2px}
+.choice.eliminated.correct,.choice.eliminated.wrong{opacity:1;filter:none;border-style:solid}
+.choice.eliminated.correct span,.choice.eliminated.wrong span{text-decoration:none}
+.similar-question-actions{margin:12px 0 0}
+.similar-question-button{width:100%;border:1px solid #14b8a6;background:linear-gradient(135deg,#124f4b,#173f68)}
+.similar-question-button:disabled{opacity:.7;cursor:wait}
+.similar-question-box{margin:12px 0 18px;padding:18px;border:1px solid #14b8a6;border-radius:16px;background:linear-gradient(145deg,#103d39,#132b43);box-shadow:0 10px 30px #0004}
+.similar-question-box>b{display:block;color:#99f6e4;margin-bottom:12px}
+.similar-question-text{font-weight:700;font-size:17px;line-height:1.55;margin-bottom:12px;color:#f0fdfa}
+.similar-choices{display:grid;gap:8px}
+.similar-choice{margin:0}
+.similar-feedback{margin-top:12px}
+.similar-regenerate{width:100%;margin-top:12px;border-color:#2dd4bf}
+.similar-question-loading{color:#99f6e4}.similar-question-error{color:#fda4af}
+@media(max-width:520px){.elimination-actions{align-items:stretch;flex-direction:column}.elimination-toggle{width:100%}}

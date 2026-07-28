@@ -1,6 +1,6 @@
 const $ = s => document.querySelector(s);
 const app = $("#app");
-const state = { data:null, educationData:null, route:"home", section:null, exam:[], index:0, correct:0, wrong:0, answered:false, examTitle:"", customExam:null, simulation:null, simulationTimer:null, rtc:null, voiceStream:null, voiceAudio:null, voiceChannel:null, chat:[], studyChat:[], aiQuestionExplanations:{} };
+const state = { data:null, educationData:null, route:"home", section:null, exam:[], index:0, correct:0, wrong:0, answered:false, examTitle:"", customExam:null, simulation:null, simulationTimer:null, rtc:null, voiceStream:null, voiceAudio:null, voiceChannel:null, chat:[], studyChat:[], aiQuestionExplanations:{}, aiSimilarQuestions:{}, eliminatedChoices:{}, eliminationMode:false };
 const store = {
   get(k,f){ try { return JSON.parse(localStorage.getItem(k)) ?? f; } catch { return f; } },
   set(k,v){ localStorage.setItem(k,JSON.stringify(v)); }
@@ -13,7 +13,7 @@ function offlineEducationSections(){return state.educationData?.sections||[]}
 function offlineEducationQuestions(){return offlineEducationSections().flatMap(s=>s.questions)}
 function allQuestions(){return [...state.data.sections.flatMap(s=>s.questions),...offlineEducationQuestions()]}
 function ids(key){return new Set(store.get(key,[]))}
-function setTitle(t,s="V24.4o Android",back=false){$("#page-title").textContent=t;$("#subtitle").textContent=s;$("#back").classList.toggle("hidden",!back)}
+function setTitle(t,s="V24.4p Android",back=false){$("#page-title").textContent=t;$("#subtitle").textContent=s;$("#back").classList.toggle("hidden",!back)}
 function nav(r){state.route=r;document.querySelectorAll("#bottom-nav button").forEach(b=>b.classList.toggle("active",b.dataset.route===r));({home:renderHome,wrong:renderWrong,stats:renderStats,voice:renderVoice,more:renderMore,settings:renderSettings}[r]||renderHome)()}
 
 function renderHome(){
@@ -73,16 +73,18 @@ function renderOfflineEducationSection(id){
 function renderQuestionList(qs,title){setTitle(title,"Cevaplı çalışma listesi",true);app.innerHTML=`<div class="list">${qs.map((q,i)=>`<article class="list-item"><h3>${i+1}. ${esc(q.question)}</h3><div class="muted">Doğru cevap: <b>${q.answer}) ${esc(q.choices[q.answer])}</b></div>${q.explanation?`<p>${esc(q.explanation)}</p>`:""}</article>`).join("")}</div>`}
 function startExam(qs,title){
   if(!qs.length)return toast("Bu listede soru yok.");
-  Object.assign(state,{exam:qs,index:0,correct:0,wrong:0,answered:false,examTitle:title});renderQuestion();
+  Object.assign(state,{exam:qs,index:0,correct:0,wrong:0,answered:false,examTitle:title,eliminatedChoices:{},eliminationMode:false});renderQuestion();
 }
 function renderQuestion(){
-  const q=state.exam[state.index],hard=ids("hardQuestions").has(q.id),pct=Math.round(state.index/state.exam.length*100),hasSolution=Boolean(q.explanation?.trim());
+  const q=state.exam[state.index],hard=ids("hardQuestions").has(q.id),pct=Math.round(state.index/state.exam.length*100),hasSolution=Boolean(q.explanation?.trim()),eliminated=eliminatedChoiceSet(q);
   setTitle(state.examTitle,`Soru ${state.index+1} / ${state.exam.length}`,true);
   app.innerHTML=`<div class="exam-head"><span class="pill">Doğru ${state.correct} · Yanlış ${state.wrong}</span><label class="hard-toggle"><input id="hard-check" type="checkbox" ${hard?"checked":""}> ★ Zor</label></div>
   <div class="progress"><i style="width:${pct}%"></i></div><div class="question">${esc(q.question)}</div>
-  <div>${Object.entries(q.choices).map(([k,v])=>`<button class="choice" data-key="${k}"><strong>${k}</strong><span>${esc(v)}</span></button>`).join("")}</div>
+  ${choiceEliminationHtml()}
+  <div>${Object.entries(q.choices).map(([k,v])=>`<button class="choice original-choice ${eliminated.has(k)?"eliminated":""}" data-key="${k}"><strong>${k}</strong><span>${esc(v)}</span></button>`).join("")}</div>
   ${hasSolution?`<div class="solution-actions"><button class="secondary solution-toggle" id="solution-toggle" aria-expanded="false">📖 Ayrıntılı Çözümü Göster</button></div><div class="solution-box hidden" id="solution-box"><b>Kitaptaki Ayrıntılı Çözüm</b><p>${esc(q.explanation)}</p></div>`:""}
   ${aiQuestionSolutionHtml()}
+  ${similarQuestionHtml()}
   <div id="feedback"></div><div class="actions"><button class="primary hidden" id="next">${state.index===state.exam.length-1?"Sınavı Bitir":"Sonraki Soru"}</button></div>`;
   $("#hard-check").onchange=e=>toggleId("hardQuestions",q.id,e.target.checked,"Zor Sorular");
   if(hasSolution)$("#solution-toggle").onclick=()=>{
@@ -91,8 +93,39 @@ function renderQuestion(){
     button.textContent=opening?"📕 Ayrıntılı Çözümü Gizle":"📖 Ayrıntılı Çözümü Göster";
   };
   mountAiQuestionSolution(q,{warnBeforeReveal:()=>!state.answered});
-  document.querySelectorAll(".choice").forEach(b=>b.onclick=()=>answer(b.dataset.key));
+  mountSimilarQuestion(q);
+  mountChoiceElimination(q,key=>answer(key),{isLocked:()=>state.answered});
   $("#next").onclick=()=>{if(++state.index>=state.exam.length)finishExam();else{state.answered=false;renderQuestion()}};
+}
+function questionStateKey(q){return String(q?.id||q?.question||"question")}
+function eliminatedChoiceSet(q){return new Set(state.eliminatedChoices[questionStateKey(q)]||[])}
+function choiceEliminationHtml(){
+  return `<div class="elimination-actions"><button class="secondary elimination-toggle ${state.eliminationMode?"active":""}" id="elimination-toggle" aria-pressed="${state.eliminationMode}">✂ Şık Eleme: ${state.eliminationMode?"Açık":"Kapalı"}</button><small>${state.eliminationMode?"Eleyeceğin şıklara dokun.":"Açınca şıklara dokunarak üzerini çizebilirsin."}</small></div>`;
+}
+function mountChoiceElimination(q,onSelect,options={}){
+  const toggle=$("#elimination-toggle"),choices=[...document.querySelectorAll(".original-choice")];
+  if(!toggle)return;
+  const refreshToggle=()=>{
+    toggle.classList.toggle("active",state.eliminationMode);
+    toggle.setAttribute("aria-pressed",String(state.eliminationMode));
+    toggle.textContent=`✂ Şık Eleme: ${state.eliminationMode?"Açık":"Kapalı"}`;
+    const note=toggle.parentElement?.querySelector("small");
+    if(note)note.textContent=state.eliminationMode?"Eleyeceğin şıklara dokun.":"Açınca şıklara dokunarak üzerini çizebilirsin.";
+  };
+  toggle.onclick=()=>{
+    if(options.isLocked?.())return;
+    state.eliminationMode=!state.eliminationMode;
+    refreshToggle();
+  };
+  choices.forEach(button=>button.onclick=()=>{
+    if(options.isLocked?.())return;
+    const key=button.dataset.key;
+    if(!state.eliminationMode)return onSelect(key);
+    const eliminated=eliminatedChoiceSet(q);
+    eliminated.has(key)?eliminated.delete(key):eliminated.add(key);
+    state.eliminatedChoices[questionStateKey(q)]=[...eliminated];
+    button.classList.toggle("eliminated",eliminated.has(key));
+  });
 }
 function toggleId(key,id,on,label){const s=ids(key);on?s.add(id):s.delete(id);store.set(key,[...s]);toast(on?`${label} bölümüne eklendi`:`${label} bölümünden çıkarıldı`)}
 function isEducationQuestion(q){return Boolean(q?.educationArea)}
@@ -112,7 +145,8 @@ function answer(key){
   recordEducationAnswer(q,ok);
   if(ok){state.correct++;removeWrongQuestion(q)}
   else{state.wrong++;saveWrongQuestion(q)}
-  document.querySelectorAll(".choice").forEach(b=>{b.disabled=true;if(b.dataset.key===q.answer)b.classList.add("correct");else if(b.dataset.key===key)b.classList.add("wrong")});
+  document.querySelectorAll(".original-choice").forEach(b=>{b.disabled=true;if(b.dataset.key===q.answer)b.classList.add("correct");else if(b.dataset.key===key)b.classList.add("wrong")});
+  if($("#elimination-toggle"))$("#elimination-toggle").disabled=true;
   $("#feedback").innerHTML=`<div class="result"><b>${ok?"Doğru!":"Yanlış."}</b>${!ok?`<br>Doğru cevap: ${q.answer}) ${esc(q.choices[q.answer])}`:""}</div>`;
   $("#next").classList.remove("hidden");
 }
@@ -179,17 +213,20 @@ function simulationTime(){
 }
 function updateSimulationClock(){const el=$("#sim-clock");if(el)el.textContent=simulationTime()}
 function renderSimulationQuestion(){
-  const s=state.simulation,q=s.questions[s.index],selected=s.answers[q.id],marked=s.marked.includes(q.id);
+  const s=state.simulation,q=s.questions[s.index],selected=s.answers[q.id],marked=s.marked.includes(q.id),eliminated=eliminatedChoiceSet(q);
   setTitle(s.title||"Gerçek Sınav",`Soru ${s.index+1} / ${s.questions.length}`,true);
   app.innerHTML=`<div class="simulation-bar"><b id="sim-clock">${simulationTime()}</b><span>${Object.keys(s.answers).length} cevaplandı · ${s.questions.length-Object.keys(s.answers).length} boş</span></div>
   <div class="progress"><i style="width:${Math.round((s.index+1)/s.questions.length*100)}%"></i></div><div class="question">${esc(q.question)}</div>
-  <div>${Object.entries(q.choices).map(([k,v])=>`<button class="choice ${selected===k?"selected":""}" data-key="${k}"><strong>${k}</strong><span>${esc(v)}</span></button>`).join("")}</div>
+  ${choiceEliminationHtml()}
+  <div>${Object.entries(q.choices).map(([k,v])=>`<button class="choice original-choice ${selected===k?"selected":""} ${eliminated.has(k)?"eliminated":""}" data-key="${k}"><strong>${k}</strong><span>${esc(v)}</span></button>`).join("")}</div>
   ${aiQuestionSolutionHtml()}
+  ${similarQuestionHtml()}
   <label class="hard-toggle simulation-mark"><input id="sim-mark" type="checkbox" ${marked?"checked":""}> ★ Bu soruya dön</label>
   <div class="question-map">${s.questions.map((x,i)=>`<button data-index="${i}" class="${i===s.index?"current":""} ${s.answers[x.id]?"answered":""} ${s.marked.includes(x.id)?"marked":""}">${i+1}</button>`).join("")}</div>
   <div class="actions simulation-actions"><button class="secondary" id="sim-prev" ${s.index===0?"disabled":""}>Önceki</button><button class="secondary" id="sim-clear">Cevabı Sil</button><button class="primary" id="sim-next">${s.index===s.questions.length-1?"Sınavı Bitir":"Sonraki"}</button></div>`;
   mountAiQuestionSolution(q,{simulation:true,selectedAnswer:()=>s.answers[q.id]||""});
-  document.querySelectorAll(".choice").forEach(b=>b.onclick=()=>{s.answers[q.id]=b.dataset.key;renderSimulationQuestion()});
+  mountSimilarQuestion(q);
+  mountChoiceElimination(q,key=>{s.answers[q.id]=key;renderSimulationQuestion()});
   $("#sim-mark").onchange=e=>{s.marked=e.target.checked?[...new Set([...s.marked,q.id])]:s.marked.filter(x=>x!==q.id);renderSimulationQuestion()};
   document.querySelectorAll(".question-map button").forEach(b=>b.onclick=()=>{s.index=+b.dataset.index;renderSimulationQuestion()});
   $("#sim-prev").onclick=()=>{s.index--;renderSimulationQuestion()};
@@ -267,8 +304,9 @@ function renderFlashcards(){
 }
 function showCard(qs,i,reveal){
   const q=qs[i];setTitle("Ezber Kartları",`Kart ${i+1} / ${qs.length}`,true);
-  app.innerHTML=`<div class="flashcard ${reveal?"flipped":""}" id="flash"><div><small>${reveal?"CEVAP":"SORU"}</small><h2>${reveal?`${q.answer}) ${esc(q.choices[q.answer])}`:esc(q.question)}</h2>${reveal&&q.explanation?`<p>${esc(q.explanation)}</p>`:""}<span>Çevirmek için dokun</span></div></div>${aiQuestionSolutionHtml()}<div class="actions center"><button class="secondary" id="prev" ${i===0?"disabled":""}>Önceki</button><button class="primary" id="next-card">${i===qs.length-1?"Başa Dön":"Sonraki"}</button></div>`;
+  app.innerHTML=`<div class="flashcard ${reveal?"flipped":""}" id="flash"><div><small>${reveal?"CEVAP":"SORU"}</small><h2>${reveal?`${q.answer}) ${esc(q.choices[q.answer])}`:esc(q.question)}</h2>${reveal&&q.explanation?`<p>${esc(q.explanation)}</p>`:""}<span>Çevirmek için dokun</span></div></div>${aiQuestionSolutionHtml()}${similarQuestionHtml()}<div class="actions center"><button class="secondary" id="prev" ${i===0?"disabled":""}>Önceki</button><button class="primary" id="next-card">${i===qs.length-1?"Başa Dön":"Sonraki"}</button></div>`;
   mountAiQuestionSolution(q,{warnBeforeReveal:()=>!reveal});
+  mountSimilarQuestion(q);
   $("#flash").onclick=()=>showCard(qs,i,!reveal);$("#prev").onclick=()=>showCard(qs,i-1,false);$("#next-card").onclick=()=>showCard(qs,i===qs.length-1?0:i+1,false);
 }
 const MEMORY_LABELS={
@@ -502,6 +540,7 @@ async function startCustomExam(){
 }
 function startSimulationWithQuestions(questions,minutes,title="Gerçek Sınav"){
   clearInterval(state.simulationTimer);
+  state.eliminatedChoices={};state.eliminationMode=false;
   state.simulation={questions,answers:{},marked:[],index:0,startedAt:Date.now(),endsAt:Date.now()+minutes*60000,minutes,title};
   renderSimulationQuestion();
   state.simulationTimer=setInterval(()=>{const s=state.simulation;if(!s)return clearInterval(state.simulationTimer);if(Date.now()>=s.endsAt)finishSimulation(true);else updateSimulationClock()},1000);
@@ -580,6 +619,96 @@ function mountAiQuestionSolution(q,options={}){
     }catch(error){
       content.innerHTML=`<span class="ai-question-error">${esc(error.message)}</span>`;button.textContent="↻ AI Çözümünü Yeniden Dene";
     }finally{button.disabled=false}
+  };
+}
+function similarQuestionHtml(){
+  return `<div class="similar-question-actions"><button class="secondary similar-question-button" id="similar-question-button" aria-expanded="false">✨ Benzer Soru Üret</button></div>
+  <div class="similar-question-box hidden" id="similar-question-box" aria-live="polite"><b>AI Benzer Soru</b><div id="similar-question-content"></div></div>`;
+}
+function similarQuestionPrompt(q){
+  const choices=Object.entries(q.choices||{}).map(([key,value])=>`${key}) ${value}`).join("\n");
+  const area=isEducationQuestion(q)?`Eğitim Bilimleri / ${q.educationArea||"Genel"}`:"Müzik";
+  const choiceCount=Math.max(4,Object.keys(q.choices||{}).length);
+  return `Aşağıdaki soruyla aynı bilgi veya kazanımı ölçen, fakat soru kökü ve seçenekleri farklı olan yalnızca bir özgün çoktan seçmeli soru üret.
+Alan: ${area}
+Örnek soru: ${q.question}
+Örnek seçenekler:
+${choices}
+Örnek sorunun doğru cevabı: ${q.answer}) ${q.choices[q.answer]}
+
+Kurallar:
+- KPSS veya KKTC öğretmenlik sınavı düzeyinde, kısa ve anlaşılır Türkçe kullan.
+- Soru, örnekteki aynı temel kavramı ölçsün; örnek soruyu kopyalamasın.
+- Tam ${choiceCount} seçenek olsun ve seçenek harfleri A'dan başlayarak sıralansın.
+- Tek ve tartışmasız bir doğru cevap bulunsun.
+- Yanlış seçenekler doğru cevapla aynı kavram ailesinden, gerçekçi ve güçlü çeldiriciler olsun.
+- Eğitim Bilimlerinde Eğitim Felsefesi ve Eğitim Sosyolojisine geçme.
+- Müzik sorularında eser-besteci, dönem-dönem, terim-terim gibi aynı tür eşleşmeyi koru.
+- Yalnızca geçerli JSON döndür; kod bloğu veya ek metin yazma.
+
+Şema:
+{"question":"...","choices":{"A":"...","B":"...","C":"...","D":"..."${choiceCount===5?',"E":"..."':""}},"answer":"A","explanation":"Doğru cevabın neden doğru olduğunu kısa ve öğretici biçimde açıkla."}`;
+}
+function parseSimilarQuestion(raw){
+  const clean=String(raw||"").replace(/^```(?:json)?\s*/i,"").replace(/```\s*$/,"").trim();
+  const start=clean.indexOf("{"),end=clean.lastIndexOf("}");
+  if(start<0||end<start)throw new Error("AI geçerli soru biçimi döndürmedi.");
+  const parsed=JSON.parse(clean.slice(start,end+1)),keys=Object.keys(parsed.choices||{});
+  if(!parsed.question||keys.length<4||!parsed.answer||!parsed.choices[parsed.answer])throw new Error("AI sorusu eksik oluşturuldu.");
+  return {question:String(parsed.question),choices:parsed.choices,answer:String(parsed.answer),explanation:String(parsed.explanation||"")};
+}
+function renderSimilarQuestionContent(generated){
+  const content=$("#similar-question-content");
+  if(!content)return;
+  content.innerHTML=`<div class="similar-question-text">${esc(generated.question)}</div>
+  <div class="similar-choices">${Object.entries(generated.choices).map(([key,value])=>`<button class="choice similar-choice" data-similar-key="${esc(key)}"><strong>${esc(key)}</strong><span>${esc(value)}</span></button>`).join("")}</div>
+  <div class="similar-feedback" id="similar-feedback"></div>
+  <button class="secondary similar-regenerate" id="similar-regenerate">↻ Başka Benzer Soru Üret</button>`;
+  document.querySelectorAll(".similar-choice").forEach(button=>button.onclick=()=>{
+    const selected=button.dataset.similarKey,ok=selected===generated.answer;
+    document.querySelectorAll(".similar-choice").forEach(choice=>{
+      choice.disabled=true;
+      if(choice.dataset.similarKey===generated.answer)choice.classList.add("correct");
+      else if(choice.dataset.similarKey===selected)choice.classList.add("wrong");
+    });
+    $("#similar-feedback").innerHTML=`<div class="result"><b>${ok?"Doğru!":"Yanlış."}</b><br>Doğru cevap: ${esc(generated.answer)}) ${esc(generated.choices[generated.answer])}${generated.explanation?`<br><br>${esc(generated.explanation)}`:""}</div>`;
+  });
+}
+function mountSimilarQuestion(q){
+  const button=$("#similar-question-button"),box=$("#similar-question-box"),content=$("#similar-question-content");
+  if(!button||!box||!content)return;
+  const cacheKey=questionStateKey(q);
+  const generate=async(force=false)=>{
+    box.classList.remove("hidden");button.setAttribute("aria-expanded","true");
+    if(!force&&state.aiSimilarQuestions[cacheKey]){
+      renderSimilarQuestionContent(state.aiSimilarQuestions[cacheKey]);
+      button.textContent="✨ Benzer Soruyu Gizle";
+      $("#similar-regenerate").onclick=()=>generate(true);
+      return;
+    }
+    button.disabled=true;button.textContent="Benzer soru hazırlanıyor…";
+    content.innerHTML='<span class="similar-question-loading">Yeni soru hazırlanıyor…</span>';
+    try{
+      const raw=await openAIText(
+        similarQuestionPrompt(q),
+        "Sen müzik ve Eğitim Bilimleri alanlarında uzman bir sınav öğretmenisin. Verilen kazanımı ölçen, özgün, kısa ve temiz bir Türkçe test sorusu üret. Çeldiriciler aynı bilgi ailesinden olsun. Yalnızca istenen JSON'u döndür.",
+        {maxOutputTokens:650}
+      );
+      const generated=parseSimilarQuestion(raw);
+      state.aiSimilarQuestions[cacheKey]=generated;
+      renderSimilarQuestionContent(generated);
+      $("#similar-regenerate").onclick=()=>generate(true);
+      button.textContent="✨ Benzer Soruyu Gizle";
+    }catch(error){
+      content.innerHTML=`<span class="similar-question-error">${esc(error.message)}</span>`;
+      button.textContent="↻ Benzer Soruyu Yeniden Dene";
+    }finally{button.disabled=false}
+  };
+  button.onclick=()=>{
+    if(!box.classList.contains("hidden")){
+      box.classList.add("hidden");button.setAttribute("aria-expanded","false");button.textContent="✨ Benzer Soru Üret";return;
+    }
+    generate(false);
   };
 }
 async function openAIWebText(input,instructions="",options={}){
